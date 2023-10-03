@@ -124,7 +124,129 @@ export const listingFields = [
   //     isRequired: false,
   //   },
   // },
+{
+    key: 'type-of-animal',
+    scope: 'public',
+    includeForListingTypes: ['animal'],
+    schemaType: 'enum',
+    enumOptions: [
+      { option: 'dog', label: 'Dog' },
+      { option: 'cat', label: 'Cat' },
+      { option: 'others', label: 'Others' },
+    ],
+    filterConfig: {
+      indexForSearch: true,
+      filterType: 'SelectSingleFilter',
+      label: 'Type of animal',
+      group: 'primary'
+    },
+    showConfig: {
+      label: 'Type of animal',
+      isDetail: true,
+    },
+    saveConfig: {
+      label: 'Type of animal',
+      placeholderMessage: 'Select type of animal',
+      isRequired: true,
+    }
+  },
+  {
+    key: 'birth',
+    includeForListingTypes: ['animal'],
+    scope: 'public',
+    schemaType: 'text',
+    showConfig: {
+      label: 'Date of birth'
+    },
+    saveConfig: {
+      label: 'Date of birth',
+      placeholderMessage: 'dd/mm/year',
+      isRequired: false,
+    }
+  },
+  {
+    key: 'size',
+    includeForListingTypes: ['animal'],
+    scope: 'public',
+    schemaType: 'enum',
+    enumOptions: [
+      { option: 's', label: 'S' },
+      { option: 'm', label: 'M' },
+      { option: 'l', label: 'L' },
+    ],
+    filterConfig: {
+      indexForSearch: true,
+      filterType: 'SelectSingleFilter',
+      label: 'Size of animal',
+      group: 'primary'
+    },
+    showConfig: {
+      label: 'Size of animal',
+      isDetail: true,
+    },
+    saveConfig: {
+      label: 'Size of animal',
+      placeholderMessage: 'Size of animal',
+      isRequired: false,
+    }
+  },
+  {
+    key: 'is-adopted',
+    includeForListingTypes: ['animal'],
 
+    scope: 'public',
+    schemaType: 'boolean',
+    saveConfig: {
+      label: 'Is adopted',
+      placeholderMessage: 'Is adopted',
+      isRequired: false,
+    }
+  },
+  {
+    key: 'host-name',
+    includeForListingTypes: ['animal'],
+
+    scope: 'public',
+    schemaType: 'text',
+    saveConfig: {
+      label: 'Host name',
+      placeholderMessage: 'Host name',
+      isRequired: false,
+    }
+  },
+  {
+    key: 'host-phone',
+    includeForListingTypes: ['animal'],
+    scope: 'public',
+    schemaType: 'text',
+    saveConfig: {
+      label: 'Host phonenumber',
+      placeholderMessage: 'Host phonenumber',
+      isRequired: false
+    },
+  },
+  {
+    key: 'date-of-adoption',
+    includeForListingTypes: ['animal'],
+    scope: 'public',
+    schemaType: 'text',
+    saveConfig: {
+      label: 'Date of adoption',
+      placeholderMessage: 'dd/mm/year',
+      isRequired: false,
+    }
+  },
+  {
+    key: 'acc-id',
+    includeForListingTypes: ['animal'],
+    scope: 'public',
+    schemaType: 'text',
+    saveConfig: {
+      label: 'ID of ACC',
+      placeholderMessage: 'ID of ACC',
+      isRequired: true,
+    }
+  }
   // // An example of how to use transaction type specific custom fields and private data.
   // {
   //   key: 'note',
@@ -201,6 +323,15 @@ export const listingTypes = [
       unitType: 'hour',
     },
   },
+  // {
+  //   listingType: 'daily-booking',
+  //   label: 'Daily booking',
+  //   transactionType: {
+  //     process: 'default-booking',
+  //     alias: 'default-booking/release-1',
+  //     unitType: 'day',
+  //   },
+  // },
   // // Here are some examples for other listingTypes
   // // TODO: SearchPage does not work well if both booking and product selling are used at the same time
   // {
