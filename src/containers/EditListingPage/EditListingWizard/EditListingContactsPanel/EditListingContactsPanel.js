@@ -11,10 +11,8 @@ import { types as sdkTypes } from '../../../../util/sdkLoader';
 import { H3, ListingLink } from '../../../../components';
 
 // Import modules from this directory
-import EditListingStaffsForm from './EditListingStaffsForm';
-import css from './EditListingStaffsPanel.module.css';
-
-const { Money } = sdkTypes;
+import EditListingContactsForm from './EditListingContactsForm';
+import css from './EditListingContactsPanel.module.css';
 
 const getInitialValues = params => {
   const { listing } = params;
@@ -23,7 +21,7 @@ const getInitialValues = params => {
   return { publicData};
 };
 
-const EditListingStaffsPanel = props => {
+const EditListingContactsPanel = props => {
   const {
     className,
     rootClassName,
@@ -49,30 +47,29 @@ const EditListingStaffsPanel = props => {
       <H3 as="h1">
         {isPublished ? (
           <FormattedMessage
-            id="EditListingStaffsPanel.title"
+            id="EditListingContactsPanel.title"
             values={{ listingTitle: <ListingLink listing={listing} />, lineBreak: <br /> }}
           />
         ) : (
           <FormattedMessage
-            id="EditListingStaffsPanel.createListingTitle"
+            id="EditListingContactsPanel.createListingTitle"
             values={{ lineBreak: <br /> }}
           />
         )}
       </H3>
-      <EditListingStaffsForm
+      <EditListingContactsForm
           className={css.form}
           initialValues={initialValues.publicData}
           onSubmit={values => {
-            const { staffs } = values;
+            const { contacts } = values;
 
             // New values for listing attributes
             const updateValues = {
               publicData: {
-                "staffs": staffs,
+                "contacts": contacts,
               },
             };
-
-            console.log(updateValues)
+            console.log(updateValues);
             onSubmit(updateValues);
           }}
           marketplaceCurrency={marketplaceCurrency}
@@ -91,13 +88,13 @@ const EditListingStaffsPanel = props => {
 
 const { func, object, string, bool } = PropTypes;
 
-EditListingStaffsPanel.defaultProps = {
+EditListingContactsPanel.defaultProps = {
   className: null,
   rootClassName: null,
   listing: null,
 };
 
-EditListingStaffsPanel.propTypes = {
+EditListingContactsPanel.propTypes = {
   className: string,
   rootClassName: string,
 
@@ -113,4 +110,4 @@ EditListingStaffsPanel.propTypes = {
   errors: object.isRequired,
 };
 
-export default EditListingStaffsPanel;
+export default EditListingContactsPanel;

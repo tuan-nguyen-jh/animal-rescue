@@ -14,11 +14,11 @@ import * as validators from '../../../../util/validators';
 import { Button, FieldTextInput, FieldPhoneNumberInput } from '../../../../components';
 
 // Import modules from this directory
-import css from './EditListingStaffsForm.module.css';
+import css from './EditListingContactsForm.module.css';
 import { FieldArray } from 'react-final-form-arrays';
 
 
-export const EditListingStaffsFormComponent = props => (
+export const EditListingContactsFormComponent = props => (
   <FinalForm
     {...props}
     mutators={{
@@ -49,7 +49,6 @@ export const EditListingStaffsFormComponent = props => (
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
       const submitDisabled = invalid || disabled || submitInProgress;
-      const { updateListingError, showListingsError } = fetchErrors || {};
 
       const required = validators.required('This field is required');
       const emailFormatValid = validators.emailFormatValid('Invalid email address');
@@ -57,14 +56,14 @@ export const EditListingStaffsFormComponent = props => (
       const validPhoneNumber = validators.validPhoneNumber("Invalid phone number");
       return (
         <form onSubmit={handleSubmit}>
-          <FieldArray name="staffs" validate={nonEmptyArray}>
+          <FieldArray name="contacts" validate={nonEmptyArray}>
             {({ fields }) => (
               <div key={`${formId}.index`}>
                 {fields.map((name, index) => (
 
                   <div key={name} className={css.contactForm}>
                     <p className={css.staffIndex}>
-                      Staff #{index + 1}
+                      Contact #{index + 1}
                     </p>
                     <button className={css.closeButton} type="button" onClick={() => {
                       fields.remove(index);
@@ -72,22 +71,6 @@ export const EditListingStaffsFormComponent = props => (
                       X
                     </button>
 
-                    <FieldTextInput
-                      className={css.field}
-                      type="text"
-                      id={`${index}.firstName`}
-                      name={`${name}.firstName`}
-                      label="First Name"
-                      validate={required}
-                    />
-                    <FieldTextInput
-                      className={css.field}
-                      type="text"
-                      id={`${index}.lastName`}
-                      name={`${name}.lastName`}
-                      label="Last Name"
-                      validate={required}
-                    />
                     <FieldTextInput
                       className={css.field}
                       type="text"
@@ -109,7 +92,7 @@ export const EditListingStaffsFormComponent = props => (
                   className={css.addButton}
                   type="button"
                   onClick={() => {
-                    fields.push({ firstName: '', lastName: '', email: '', phoneNumber: '' });
+                    fields.push({ email: '', phoneNumber: '' });
                   }}
                 >
                   +
@@ -133,12 +116,12 @@ export const EditListingStaffsFormComponent = props => (
   />
 );
 
-EditListingStaffsFormComponent.defaultProps = {
+EditListingContactsFormComponent.defaultProps = {
   fetchErrors: null,
-  formId: 'EditListingStaffsForm',
+  formId: 'EditListingContactsForm',
 };
 
-EditListingStaffsFormComponent.propTypes = {
+EditListingContactsFormComponent.propTypes = {
   formId: string,
   intl: intlShape.isRequired,
   onSubmit: func.isRequired,
@@ -156,4 +139,4 @@ EditListingStaffsFormComponent.propTypes = {
   }),
 };
 
-export default compose(injectIntl)(EditListingStaffsFormComponent);
+export default compose(injectIntl)(EditListingContactsFormComponent);
