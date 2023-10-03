@@ -110,8 +110,8 @@ const tabLabelAndSubmit = (intl, tab, isNewListingFlow, isPriceDisabled, process
     labelKey = 'EditListingWizard.tabLabelPhotos';
     submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.savePhotos`;
   } else if (tab === STAFFS) {
-    labelKey = 'EditListingWizard.tabLabelPricing';
-    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.savePricing`;
+    labelKey = 'EditListingWizard.tabLabelStaffs';
+    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveAvailability`;
   }
   return {
     label: intl.formatMessage({ id: labelKey }),

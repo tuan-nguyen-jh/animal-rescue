@@ -19,7 +19,7 @@ import EditListingLocationPanel from './EditListingLocationPanel/EditListingLoca
 import EditListingPhotosPanel from './EditListingPhotosPanel/EditListingPhotosPanel';
 import EditListingPricingPanel from './EditListingPricingPanel/EditListingPricingPanel';
 import EditListingPricingAndStockPanel from './EditListingPricingAndStockPanel/EditListingPricingAndStockPanel';
-import EditListingStaffPanel from './EditListingStaffsPanel/EditListingStaffsPanel'
+import EditListingStaffsPanel from './EditListingStaffsPanel/EditListingStaffsPanel'
 
 import css from './EditListingWizardTab.module.css';
 
@@ -256,8 +256,8 @@ const EditListingWizardTab = props => {
     }
     case STAFFS: {
       return (
-        <EditListingPricingPanel
-          {...panelProps(PRICING)}
+        <EditListingStaffsPanel
+          {...panelProps(STAFFS)}
           marketplaceCurrency={config.currency}
           listingMinimumPriceSubUnits={config.listingMinimumPriceSubUnits}
         />

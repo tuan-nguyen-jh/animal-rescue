@@ -1,47 +1,32 @@
 import React from 'react';
 import { bool, func, number, shape, string } from 'prop-types';
 import { compose } from 'redux';
-import { Form as FinalForm } from 'react-final-form';
+import { Form as FinalForm, Field } from 'react-final-form';
 import classNames from 'classnames';
+import arrayMutators from 'final-form-arrays'
 
 // Import configs and util modules
 import appSettings from '../../../../config/settings';
 import { intlShape, injectIntl, FormattedMessage } from '../../../../util/reactIntl';
 import { propTypes } from '../../../../util/types';
 import * as validators from '../../../../util/validators';
-import { formatMoney } from '../../../../util/currency';
 import { types as sdkTypes } from '../../../../util/sdkLoader';
 
 // Import shared components
-import { Button, Form, FieldCurrencyInput, FieldTextInput } from '../../../../components';
+import { Button, Form, FieldCurrencyInput, FieldTextInput, FieldPhoneNumberInput } from '../../../../components';
 
 // Import modules from this directory
 import css from './EditListingStaffsForm.module.css';
+import { FieldArray } from 'react-final-form-arrays';
 
-const { Money } = sdkTypes;
-
-const getPriceValidators = (listingMinimumPriceSubUnits, marketplaceCurrency, intl) => {
-  const priceRequiredMsgId = { id: 'EditListingPricingForm.priceRequired' };
-  const priceRequiredMsg = intl.formatMessage(priceRequiredMsgId);
-  const priceRequired = validators.required(priceRequiredMsg);
-
-  const minPriceRaw = new Money(listingMinimumPriceSubUnits, marketplaceCurrency);
-  const minPrice = formatMoney(intl, minPriceRaw);
-  const priceTooLowMsgId = { id: 'EditListingPricingForm.priceTooLow' };
-  const priceTooLowMsg = intl.formatMessage(priceTooLowMsgId, { minPrice });
-  const minPriceRequired = validators.moneySubUnitAmountAtLeast(
-    priceTooLowMsg,
-    listingMinimumPriceSubUnits
-  );
-
-  return listingMinimumPriceSubUnits
-    ? validators.composeValidators(priceRequired, minPriceRequired)
-    : priceRequired;
-};
 
 export const EditListingStaffsFormComponent = props => (
   <FinalForm
     {...props}
+    mutators={{
+      // potentially other mutators could be merged here
+      ...arrayMutators
+    }}
     render={formRenderProps => {
       const {
         formId,
@@ -62,43 +47,89 @@ export const EditListingStaffsFormComponent = props => (
         fetchErrors,
       } = formRenderProps;
 
-      const priceValidators = getPriceValidators(
-        listingMinimumPriceSubUnits,
-        marketplaceCurrency,
-        intl
-      );
-
       const classes = classNames(css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
       const submitDisabled = invalid || disabled || submitInProgress;
       const { updateListingError, showListingsError } = fetchErrors || {};
 
+      const required = validators.required('This field is required');
+      const mustBeEmail = value => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailRegex.test(value)) {
+          return undefined
+        } else {
+          return 'Must be an email address'
+        };
+      }
+      const mustBeAPhoneNumber = value => {
+        const phoneRegex = /^[0-9\s()+-]*$/;
+        if (phoneRegex.test(value)) {
+          return undefined
+        } else {
+          return "Must be a phone number"
+        }
+      }
+      const composeValidators = (...validators) => value =>
+        validators.reduce((error, validator) => error || validator(value), undefined)
+
       return (
-        <Form onSubmit={handleSubmit} className={classes}>
-          {updateListingError ? (
-            <p className={css.error}>
-              <FormattedMessage id="EditListingPricingForm.updateFailed" />
-            </p>
-          ) : null}
-          {showListingsError ? (
-            <p className={css.error}>
-              <FormattedMessage id="EditListingPricingForm.showListingFailed" />
-            </p>
-          ) : null}
-          <FieldCurrencyInput
-            id={`${formId}price`}
-            name="price"
-            className={css.input}
-            autoFocus={autoFocus}
-            label={intl.formatMessage(
-              { id: 'EditListingPricingForm.pricePerProduct' },
-              { unitType }
-            )}
-            placeholder={intl.formatMessage({ id: 'EditListingPricingForm.priceInputPlaceholder' })}
-            currencyConfig={appSettings.getCurrencyFormatting(marketplaceCurrency)}
-            validate={priceValidators}
-          />
+        <>
+          <form onSubmit={handleSubmit}>
+            <FieldArray name="contacts">
+              {({ fields }) => (
+                <div>
+                  {fields.map((name, index) => (
+                    <div key={name} className={css.contactForm}>
+                      <button className={css.closeButton} type="button" onClick={() => fields.remove(index)}>
+                        X
+                      </button>
+
+                      <FieldTextInput
+                        className={css.field}
+                        type="text"
+                        id={`${name}.firstName`}
+                        name="firstName"
+                        label="First Name"
+                        validate={required}
+                      />
+                      <FieldTextInput
+                        className={css.field}
+                        type="text"
+                        id={`${name}.lastName`}
+                        name="lastName"
+                        label="Last Name"
+                        validate={required}
+                      />
+                      <FieldTextInput
+                        className={css.field}
+                        type="text"
+                        id={`${name}.email`}
+                        name="email"
+                        label="Email"
+                        validate={composeValidators(required, mustBeEmail)}
+                      />
+                      <FieldPhoneNumberInput
+                        id={`${formId}.phoneNumber`}
+                        name="phoneNumber"
+                        label="Phone number"
+                        validate={composeValidators(required, mustBeAPhoneNumber)}
+                      />
+
+
+                    </div>
+                  ))}
+                  <button
+                    className={css.addButton}
+                    type="button"
+                    onClick={() => fields.push({ firstName: '', lastName: '' })}
+                  >
+                    +
+                  </button>
+                </div>
+              )}
+            </FieldArray>
+          </form>
 
           <Button
             className={css.submitButton}
@@ -109,7 +140,7 @@ export const EditListingStaffsFormComponent = props => (
           >
             {saveActionMsg}
           </Button>
-        </Form>
+        </>
       );
     }}
   />
@@ -118,7 +149,7 @@ export const EditListingStaffsFormComponent = props => (
 EditListingStaffsFormComponent.defaultProps = {
   fetchErrors: null,
   listingMinimumPriceSubUnits: 0,
-  formId: 'EditListingPricingForm',
+  formId: 'EditListingStaffsForm',
 };
 
 EditListingStaffsFormComponent.propTypes = {
