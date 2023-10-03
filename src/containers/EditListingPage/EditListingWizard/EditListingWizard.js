@@ -367,6 +367,7 @@ class EditListingWizard extends Component {
         showPayoutDetails: true,
       });
     }
+    // onPublishListingDraft(id);
   }
 
   handlePayoutModalClose() {
