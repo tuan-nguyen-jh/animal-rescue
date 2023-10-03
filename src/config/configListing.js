@@ -77,7 +77,7 @@ export const listingFields = [
   {
     key: 'service',
     scope: 'public',
-    includedForListingTypes: ['acc'],
+    includeForListingTypes: ['acc'],
     schemaType: 'multi-enum',
     enumOptions: [
       { option: 'adoption', label: 'Adoption' },
@@ -234,17 +234,6 @@ export const listingFields = [
       label: 'Date of adoption',
       placeholderMessage: 'dd/mm/year',
       isRequired: false,
-    }
-  },
-  {
-    key: 'acc-id',
-    includeForListingTypes: ['animal'],
-    scope: 'public',
-    schemaType: 'text',
-    saveConfig: {
-      label: 'ID of ACC',
-      placeholderMessage: 'ID of ACC',
-      isRequired: true,
     }
   }
   // // An example of how to use transaction type specific custom fields and private data.

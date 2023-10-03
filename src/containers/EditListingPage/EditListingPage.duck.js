@@ -23,6 +23,7 @@ import {
   fetchStripeAccount,
 } from '../../ducks/stripeConnectAccount.duck';
 import { fetchCurrentUser } from '../../ducks/user.duck';
+import defaultConfig from '../../config/configDefault';
 
 const { UUID } = sdkTypes;
 
@@ -210,7 +211,7 @@ const initialState = {
   updateInProgress: false,
   payoutDetailsSaveInProgress: false,
   payoutDetailsSaved: false,
-  lisings: [],
+  listingACCs: [],
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -456,7 +457,7 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, payoutDetailsSaveInProgress: false, payoutDetailsSaved: true };
     
     case UPDATE_FETCH_LISTINGS:
-      return { ...state, listings: payload.data}
+      return { ...state, listingACCs: payload.data}
 
     default:
       return state;
@@ -920,9 +921,14 @@ export const savePayoutDetails = (values, isUpdateCall) => (dispatch, getState, 
     .catch(() => dispatch(savePayoutDetailsError()));
 };
 
-export const fetchListings = () => (dispatch, getState, sdk) => {
-  return sdk.listings.query({ price: "1500"})
-    .then(res => dispatch(updateFetchListings(res.data)))
+export const fetchListings = () => async (dispatch, getState, sdk) => {
+  try {
+    const response = await sdk.listings.query({ pub_listingType: defaultConfig.acc_listing_type})
+    const listingACCs = denormalisedResponseEntities(response)
+    dispatch(updateFetchListings(listingACCs))
+  } catch(err) {
+    throw new Error(err);
+  }
 }
 
 // loadData is run for each tab of the wizard. When editing an

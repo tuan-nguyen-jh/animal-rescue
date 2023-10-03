@@ -217,6 +217,7 @@ export const EditListingPageComponent = props => {
           history={history}
           images={images}
           listing={currentListing}
+          listingACCs={page.listingACCs}
           weeklyExceptionQueries={page.weeklyExceptionQueries}
           monthlyExceptionQueries={page.monthlyExceptionQueries}
           allExceptions={page.allExceptions}

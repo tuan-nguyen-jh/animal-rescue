@@ -92,6 +92,7 @@ const EditListingWizardTab = props => {
     history,
     images,
     listing,
+    listingACCs,
     weeklyExceptionQueries,
     monthlyExceptionQueries,
     allExceptions,
@@ -169,6 +170,7 @@ const EditListingWizardTab = props => {
       listing,
       panelUpdated: updatedTab === tab,
       params,
+      listingACCs,
       locationSearch,
       updateInProgress,
       // newListingPublished and fetchInProgress are flags for the last wizard tab
