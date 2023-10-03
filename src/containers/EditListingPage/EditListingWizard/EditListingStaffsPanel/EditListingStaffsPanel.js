@@ -18,9 +18,9 @@ const { Money } = sdkTypes;
 
 const getInitialValues = params => {
   const { listing } = params;
-  const { price } = listing?.attributes || {};
+  const { publicData } = listing?.attributes || {};
 
-  return { price };
+  return { publicData};
 };
 
 const EditListingStaffsPanel = props => {
@@ -42,10 +42,6 @@ const EditListingStaffsPanel = props => {
   const classes = classNames(rootClassName || css.root, className);
   const initialValues = getInitialValues(props);
   const isPublished = listing?.id && listing?.attributes?.state !== LISTING_STATE_DRAFT;
-  const priceCurrencyValid =
-    initialValues.price instanceof Money
-      ? initialValues.price.currency === marketplaceCurrency
-      : true;
   const unitType = listing?.attributes?.publicData?.unitType;
 
   return (
@@ -63,17 +59,20 @@ const EditListingStaffsPanel = props => {
           />
         )}
       </H3>
-      {priceCurrencyValid ? (
-        <EditListingStaffsForm
+      <EditListingStaffsForm
           className={css.form}
-          initialValues={initialValues}
+          initialValues={initialValues.publicData}
           onSubmit={values => {
-            const { price } = values;
+            const { staffs } = values;
 
             // New values for listing attributes
             const updateValues = {
-              price,
+              publicData: {
+                "staffs": staffs,
+              },
             };
+
+            console.log(updateValues)
             onSubmit(updateValues);
           }}
           marketplaceCurrency={marketplaceCurrency}
@@ -86,11 +85,6 @@ const EditListingStaffsPanel = props => {
           updateInProgress={updateInProgress}
           fetchErrors={errors}
         />
-      ) : (
-        <div className={css.priceCurrencyInvalid}>
-          <FormattedMessage id="EditListingPricingPanel.listingPriceCurrencyInvalid" />
-        </div>
-      )}
     </div>
   );
 };

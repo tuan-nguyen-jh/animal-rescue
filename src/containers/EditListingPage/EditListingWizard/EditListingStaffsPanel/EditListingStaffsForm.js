@@ -1,19 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { bool, func, number, shape, string } from 'prop-types';
 import { compose } from 'redux';
-import { Form as FinalForm, Field } from 'react-final-form';
+import { Form as FinalForm, Form } from 'react-final-form';
 import classNames from 'classnames';
 import arrayMutators from 'final-form-arrays'
 
 // Import configs and util modules
 import appSettings from '../../../../config/settings';
-import { intlShape, injectIntl, FormattedMessage } from '../../../../util/reactIntl';
+import { intlShape, injectIntl } from '../../../../util/reactIntl';
 import { propTypes } from '../../../../util/types';
 import * as validators from '../../../../util/validators';
 import { types as sdkTypes } from '../../../../util/sdkLoader';
 
 // Import shared components
-import { Button, Form, FieldCurrencyInput, FieldTextInput, FieldPhoneNumberInput } from '../../../../components';
+import { Button, FieldTextInput, FieldPhoneNumberInput } from '../../../../components';
 
 // Import modules from this directory
 import css from './EditListingStaffsForm.module.css';
@@ -54,14 +54,8 @@ export const EditListingStaffsFormComponent = props => (
       const { updateListingError, showListingsError } = fetchErrors || {};
 
       const required = validators.required('This field is required');
-      const mustBeEmail = value => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (emailRegex.test(value)) {
-          return undefined
-        } else {
-          return 'Must be an email address'
-        };
-      }
+      const emailFormatValid = validators.emailFormatValid('Invalid email address');
+      const nonEmptyArray = validators.nonEmptyArray('Required at least one staff');
       const mustBeAPhoneNumber = value => {
         const phoneRegex = /^[0-9\s()+-]*$/;
         if (phoneRegex.test(value)) {
@@ -74,62 +68,67 @@ export const EditListingStaffsFormComponent = props => (
         validators.reduce((error, validator) => error || validator(value), undefined)
 
       return (
-        <>
-          <form onSubmit={handleSubmit}>
-            <FieldArray name="contacts">
-              {({ fields }) => (
-                <div>
-                  {fields.map((name, index) => (
-                    <div key={name} className={css.contactForm}>
-                      <button className={css.closeButton} type="button" onClick={() => fields.remove(index)}>
-                        X
-                      </button>
+        <form onSubmit={handleSubmit}>
+          <FieldArray name="staffs" validate={nonEmptyArray}>
+            {({ fields }) => (
+              <div>
+                {fields.map((name, index) => (
 
-                      <FieldTextInput
-                        className={css.field}
-                        type="text"
-                        id={`${name}.firstName`}
-                        name="firstName"
-                        label="First Name"
-                        validate={required}
-                      />
-                      <FieldTextInput
-                        className={css.field}
-                        type="text"
-                        id={`${name}.lastName`}
-                        name="lastName"
-                        label="Last Name"
-                        validate={required}
-                      />
-                      <FieldTextInput
-                        className={css.field}
-                        type="text"
-                        id={`${name}.email`}
-                        name="email"
-                        label="Email"
-                        validate={composeValidators(required, mustBeEmail)}
-                      />
-                      <FieldPhoneNumberInput
-                        id={`${formId}.phoneNumber`}
-                        name="phoneNumber"
-                        label="Phone number"
-                        validate={composeValidators(required, mustBeAPhoneNumber)}
-                      />
+                  <div key={name} className={css.contactForm}>
+                    <p className={css.staffIndex}>
+                      Staff #{index + 1}
+                    </p>
+                    <button className={css.closeButton} type="button" onClick={() => {
+                      fields.remove(index);
+                    }}>
+                      X
+                    </button>
 
+                    <FieldTextInput
+                      className={css.field}
+                      type="text"
+                      id={`${index}.firstName`}
+                      name={`${name}.firstName`}
+                      label="First Name"
+                      validate={required}
+                    />
+                    <FieldTextInput
+                      className={css.field}
+                      type="text"
+                      id={`${index}.lastName`}
+                      name={`${name}.lastName`}
+                      label="Last Name"
+                      validate={required}
+                    />
+                    <FieldTextInput
+                      className={css.field}
+                      type="text"
+                      id={`${index}.email`}
+                      name={`${name}.email`}
+                      label="Email"
+                      validate={composeValidators(required, emailFormatValid)}
+                    />
+                    <FieldPhoneNumberInput
+                      name={`${name}.phoneNumber`}
+                      id={`${index}.phoneNumber`}
+                      label="Phone number"
+                      validate={composeValidators(required, mustBeAPhoneNumber)}
+                    />
+                  </div>
 
-                    </div>
-                  ))}
-                  <button
-                    className={css.addButton}
-                    type="button"
-                    onClick={() => fields.push({ firstName: '', lastName: '' })}
-                  >
-                    +
-                  </button>
-                </div>
-              )}
-            </FieldArray>
-          </form>
+                ))}
+                <button
+                  className={css.addButton}
+                  type="button"
+                  onClick={() => {
+                    fields.push({ firstName: '', lastName: '' });
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            )}
+          </FieldArray>
 
           <Button
             className={css.submitButton}
@@ -140,7 +139,7 @@ export const EditListingStaffsFormComponent = props => (
           >
             {saveActionMsg}
           </Button>
-        </>
+        </form>
       );
     }}
   />
@@ -148,7 +147,6 @@ export const EditListingStaffsFormComponent = props => (
 
 EditListingStaffsFormComponent.defaultProps = {
   fetchErrors: null,
-  listingMinimumPriceSubUnits: 0,
   formId: 'EditListingStaffsForm',
 };
 
