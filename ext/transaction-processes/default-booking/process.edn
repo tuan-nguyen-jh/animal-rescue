@@ -2,122 +2,72 @@
  :transitions
  [{:name :transition/inquire,
    :actor :actor.role/customer,
-   :actions [{:name :action/update-protected-data}],
+   :actions [{:name :action/update-produted-data}],
    :to :state/inquiry}
-  {:name :transition/request-payment,
-   :actor :actor.role/customer,
-   :actions
-   [{:name :action/update-protected-data}
-    {:name :action/create-pending-booking, :config {:type :time}}
-    {:name :action/privileged-set-line-items}
-    {:name :action/stripe-create-payment-intent}],
-   :to :state/pending-payment,
-   :privileged? true}
-  {:name :transition/request-payment-after-inquiry,
-   :actor :actor.role/customer,
-   :actions
-   [{:name :action/update-protected-data}
-    {:name :action/create-pending-booking, :config {:type :time}}
-    {:name :action/privileged-set-line-items}
-    {:name :action/stripe-create-payment-intent}],
-   :from :state/inquiry,
-   :to :state/pending-payment,
-   :privileged? true}
-  {:name :transition/expire-payment,
-   :at
-   {:fn/plus
-    [{:fn/timepoint [:time/first-entered-state :state/pending-payment]}
-     {:fn/period ["PT15M"]}]},
-   :actions
-   [{:name :action/calculate-full-refund}
-    {:name :action/stripe-refund-payment}
-    ;; Keep this action last in the list of actions for
-    ;; the transition
-    {:name :action/decline-booking}],
-   :from :state/pending-payment,
-   :to :state/payment-expired}
-  {:name :transition/confirm-payment,
-   :actor :actor.role/customer,
-   :actions [{:name :action/stripe-confirm-payment-intent}],
-   :from :state/pending-payment,
-   :to :state/preauthorized}
-  {:name :transition/accept,
-   :actor :actor.role/provider,
-   :actions
-   [{:name :action/accept-booking}
-    {:name :action/stripe-capture-payment-intent}],
-   :from :state/preauthorized,
-   :to :state/accepted}
-  {:name :transition/operator-accept,
-   :actor :actor.role/operator,
-   :actions
-   [{:name :action/accept-booking}
-    {:name :action/stripe-capture-payment-intent}],
-   :from :state/preauthorized,
-   :to :state/accepted}
-  {:name :transition/decline,
-   :actor :actor.role/provider,
-   :actions
-   [{:name :action/calculate-full-refund}
-    {:name :action/stripe-refund-payment}
-    ;; Keep this action last in the list of actions for
-    ;; the transition
-    {:name :action/decline-booking}],
-   :from :state/preauthorized,
-   :to :state/declined}
-  {:name :transition/operator-decline,
-   :actor :actor.role/operator,
-   :actions
-   [{:name :action/calculate-full-refund}
-    {:name :action/stripe-refund-payment}
-    ;; Keep this action last in the list of actions for
-    ;; the transition
-    {:name :action/decline-booking}],
-   :from :state/preauthorized,
-   :to :state/declined}
-  {:name :transition/expire,
+   {:name :transition/request,
+    :actor :actor.role/customer,
+    :action [{:name :action/send-booking-request}],
+    :to :state/booking-request-sent}
+    {:name :transition/request-after-inquiry,
+    :actor :actor.role/customer,
+    :actions [{:name :action/send-booking-request}],
+    :from :state/inquiry,
+    :to :state/booking-request-sent}
+    {:name :transition/expire,
    :at
    {:fn/min
     [{:fn/plus
-      [{:fn/timepoint [:time/first-entered-state :state/preauthorized]}
-       {:fn/period ["P6D"]}]}
+      [{:fn/timepoint [:time/first-entered-state :state/booking-request-sent]}
+       {:fn/period ["P1D"]}]}
      {:fn/plus
       [{:fn/timepoint [:time/booking-start]} {:fn/period ["P1D"]}]}
      {:fn/timepoint [:time/booking-end]}]},
    :actions
-   [{:name :action/calculate-full-refund}
-    {:name :action/stripe-refund-payment}
+   [{:name :action/mark-booking-decline}
     ;; Keep this action last in the list of actions for
     ;; the transition
     {:name :action/decline-booking}],
-   :from :state/preauthorized,
-   :to :state/expired}
-  {:name :transition/complete,
-   :at
-   {:fn/plus
-    [{:fn/timepoint [:time/booking-end]} {:fn/period ["P2D"]}]},
-   :actions [{:name :action/stripe-create-payout}],
-   :from :state/accepted,
-   :to :state/delivered}
-  {:name :transition/operator-complete,
-   :actor :actor.role/operator,
-   :actions [{:name :action/stripe-create-payout}],
-   :from :state/accepted,
-   :to :state/delivered}
-  {:name :transition/cancel,
-   :actor :actor.role/operator,
+   :from :state/booking-request-sent,
+   :to :state/request-declined}
+   {:name :transition/decline,
+   :actor :actor.role/provider,
    :actions
-   [{:name :action/calculate-full-refund}
-    {:name :action/stripe-refund-payment}
+   [{:name :action/mark-booking-decline}
     ;; Keep this action last in the list of actions for
     ;; the transition
-    {:name :action/cancel-booking}],
-   :from :state/accepted,
-   :to :state/cancelled}
+    {:name :action/decline-booking}],
+   :from :state/booking-request-sent,
+   :to :state/request-declined}
+   {:name :transition/accept,
+   :actor :actor.role/provider,
+   :actions [{:name :action/mark-booking-accept}, {:name :action/send-contact-officer}],
+   :from :state/booking-request-sent,
+   :to :state/request-accepted}
+   {:name :transition/tour-happening,
+   :to :state/tour-completed}
+   {:name :transition/provider-not-adopt,
+   :actor :actor.role/provider,
+   :from :state/tour-completed,
+   :to :state/not-allow-adopt}
+   {:name :transition/customer-not-adopt,
+   :actor :actor.role/customer,
+   :from :state/tour-completed,
+   :to :state/not-allow-adopt}
+   {:name :transition/adopt,
+   :actor :actor.role/provider,
+   :actions [{:name :action/place-host-information}],
+   :from :state/tour-completed,
+   :to :state/allow-adopt}
+   {:name :transition/complete,
+   :from :state/not-allow-adopt,
+   :to :state/completed}
+   {:name :transition/adopt,
+   :from :state/allow-adopt,
+   :to :state/completed}
   {:name :transition/review-1-by-provider,
    :actor :actor.role/provider,
    :actions [{:name :action/post-review-by-provider}],
-   :from :state/delivered,
+   :from :state/completed,
    :to :state/reviewed-by-provider}
   {:name :transition/review-2-by-provider,
    :actor :actor.role/provider,
@@ -129,7 +79,7 @@
   {:name :transition/review-1-by-customer,
    :actor :actor.role/customer,
    :actions [{:name :action/post-review-by-customer}],
-   :from :state/delivered,
+   :from :state/completed,
    :to :state/reviewed-by-customer}
   {:name :transition/review-2-by-customer,
    :actor :actor.role/customer,
@@ -143,7 +93,7 @@
    {:fn/plus
     [{:fn/timepoint [:time/booking-end]} {:fn/period ["P7D"]}]},
    :actions [],
-   :from :state/delivered,
+   :from :state/completed,
    :to :state/reviewed}
   {:name :transition/expire-provider-review-period,
    :at
@@ -159,43 +109,23 @@
    :actions [{:name :action/publish-reviews}],
    :from :state/reviewed-by-provider,
    :to :state/reviewed}],
- :notifications
+  :notifications
  [{:name :notification/booking-new-request,
-   :on :transition/confirm-payment,
+   :on :transition/request,
    :to :actor.role/provider,
    :template :booking-new-request}
   {:name :notification/booking-accepted-request,
    :on :transition/accept,
    :to :actor.role/customer,
    :template :booking-accepted-request}
-  {:name :notification/booking-operator-accepted-request-to-customer,
-   :on :transition/operator-accept,
-   :to :actor.role/customer,
-   :template :booking-accepted-request}
-  {:name :notification/booking-operator-accepted-request-to-provider,
-   :on :transition/operator-accept,
-   :to :actor.role/provider,
-   :template :booking-operator-accepted-request}
   {:name :notification/booking-declined-request,
    :on :transition/decline,
    :to :actor.role/customer,
    :template :booking-declined-request}
-  {:name :notification/booking-operator-declined-request-to-customer,
-   :on :transition/operator-decline,
-   :to :actor.role/customer,
-   :template :booking-declined-request}
-  {:name :notification/booking-operator-declined-request-to-provider,
-   :on :transition/operator-decline,
-   :to :actor.role/provider,
-   :template :booking-operator-declined-request}
   {:name :notification/booking-expired-request,
    :on :transition/expire,
    :to :actor.role/customer,
    :template :booking-expired-request}
-  {:name :notification/booking-money-paid,
-   :on :transition/complete,
-   :to :actor.role/provider,
-   :template :booking-money-paid}
   {:name :notification/review-period-start-provider,
    :on :transition/complete,
    :to :actor.role/provider,
@@ -204,10 +134,6 @@
    :on :transition/complete,
    :to :actor.role/customer,
    :template :booking-review-by-customer-wanted}
-  {:name :notification/booking-money-paid-operator-complete,
-   :on :transition/operator-complete,
-   :to :actor.role/provider,
-   :template :booking-money-paid}
   {:name :notification/review-period-start-provider-operator-complete,
    :on :transition/operator-complete,
    :to :actor.role/provider,

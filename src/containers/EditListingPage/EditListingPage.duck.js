@@ -168,6 +168,8 @@ export const SAVE_PAYOUT_DETAILS_REQUEST = 'app/EditListingPage/SAVE_PAYOUT_DETA
 export const SAVE_PAYOUT_DETAILS_SUCCESS = 'app/EditListingPage/SAVE_PAYOUT_DETAILS_SUCCESS';
 export const SAVE_PAYOUT_DETAILS_ERROR = 'app/EditListingPage/SAVE_PAYOUT_DETAILS_ERROR';
 
+export const UPDATE_FETCH_LISTINGS = 'app/EditListingPage/UPDATE_FETCH_LISTINGS';
+
 // ================ Reducer ================ //
 
 const initialState = {
@@ -208,6 +210,7 @@ const initialState = {
   updateInProgress: false,
   payoutDetailsSaveInProgress: false,
   payoutDetailsSaved: false,
+  lisings: [],
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -451,6 +454,9 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, payoutDetailsSaveInProgress: false };
     case SAVE_PAYOUT_DETAILS_SUCCESS:
       return { ...state, payoutDetailsSaveInProgress: false, payoutDetailsSaved: true };
+    
+    case UPDATE_FETCH_LISTINGS:
+      return { ...state, listings: payload.data}
 
     default:
       return state;
@@ -474,6 +480,14 @@ export const removeListingImage = imageId => ({
   type: REMOVE_LISTING_IMAGE,
   payload: { imageId },
 });
+
+export const updateFetchListings = (data) => ({
+  type: UPDATE_FETCH_LISTINGS,
+  payload: {
+    data
+  }
+})
+
 
 // All the action creators that don't have the {Success, Error} suffix
 // take the params object that the corresponding SDK endpoint method
@@ -532,7 +546,10 @@ export const savePayoutDetailsRequest = requestAction(SAVE_PAYOUT_DETAILS_REQUES
 export const savePayoutDetailsSuccess = successAction(SAVE_PAYOUT_DETAILS_SUCCESS);
 export const savePayoutDetailsError = errorAction(SAVE_PAYOUT_DETAILS_ERROR);
 
+// export const fetchListings = requestAction(UPDATE_FETCH_LISTINGS)
+
 // ================ Thunk ================ //
+
 
 export function requestShowListing(actionPayload, config) {
   return (dispatch, getState, sdk) => {
@@ -903,6 +920,11 @@ export const savePayoutDetails = (values, isUpdateCall) => (dispatch, getState, 
     .catch(() => dispatch(savePayoutDetailsError()));
 };
 
+export const fetchListings = () => (dispatch, getState, sdk) => {
+  return sdk.listings.query({ price: "1500"})
+    .then(res => dispatch(updateFetchListings(res.data)))
+}
+
 // loadData is run for each tab of the wizard. When editing an
 // existing listing, the listing must be fetched first.
 export const loadData = (params, search, config) => (dispatch, getState, sdk) => {
@@ -911,7 +933,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
 
   if (type === 'new') {
     // No need to listing data when creating a new listing
-    return Promise.all([dispatch(fetchCurrentUser())])
+    return Promise.all([dispatch(fetchCurrentUser()), dispatch(fetchListings())])
       .then(response => {
         const currentUser = getState().user.currentUser;
         if (currentUser && currentUser.stripeAccount) {

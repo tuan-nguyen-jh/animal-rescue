@@ -294,6 +294,10 @@ export class SearchPageComponent extends Component {
       ...customSecondaryFilters,
     ];
 
+    // console.log(config.search)
+    // console.log(availableFilters)
+
+
     const hasSecondaryFilters = !!(customSecondaryFilters && customSecondaryFilters.length > 0);
 
     // Selected aka active filters
@@ -309,6 +313,7 @@ export class SearchPageComponent extends Component {
     const isValidDatesFilter =
       searchParamsInURL.dates == null ||
       (searchParamsInURL.dates != null && searchParamsInURL.dates === selectedFilters.dates);
+
 
     // Selected aka active secondary filters
     const selectedSecondaryFilters = hasSecondaryFilters

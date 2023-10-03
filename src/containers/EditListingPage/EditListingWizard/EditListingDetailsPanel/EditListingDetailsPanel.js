@@ -218,6 +218,8 @@ const EditListingDetailsPanel = props => {
   const listingTypes = config.listing.listingTypes;
   const listingFieldsConfig = config.listing.listingFields;
 
+  // console.log(config.listing)
+
   const { hasExistingListingType, existingListingTypeInfo } = hasSetListingType(publicData);
   const hasValidExistingListingType =
     hasExistingListingType &&

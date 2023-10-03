@@ -48,7 +48,7 @@
  */
 export const listingFields = [
   {
-    key: 'type-of-animal',
+    key: 'typeofanimal',
     scope: 'public',
     includeForListingTypes: ['animal'],
     schemaType: 'enum',
