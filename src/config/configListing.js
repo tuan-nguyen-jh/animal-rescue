@@ -47,8 +47,85 @@
  *   - requiredMessage (optional):    Message for those fields, which are mandatory.
  */
 export const listingFields = [
+  // {
+  //   key: 'category',
+  //   scope: 'public',
+  //   schemaType: 'enum',
+  //   enumOptions: [
+  //     { option: 'city-bikes', label: 'City bikes' },
+  //     { option: 'electric-bikes', label: 'Electric bikes' },
+  //     { option: 'mountain-bikes', label: 'Mountain bikes' },
+  //     { option: 'childrens-bikes', label: "Children's bikes" },
+  //   ],
+  //   filterConfig: {
+  //     indexForSearch: true,
+  //     filterType: 'SelectMultipleFilter',
+  //     label: 'Category',
+  //     group: 'primary',
+  //   },
+  //   showConfig: {
+  //     label: 'Category',
+  //     isDetail: true,
+  //   },
+  //   saveConfig: {
+  //     label: 'Category',
+  //     placeholderMessage: 'Select an option…',
+  //     isRequired: true,
+  //     requiredMessage: 'You need to select a category.',
+  //   },
+  // },
   {
-    key: 'typeofanimal',
+    key: 'service',
+    scope: 'public',
+    includedForListingTypes: ['acc'],
+    schemaType: 'multi-enum',
+    enumOptions: [
+      { option: 'adoption', label: 'Adoption' },
+      { option: 'rescue', label: 'Rescue' },
+    ],
+    filterConfig: {
+      indexForSearch: true,
+      label: 'Service',
+      group: 'secondary',
+    },
+    showConfig: {
+      label: 'Service',
+      isDetail: true,
+    },
+    saveConfig: {
+      label: 'Service',
+      placeholderMessage: 'Select an option…',
+      isRequired: true,
+      requiredMessage: 'You need to select at least an option',
+    },
+  },
+  // {
+  //   key: 'accessories',
+  //   scope: 'public',
+  //   schemaType: 'multi-enum',
+  //   enumOptions: [
+  //     { option: 'bell', label: 'Bell' },
+  //     { option: 'lights', label: 'Lights' },
+  //     { option: 'lock', label: 'Lock' },
+  //     { option: 'mudguard', label: 'Mudguard' },
+  //   ],
+  //   filterConfig: {
+  //     indexForSearch: true,
+  //     label: 'Accessories',
+  //     searchMode: 'has_all',
+  //     group: 'secondary',
+  //   },
+  //   showConfig: {
+  //     label: 'Accessories',
+  //   },
+  //   saveConfig: {
+  //     label: 'Accessories',
+  //     placeholderMessage: 'Select an option…',
+  //     isRequired: false,
+  //   },
+  // },
+{
+    key: 'type-of-animal',
     scope: 'public',
     includeForListingTypes: ['animal'],
     schemaType: 'enum',
@@ -237,6 +314,15 @@ export const listingFields = [
  */
 
 export const listingTypes = [
+  {
+    listingType: 'acc',
+    label: 'Animal Control Center',
+    transactionType: {
+      process: 'default-booking',
+      alias: 'default-booking/release-1',
+      unitType: 'hour',
+    },
+  },
   // {
   //   listingType: 'daily-booking',
   //   label: 'Daily booking',
