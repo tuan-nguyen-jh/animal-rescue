@@ -333,6 +333,7 @@
   "FilterComponent.datesLabel": "Dates",
   "FilterComponent.keywordsLabel": "Keywords",
   "FilterComponent.priceLabel": "Price",
+  "FilterListingTypeComponent.label": "Listing Type",
   "FilterForm.cancel": "Cancel",
   "FilterForm.clear": "Clear",
   "FilterForm.submit": "Apply",

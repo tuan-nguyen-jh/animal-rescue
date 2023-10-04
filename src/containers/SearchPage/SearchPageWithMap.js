@@ -48,6 +48,7 @@ import SearchResultsPanel from './SearchResultsPanel/SearchResultsPanel';
 import NoSearchResultsMaybe from './NoSearchResultsMaybe/NoSearchResultsMaybe';
 
 import css from './SearchPage.module.css';
+import FilterListingTypeComponent from './FilterListingTypeComponent';
 
 const MODAL_BREAKPOINT = 768; // Search is in modal on mobile layout
 const SEARCH_WITH_MAP_DEBOUNCE = 300; // Little bit of debounce before search is initiated.
@@ -384,6 +385,17 @@ export class SearchPageComponent extends Component {
       ? classNames(css.topbarBehindModal, css.topbar)
       : css.topbar;
 
+    const currentFilter = availableFilters.filter(filter => {
+      if (filter.includeForListingTypes) {
+        return filter.includeForListingTypes[0] === this.state.currentQueryParams.pub_listingType
+      }
+    })
+    const finalFilter = [
+      ...currentFilter,
+      ...(this.state.currentQueryParams.pub_listingType === 'acc' ? defaultFilters : []),
+    ]
+    
+
     // N.B. openMobileMap button is sticky.
     // For some reason, stickyness doesn't work on Safari, if the element is <button>
     return (
@@ -418,7 +430,17 @@ export class SearchPageComponent extends Component {
               noResultsInfo={noResultsInfo}
               isMapVariant
             >
-              {availableFilters.map(config => {
+                <FilterListingTypeComponent 
+                  key='SearchFiltersMobile.listingType'
+                  idPrefix='SearchFiltersMobile'
+                  urlQueryParams={validQueryParams}
+                  initialValues={initialValues(this.props, this.state.currentQueryParams)}
+                  getHandleChangedValueFn={this.getHandleChangedValueFn}
+                  intl={intl}
+                  showAsPopup={false}
+                  liveEdit
+                />
+              {finalFilter.map(config => {
                 return (
                   <FilterComponent
                     key={`SearchFiltersMobile.${config.key}`}
@@ -446,7 +468,17 @@ export class SearchPageComponent extends Component {
               noResultsInfo={noResultsInfo}
             >
               <SearchFiltersPrimary {...propsForSecondaryFiltersToggle}>
-                {availablePrimaryFilters.map(config => {
+                <FilterListingTypeComponent 
+                  key='SearchFiltersPrimary.listingType'
+                  idPrefix='SearchFiltersPrimary'
+                  urlQueryParams={validQueryParams}
+                  initialValues={initialValues(this.props, this.state.currentQueryParams)}
+                  getHandleChangedValueFn={this.getHandleChangedValueFn}
+                  intl={intl}
+                  showAsPopup
+                  contentPlacementOffset={FILTER_DROPDOWN_OFFSET}
+                />
+                {finalFilter.map(config => {
                   return (
                     <FilterComponent
                       key={`SearchFiltersPrimary.${config.key}`}

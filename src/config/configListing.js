@@ -59,7 +59,7 @@ export const listingFields = [
     filterConfig: {
       indexForSearch: true,
       label: 'Service',
-      group: 'secondary',
+      group: 'primary',
     },
     showConfig: {
       label: 'Service',
