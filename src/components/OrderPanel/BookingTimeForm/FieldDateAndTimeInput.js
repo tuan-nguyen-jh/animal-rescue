@@ -115,8 +115,8 @@ const getAvailableEndTimes = (
 const getTimeSlots = (timeSlots, date, timeZone) => {
   return timeSlots && timeSlots[0]
     ? timeSlots.filter(t => {
-        return isInRange(date, t.attributes.start, t.attributes.end, 'day', timeZone);
-      })
+      return isInRange(date, t.attributes.start, t.attributes.end, 'day', timeZone);
+    })
     : [];
 };
 
@@ -133,11 +133,11 @@ const getAllTimeValues = (
   const startTimes = selectedStartTime
     ? []
     : getAvailableStartTimes(
-        intl,
-        timeZone,
-        startDate,
-        getTimeSlots(timeSlots, startDate, timeZone)
-      );
+      intl,
+      timeZone,
+      startDate,
+      getTimeSlots(timeSlots, startDate, timeZone)
+    );
 
   // Value selectedStartTime is a string when user has selected it through the form.
   // That's why we need to convert also the timestamp we use as a default
@@ -146,8 +146,8 @@ const getAllTimeValues = (
   const startTime = selectedStartTime
     ? selectedStartTime
     : startTimes.length > 0 && startTimes[0] && startTimes[0].timestamp
-    ? startTimes[0].timestamp.toString()
-    : null;
+      ? startTimes[0].timestamp.toString()
+      : null;
 
   const startTimeAsDate = startTime ? timestampToDate(startTime) : null;
 
@@ -158,8 +158,8 @@ const getAllTimeValues = (
   const endDate = selectedEndDate
     ? selectedEndDate
     : startTimeAsDate
-    ? new Date(findNextBoundary(startTimeAsDate, 'hour', timeZone).getTime() - 1)
-    : null;
+      ? new Date(findNextBoundary(startTimeAsDate, 'hour', timeZone).getTime() - 1)
+      : null;
 
   const selectedTimeSlot = timeSlots.find(t =>
     isInRange(startTimeAsDate, t.attributes.start, t.attributes.end)
@@ -184,8 +184,8 @@ const getMonthlyTimeSlots = (monthlyTimeSlots, date, timeZone) => {
   return !monthlyTimeSlots || Object.keys(monthlyTimeSlots).length === 0
     ? []
     : monthlyTimeSlots[monthId] && monthlyTimeSlots[monthId].timeSlots
-    ? monthlyTimeSlots[monthId].timeSlots
-    : [];
+      ? monthlyTimeSlots[monthId].timeSlots
+      : [];
 };
 
 // IconArrowHead component might not be defined if exposed directly to the file.
@@ -447,14 +447,14 @@ class FieldDateAndTimeInput extends Component {
 
     const isDayBlocked = timeSlotsOnSelectedMonth
       ? day =>
-          !timeSlotsOnSelectedMonth.find(timeSlot =>
-            isDayMomentInsideRange(
-              day,
-              timeSlot.attributes.start,
-              timeSlot.attributes.end,
-              timeZone
-            )
+        !timeSlotsOnSelectedMonth.find(timeSlot =>
+          isDayMomentInsideRange(
+            day,
+            timeSlot.attributes.start,
+            timeSlot.attributes.end,
+            timeZone
           )
+        )
       : () => false;
 
     const nextBoundary = findNextBoundary(TODAY, 'hour', timeZone);
@@ -502,14 +502,37 @@ class FieldDateAndTimeInput extends Component {
             />
           </div>
         </div>
-        <div className={css.formRow}>
+
+        <div className={css.field}>
+          <FieldSelect
+            name="bookingStartTime"
+            id={formId ? `${formId}.bookingTime` : 'bookingTime'}
+            className={bookingStartDate ? css.fieldSelect : css.fieldSelectDisabled}
+            selectClassName={bookingStartDate ? css.select : css.selectDisabled}
+            label={intl.formatMessage({ id: 'FieldDateAndTimeInput.time' })}
+            disabled={!bookingStartDate}
+            onChange={this.onBookingStartTimeChange}
+          >
+            {bookingStartDate ? (
+              availableStartTimes.map(p => (
+                <option key={p.timeOfDay} value={p.timestamp}>
+                  {p.timeOfDay}
+                </option>
+              ))
+            ) : (
+              <option>{placeholderTime}</option>
+            )}
+          </FieldSelect>
+        </div>
+
+        {/* <div className={css.formRow}>
           <div className={css.field}>
             <FieldSelect
               name="bookingStartTime"
               id={formId ? `${formId}.bookingStartTime` : 'bookingStartTime'}
               className={bookingStartDate ? css.fieldSelect : css.fieldSelectDisabled}
               selectClassName={bookingStartDate ? css.select : css.selectDisabled}
-              label={intl.formatMessage({ id: 'FieldDateAndTimeInput.startTime' })}
+              label={intl.formatMessage({ id: 'FieldDateAndTimeInput.time' })}
               disabled={!bookingStartDate}
               onChange={this.onBookingStartTimeChange}
             >
@@ -547,7 +570,7 @@ class FieldDateAndTimeInput extends Component {
               )}
             </FieldSelect>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

@@ -8,8 +8,9 @@ import { FormattedMessage, intlShape, injectIntl } from '../../../util/reactIntl
 import { timestampToDate } from '../../../util/dates';
 import { propTypes } from '../../../util/types';
 import { BOOKING_PROCESS_NAME } from '../../../transactions/transaction';
+import { required } from '../../../util/validators';
 
-import { Form, H6, PrimaryButton } from '../../../components';
+import { FieldRadioButton, FieldSelect, Form, H6, PrimaryButton } from '../../../components';
 
 import EstimatedCustomerBreakdownMaybe from '../EstimatedCustomerBreakdownMaybe';
 import FieldDateAndTimeInput from './FieldDateAndTimeInput';
@@ -104,9 +105,9 @@ export class BookingTimeFormComponent extends Component {
           const breakdownData =
             startDate && endDate
               ? {
-                  startDate,
-                  endDate,
-                }
+                startDate,
+                endDate,
+              }
               : null;
 
           const showEstimatedBreakdown =
@@ -143,7 +144,7 @@ export class BookingTimeFormComponent extends Component {
                 />
               ) : null}
 
-              {showEstimatedBreakdown ? (
+              {/* {showEstimatedBreakdown ? (
                 <div className={css.priceBreakdownContainer}>
                   <H6 as="h3" className={css.bookingBreakdownTitle}>
                     <FormattedMessage id="BookingTimeForm.priceBreakdownTitle" />
@@ -158,13 +159,21 @@ export class BookingTimeFormComponent extends Component {
                     processName={BOOKING_PROCESS_NAME}
                   />
                 </div>
-              ) : null}
+              ) : null} */}
 
               {fetchLineItemsError ? (
                 <span className={css.sideBarError}>
                   <FormattedMessage id="BookingTimeForm.fetchLineItemsError" />
                 </span>
               ) : null}
+
+              <hr className={css.totalDivider} />
+
+              <FieldSelect id="select1" name="select1" label="Choose an option:" validate={required("Must choose a service")}>
+                <option value="">Pick something...</option>
+                <option value="adoption">Adoption</option>
+                <option value="rescue">Rescue</option>
+              </FieldSelect>
 
               <div className={css.submitButton}>
                 <PrimaryButton type="submit" inProgress={fetchLineItemsInProgress}>

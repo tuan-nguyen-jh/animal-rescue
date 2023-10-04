@@ -48,6 +48,9 @@ const BookingTimeForm = loadable(() =>
 const BookingDatesForm = loadable(() =>
   import(/* webpackChunkName: "BookingDatesForm" */ './BookingDatesForm/BookingDatesForm')
 );
+const BookingACCForm = loadable(() => {
+  import('./BookingACCForm/BookingACCForm')
+})
 const InquiryWithoutPaymentForm = loadable(() =>
   import(
     /* webpackChunkName: "InquiryWithoutPaymentForm" */ './InquiryWithoutPaymentForm/InquiryWithoutPaymentForm'
