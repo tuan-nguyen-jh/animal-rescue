@@ -204,6 +204,7 @@ const EditListingDetailsPanel = props => {
     listing,
     disabled,
     ready,
+    listingACCs,
     onSubmit,
     onListingTypeChange,
     submitButtonText,
@@ -217,8 +218,6 @@ const EditListingDetailsPanel = props => {
   const { publicData, state } = listing?.attributes || {};
   const listingTypes = config.listing.listingTypes;
   const listingFieldsConfig = config.listing.listingFields;
-
-  // console.log(config.listing)
 
   const { hasExistingListingType, existingListingTypeInfo } = hasSetListingType(publicData);
   const hasValidExistingListingType =
@@ -267,6 +266,7 @@ const EditListingDetailsPanel = props => {
             const {
               title,
               description,
+              accname,
               listingType,
               transactionProcessAlias,
               unitType,
@@ -278,6 +278,7 @@ const EditListingDetailsPanel = props => {
               title: title.trim(),
               description,
               publicData: {
+                accname,
                 listingType,
                 transactionProcessAlias,
                 unitType,
@@ -290,6 +291,7 @@ const EditListingDetailsPanel = props => {
             onSubmit(updateValues);
           }}
           selectableListingTypes={listingTypes.map(conf => getTransactionInfo([conf], {}, true))}
+          listingACCs={listingACCs}
           hasExistingListingType={hasExistingListingType}
           onListingTypeChange={onListingTypeChange}
           listingFieldsConfig={listingFieldsConfig}

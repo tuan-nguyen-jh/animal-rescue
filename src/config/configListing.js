@@ -48,7 +48,57 @@
  */
 export const listingFields = [
   {
-    key: 'typeofanimal',
+    key: 'service',
+    scope: 'public',
+    includeForListingTypes: ['acc'],
+    schemaType: 'multi-enum',
+    enumOptions: [
+      { option: 'adoption', label: 'Adoption' },
+      { option: 'rescue', label: 'Rescue' },
+    ],
+    filterConfig: {
+      indexForSearch: true,
+      label: 'Service',
+      group: 'secondary',
+    },
+    showConfig: {
+      label: 'Service',
+      isDetail: true,
+    },
+    saveConfig: {
+      label: 'Service',
+      placeholderMessage: 'Select an option…',
+      isRequired: true,
+      requiredMessage: 'You need to select at least an option',
+    },
+  },
+  // {
+  //   key: 'accessories',
+  //   scope: 'public',
+  //   schemaType: 'multi-enum',
+  //   enumOptions: [
+  //     { option: 'bell', label: 'Bell' },
+  //     { option: 'lights', label: 'Lights' },
+  //     { option: 'lock', label: 'Lock' },
+  //     { option: 'mudguard', label: 'Mudguard' },
+  //   ],
+  //   filterConfig: {
+  //     indexForSearch: true,
+  //     label: 'Accessories',
+  //     searchMode: 'has_all',
+  //     group: 'secondary',
+  //   },
+  //   showConfig: {
+  //     label: 'Accessories',
+  //   },
+  //   saveConfig: {
+  //     label: 'Accessories',
+  //     placeholderMessage: 'Select an option…',
+  //     isRequired: false,
+  //   },
+  // },
+{
+    key: 'type-of-animal',
     scope: 'public',
     includeForListingTypes: ['animal'],
     schemaType: 'enum',
@@ -157,17 +207,6 @@ export const listingFields = [
       label: 'Date of adoption',
       placeholderMessage: 'dd/mm/year',
       isRequired: false,
-    }
-  },
-  {
-    key: 'acc-id',
-    includeForListingTypes: ['animal'],
-    scope: 'public',
-    schemaType: 'text',
-    saveConfig: {
-      label: 'ID of ACC',
-      placeholderMessage: 'ID of ACC',
-      isRequired: true,
     }
   }
   // // An example of how to use transaction type specific custom fields and private data.

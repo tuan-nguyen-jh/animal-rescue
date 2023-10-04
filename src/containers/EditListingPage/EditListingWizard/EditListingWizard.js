@@ -370,6 +370,7 @@ class EditListingWizard extends Component {
       listing,
       viewport,
       intl,
+      listingACCs,
       errors,
       fetchInProgress,
       payoutDetailsSaveInProgress,
@@ -558,6 +559,7 @@ class EditListingWizard extends Component {
                 tab={tab}
                 params={params}
                 listing={listing}
+                listingACCs={listingACCs}
                 marketplaceTabs={tabs}
                 errors={errors}
                 handleCreateFlowTabScrolling={this.handleCreateFlowTabScrolling}
