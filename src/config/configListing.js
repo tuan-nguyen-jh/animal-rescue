@@ -46,16 +46,16 @@
  *   - isRequired (optional):         Is the field required for providers to fill
  *   - requiredMessage (optional):    Message for those fields, which are mandatory.
  */
+export const ANIMAL_LISTING_TYPE = 'animal';
+export const ACC_LISTING_TYPE = 'acc';
+
 export const listingFields = [
   {
     key: 'service',
     scope: 'public',
-    includeForListingTypes: ['acc'],
+    includeForListingTypes: [ACC_LISTING_TYPE],
     schemaType: 'multi-enum',
-    enumOptions: [
-      { option: 'adoption', label: 'Adoption' },
-      { option: 'rescue', label: 'Rescue' },
-    ],
+    enumOptions: [{ option: 'adoption', label: 'Adoption' }, { option: 'rescue', label: 'Rescue' }],
     filterConfig: {
       indexForSearch: true,
       label: 'Service',
@@ -72,35 +72,10 @@ export const listingFields = [
       requiredMessage: 'You need to select at least an option',
     },
   },
-  // {
-  //   key: 'accessories',
-  //   scope: 'public',
-  //   schemaType: 'multi-enum',
-  //   enumOptions: [
-  //     { option: 'bell', label: 'Bell' },
-  //     { option: 'lights', label: 'Lights' },
-  //     { option: 'lock', label: 'Lock' },
-  //     { option: 'mudguard', label: 'Mudguard' },
-  //   ],
-  //   filterConfig: {
-  //     indexForSearch: true,
-  //     label: 'Accessories',
-  //     searchMode: 'has_all',
-  //     group: 'secondary',
-  //   },
-  //   showConfig: {
-  //     label: 'Accessories',
-  //   },
-  //   saveConfig: {
-  //     label: 'Accessories',
-  //     placeholderMessage: 'Select an option…',
-  //     isRequired: false,
-  //   },
-  // },
-{
-    key: 'type-of-animal',
+  {
+    key: 'typeOfAnimal',
     scope: 'public',
-    includeForListingTypes: ['animal'],
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
     schemaType: 'enum',
     enumOptions: [
       { option: 'dog', label: 'Dog' },
@@ -111,7 +86,7 @@ export const listingFields = [
       indexForSearch: true,
       filterType: 'SelectSingleFilter',
       label: 'Type of animal',
-      group: 'primary'
+      group: 'primary',
     },
     showConfig: {
       label: 'Type of animal',
@@ -121,25 +96,26 @@ export const listingFields = [
       label: 'Type of animal',
       placeholderMessage: 'Select type of animal',
       isRequired: true,
-    }
+      requiredMessage: 'You need to select at least an option',
+    },
   },
   {
     key: 'birth',
-    includeForListingTypes: ['animal'],
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
     scope: 'public',
     schemaType: 'text',
     showConfig: {
-      label: 'Date of birth'
+      label: 'Date of birth',
     },
     saveConfig: {
       label: 'Date of birth',
       placeholderMessage: 'dd/mm/year',
       isRequired: false,
-    }
+    },
   },
   {
     key: 'size',
-    includeForListingTypes: ['animal'],
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
     scope: 'public',
     schemaType: 'enum',
     enumOptions: [
@@ -151,7 +127,7 @@ export const listingFields = [
       indexForSearch: true,
       filterType: 'SelectSingleFilter',
       label: 'Size of animal',
-      group: 'primary'
+      group: 'primary',
     },
     showConfig: {
       label: 'Size of animal',
@@ -160,12 +136,13 @@ export const listingFields = [
     saveConfig: {
       label: 'Size of animal',
       placeholderMessage: 'Size of animal',
-      isRequired: false,
-    }
+      isRequired: true,
+      requiredMessage: 'You need to select at least an option',
+    },
   },
   {
-    key: 'is-adopted',
-    includeForListingTypes: ['animal'],
+    key: 'isAdopted',
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
 
     scope: 'public',
     schemaType: 'boolean',
@@ -173,11 +150,11 @@ export const listingFields = [
       label: 'Is adopted',
       placeholderMessage: 'Is adopted',
       isRequired: false,
-    }
+    },
   },
   {
-    key: 'host-name',
-    includeForListingTypes: ['animal'],
+    key: 'hostName',
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
 
     scope: 'public',
     schemaType: 'text',
@@ -185,30 +162,30 @@ export const listingFields = [
       label: 'Host name',
       placeholderMessage: 'Host name',
       isRequired: false,
-    }
+    },
   },
   {
-    key: 'host-phone',
-    includeForListingTypes: ['animal'],
+    key: 'hostPhone',
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
     scope: 'public',
     schemaType: 'text',
     saveConfig: {
       label: 'Host phonenumber',
       placeholderMessage: 'Host phonenumber',
-      isRequired: false
+      isRequired: false,
     },
   },
   {
-    key: 'date-of-adoption',
-    includeForListingTypes: ['animal'],
+    key: 'dateOfAdoption',
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
     scope: 'public',
     schemaType: 'text',
     saveConfig: {
       label: 'Date of adoption',
       placeholderMessage: 'dd/mm/year',
       isRequired: false,
-    }
-  }
+    },
+  },
   // // An example of how to use transaction type specific custom fields and private data.
   // {
   //   key: 'note',

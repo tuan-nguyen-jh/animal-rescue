@@ -293,11 +293,7 @@ export class SearchPageComponent extends Component {
       ...defaultFilters,
       ...customSecondaryFilters,
     ];
-
-    // console.log(config.search)
-    // console.log(availableFilters)
-
-
+    
     const hasSecondaryFilters = !!(customSecondaryFilters && customSecondaryFilters.length > 0);
 
     // Selected aka active filters

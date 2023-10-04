@@ -164,7 +164,6 @@ const EditListingWizardTab = props => {
       listing,
       panelUpdated: updatedTab === tab,
       params,
-      listingACCs,
       locationSearch,
       updateInProgress,
       // newListingPublished and fetchInProgress are flags for the last wizard tab
@@ -185,6 +184,7 @@ const EditListingWizardTab = props => {
       return (
         <EditListingDetailsPanel
           {...panelProps(DETAILS)}
+          listingACCs={listingACCs}
           onListingTypeChange={onListingTypeChange}
           config={config}
         />

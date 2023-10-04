@@ -15,8 +15,7 @@ import { Form, Button, FieldSelect, FieldTextInput, Heading } from '../../../../
 // Import modules from this directory
 import CustomExtendedDataField from '../CustomExtendedDataField';
 import css from './EditListingDetailsForm.module.css';
-import { get } from 'lodash';
-import defaultConfig from '../../../../config/configDefault';
+import { ANIMAL_LISTING_TYPE } from '../../../../config/configListing';
 
 const TITLE_MAX_LENGTH = 60;
 
@@ -116,16 +115,12 @@ const FieldSelectListingType = props => {
 const FieldSelectACCName = props => {
   const { name, formApi, intl, listingACCs, } = props;
 
-  const handleOnChange = value => {
-    formApi.change('accname', value)
-  }
   return (
       <FieldSelect
         id={name}
         name={name}
         className={css.listingTypeSelect}
         label={intl.formatMessage({ id: 'EditListingDetailsForm.ACCNameLabel' })}
-        onChange={handleOnChange}
         validate={required(
           intl.formatMessage({
             id: 'EditListingDetailsForm.ACCNameRequired',
@@ -137,8 +132,8 @@ const FieldSelectACCName = props => {
         </option>
         {listingACCs.map(acc => {
           return (
-            <option key={acc?.id?.uuid} value={acc?.attributes?.title}>
-              {acc?.attributes?.title}
+            <option key={acc?.id.uuid} value={acc?.attributes.title}>
+              {acc?.attributes.title}
             </option>
           );
         })}
@@ -173,6 +168,7 @@ const AddListingFields = props => {
       : pickedFields;
   }, []);
 
+
   return <>{fields}</>;
 };
 
@@ -206,7 +202,7 @@ const EditListingDetailsFormComponent = props => (
         values,
       } = formRenderProps;
 
-      const { listingType } = values;
+      const { listingType, pub_isAdopted } = values;
       const titleRequiredMessage = intl.formatMessage({
         id: 'EditListingDetailsForm.titleRequired',
       });
@@ -275,10 +271,11 @@ const EditListingDetailsFormComponent = props => (
           <AddListingFields
             listingType={listingType}
             listingFieldsConfig={listingFieldsConfig}
+            pub_isAdopted={pub_isAdopted}
             intl={intl}
           />
 
-          {listingType === defaultConfig.animal_listing_type && <FieldSelectACCName
+          {listingType === ANIMAL_LISTING_TYPE && <FieldSelectACCName
             id="accname"
             name={intl.formatMessage({id: "EditListingDetailsForm.ACCNameLabel"})}
             intl={intl}

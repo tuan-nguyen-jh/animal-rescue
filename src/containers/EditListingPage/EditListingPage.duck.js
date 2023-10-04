@@ -23,7 +23,7 @@ import {
   fetchStripeAccount,
 } from '../../ducks/stripeConnectAccount.duck';
 import { fetchCurrentUser } from '../../ducks/user.duck';
-import defaultConfig from '../../config/configDefault';
+import { ACC_LISTING_TYPE } from '../../config/configListing';
 
 const { UUID } = sdkTypes;
 
@@ -170,6 +170,7 @@ export const SAVE_PAYOUT_DETAILS_SUCCESS = 'app/EditListingPage/SAVE_PAYOUT_DETA
 export const SAVE_PAYOUT_DETAILS_ERROR = 'app/EditListingPage/SAVE_PAYOUT_DETAILS_ERROR';
 
 export const UPDATE_FETCH_LISTINGS = 'app/EditListingPage/UPDATE_FETCH_LISTINGS';
+export const UPDATE_FETCH_LISTINGS_ERROR = 'app/EditListingPage/UPDATE_FETCH_LISTINGS_ERROR';
 
 // ================ Reducer ================ //
 
@@ -457,7 +458,9 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, payoutDetailsSaveInProgress: false, payoutDetailsSaved: true };
     
     case UPDATE_FETCH_LISTINGS:
-      return { ...state, listingACCs: payload.data}
+      return { ...state, listingACCs: payload}
+    case UPDATE_FETCH_LISTINGS_ERROR:
+      return { ...state, listingACCs: []}
 
     default:
       return state;
@@ -482,12 +485,14 @@ export const removeListingImage = imageId => ({
   payload: { imageId },
 });
 
-export const updateFetchListings = (data) => ({
+export const updateFetchListings = (listingACCs) => ({
   type: UPDATE_FETCH_LISTINGS,
-  payload: {
-    data
-  }
-})
+  payload: listingACCs
+});
+
+export const updateFetchListingsError = () => ({
+  type: UPDATE_FETCH_LISTINGS_ERROR,
+});
 
 
 // All the action creators that don't have the {Success, Error} suffix
@@ -923,11 +928,12 @@ export const savePayoutDetails = (values, isUpdateCall) => (dispatch, getState, 
 
 export const fetchACCListings = () => async (dispatch, getState, sdk) => {
   try {
-    const response = await sdk.listings.query({ pub_listingType: defaultConfig.acc_listing_type})
+    const response = await sdk.listings.query({ pub_listingType: ACC_LISTING_TYPE})
     const listingACCs = denormalisedResponseEntities(response)
     dispatch(updateFetchListings(listingACCs))
   } catch(err) {
-    throw new Error(err);
+    dispatch(updateFetchListingsError());
+    throw err;
   }
 }
 
@@ -953,7 +959,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   }
 
   const payload = { id: new UUID(id) };
-  return Promise.all([dispatch(requestShowListing(payload, config)), dispatch(fetchCurrentUser())])
+  return Promise.all([dispatch(requestShowListing(payload, config)), dispatch(fetchCurrentUser()), dispatch(fetchACCListings())])
     .then(response => {
       const currentUser = getState().user.currentUser;
       if (currentUser && currentUser.stripeAccount) {
