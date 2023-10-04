@@ -16,12 +16,15 @@ const FieldTextInputComponent = props => {
     customErrorText,
     id,
     label,
-    input,
-    meta,
     onUnmount,
     isUncontrolled,
     inputRef,
     hideErrorMessage,
+
+
+    // final form
+    input,
+    meta,
     ...rest
   } = props;
 

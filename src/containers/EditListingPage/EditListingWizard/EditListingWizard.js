@@ -47,6 +47,8 @@ import EditListingWizardTab, {
   DELIVERY,
   LOCATION,
   AVAILABILITY,
+  STAFFS,
+  CONTACTS,
   PHOTOS,
 } from './EditListingWizardTab';
 import css from './EditListingWizard.module.css';
@@ -108,8 +110,14 @@ const tabLabelAndSubmit = (intl, tab, isNewListingFlow, isPriceDisabled, process
   } else if (tab === PHOTOS) {
     labelKey = 'EditListingWizard.tabLabelPhotos';
     submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.savePhotos`;
+  } else if (tab === STAFFS) {
+    labelKey = 'EditListingWizard.tabLabelStaffs';
+    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveStaffs`;
   }
-
+  else if (tab === CONTACTS) {
+    labelKey = 'EditListingWizard.tabLabelContacts';
+    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveContacts`;
+  }
   return {
     label: intl.formatMessage({ id: labelKey }),
     submitButton: intl.formatMessage({ id: submitButtonKey }),
@@ -211,6 +219,10 @@ const tabCompleted = (tab, listing, config) => {
       return !!availabilityPlan;
     case PHOTOS:
       return images && images.length > 0;
+    case STAFFS:
+      return !!publicData.staffs;
+    case CONTACTS:
+      return !!publicData.contacts;
     default:
       return false;
   }
@@ -355,6 +367,7 @@ class EditListingWizard extends Component {
         showPayoutDetails: true,
       });
     }
+    // onPublishListingDraft(id);
   }
 
   handlePayoutModalClose() {
