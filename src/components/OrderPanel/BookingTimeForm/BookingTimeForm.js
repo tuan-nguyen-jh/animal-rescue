@@ -85,6 +85,7 @@ export class BookingTimeFormComponent extends Component {
             intl,
             isOwnListing,
             listingId,
+            publicData,
             values,
             monthlyTimeSlots,
             onFetchTimeSlots,
@@ -171,8 +172,8 @@ export class BookingTimeFormComponent extends Component {
 
               <FieldSelect id="select1" name="select1" label="Choose an option:" validate={required("Must choose a service")}>
                 <option value="">Pick something...</option>
-                <option value="adoption">Adoption</option>
-                <option value="rescue">Rescue</option>
+                <option disabled={!publicData.service.includes("adoption")} value="adoption">Adoption</option>
+                <option disabled={!publicData.service.includes("rescue")} value="rescue">Rescue</option>
               </FieldSelect>
 
               <div className={css.submitButton}>
