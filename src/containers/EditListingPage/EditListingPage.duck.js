@@ -921,7 +921,7 @@ export const savePayoutDetails = (values, isUpdateCall) => (dispatch, getState, 
     .catch(() => dispatch(savePayoutDetailsError()));
 };
 
-export const fetchListings = () => async (dispatch, getState, sdk) => {
+export const fetchACCListings = () => async (dispatch, getState, sdk) => {
   try {
     const response = await sdk.listings.query({ pub_listingType: defaultConfig.acc_listing_type})
     const listingACCs = denormalisedResponseEntities(response)
@@ -939,7 +939,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
 
   if (type === 'new') {
     // No need to listing data when creating a new listing
-    return Promise.all([dispatch(fetchCurrentUser()), dispatch(fetchListings())])
+    return Promise.all([dispatch(fetchCurrentUser()), dispatch(fetchACCListings())])
       .then(response => {
         const currentUser = getState().user.currentUser;
         if (currentUser && currentUser.stripeAccount) {

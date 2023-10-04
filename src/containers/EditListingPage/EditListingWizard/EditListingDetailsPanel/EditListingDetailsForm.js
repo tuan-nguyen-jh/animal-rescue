@@ -133,12 +133,12 @@ const FieldSelectACCName = props => {
         )}
       >
         <option disabled value="">
-          Select ACC Name
+          {intl.formatMessage({ id: 'EditListingDetailsForm.ACCNamePlaceholder' })}
         </option>
         {listingACCs.map(acc => {
           return (
-            <option key={acc.id.uuid} value={acc.attributes.title}>
-              {acc.attributes.title}
+            <option key={acc?.id?.uuid} value={acc?.attributes?.title}>
+              {acc?.attributes?.title}
             </option>
           );
         })}
@@ -280,7 +280,7 @@ const EditListingDetailsFormComponent = props => (
 
           {listingType === defaultConfig.animal_listing_type && <FieldSelectACCName
             id="accname"
-            name="ACC Name"
+            name={intl.formatMessage({id: "EditListingDetailsForm.ACCNameLabel"})}
             intl={intl}
             formApi={formApi}
             listingACCs={listingACCs}

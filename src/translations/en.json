@@ -202,6 +202,7 @@
   "EditListingDetailsForm.description": "Listing description",
   "EditListingDetailsForm.ACCNameLabel": "ACC Name",
   "EditListingDetailsForm.ACCNameRequired": "You need to choose an ACC name",
+  "EditListingDetailsForm.ACCNamePlaceholder": "Select ACC Name",
   "EditListingDetailsForm.descriptionPlaceholder": "Describe your listing in more detail.",
   "EditListingDetailsForm.descriptionRequired": "You need to add a description.",
   "EditListingDetailsForm.listingTypeLabel": "Listing type",
