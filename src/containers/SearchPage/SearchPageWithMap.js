@@ -164,8 +164,6 @@ export class SearchPageComponent extends Component {
   // Reset all filter query parameters
   resetAll(e) {
     const { history, routeConfiguration, config } = this.props;
-    const { listingFields: listingFieldsConfig } = config?.listing || {};
-    const { defaultFilters: defaultFiltersConfig } = config?.search || {};
 
     // Reset state
     this.setState({ currentQueryParams: {} });
