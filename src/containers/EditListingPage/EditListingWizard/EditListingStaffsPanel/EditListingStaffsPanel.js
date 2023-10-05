@@ -5,7 +5,6 @@ import classNames from 'classnames';
 // Import configs and util modules
 import { FormattedMessage } from '../../../../util/reactIntl';
 import { LISTING_STATE_DRAFT } from '../../../../util/types';
-import { types as sdkTypes } from '../../../../util/sdkLoader';
 
 // Import shared components
 import { H3, ListingLink } from '../../../../components';
@@ -14,13 +13,11 @@ import { H3, ListingLink } from '../../../../components';
 import EditListingStaffsForm from './EditListingStaffsForm';
 import css from './EditListingStaffsPanel.module.css';
 
-const { Money } = sdkTypes;
-
 const getInitialValues = params => {
   const { listing } = params;
-  const { publicData } = listing?.attributes || {};
+  const { staffs } = listing?.attributes?.publicData || {};
 
-  return { publicData};
+  return { staffs };
 };
 
 const EditListingStaffsPanel = props => {
@@ -28,21 +25,17 @@ const EditListingStaffsPanel = props => {
     className,
     rootClassName,
     listing,
-    marketplaceCurrency,
-    listingMinimumPriceSubUnits,
     disabled,
     ready,
     onSubmit,
     submitButtonText,
     panelUpdated,
     updateInProgress,
-    errors,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
   const initialValues = getInitialValues(props);
   const isPublished = listing?.id && listing?.attributes?.state !== LISTING_STATE_DRAFT;
-  const unitType = listing?.attributes?.publicData?.unitType;
 
   return (
     <div className={classes}>
@@ -60,30 +53,24 @@ const EditListingStaffsPanel = props => {
         )}
       </H3>
       <EditListingStaffsForm
-          className={css.form}
-          initialValues={initialValues.publicData}
+          initialValues={initialValues}
           onSubmit={values => {
             const { staffs } = values;
 
             // New values for listing attributes
             const updateValues = {
               publicData: {
-                "staffs": staffs,
+                staffs,
               },
             };
 
-            console.log(updateValues)
             onSubmit(updateValues);
           }}
-          marketplaceCurrency={marketplaceCurrency}
-          unitType={unitType}
-          listingMinimumPriceSubUnits={listingMinimumPriceSubUnits}
           saveActionMsg={submitButtonText}
           disabled={disabled}
           ready={ready}
           updated={panelUpdated}
           updateInProgress={updateInProgress}
-          fetchErrors={errors}
         />
     </div>
   );

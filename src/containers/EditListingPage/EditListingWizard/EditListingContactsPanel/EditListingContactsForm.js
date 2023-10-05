@@ -1,14 +1,12 @@
 import React from 'react';
-import { bool, func, number, shape, string } from 'prop-types';
+import { bool, func, string } from 'prop-types';
 import { compose } from 'redux';
 import { Form as FinalForm } from 'react-final-form';
-import classNames from 'classnames';
 import arrayMutators from 'final-form-arrays'
 
 // Import configs and util modules
 import { intlShape, injectIntl } from '../../../../util/reactIntl';
-import { propTypes } from '../../../../util/types';
-import * as validators from '../../../../util/validators';
+import { composeValidators, required, emailFormatValid, nonEmptyArray } from '../../../../util/validators';
 
 // Import shared components
 import { Button, FieldTextInput, FieldPhoneNumberInput } from '../../../../components';
@@ -28,35 +26,34 @@ export const EditListingContactsFormComponent = props => (
     render={formRenderProps => {
       const {
         formId,
-        autoFocus,
-        className,
         disabled,
         ready,
         handleSubmit,
-        marketplaceCurrency,
-        unitType,
-        listingMinimumPriceSubUnits,
         intl,
         invalid,
         pristine,
         saveActionMsg,
         updated,
         updateInProgress,
-        fetchErrors,
       } = formRenderProps;
 
-      const classes = classNames(css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
       const submitDisabled = invalid || disabled || submitInProgress || pristine;
 
-      const required = validators.required('This field is required');
-      const emailFormatValid = validators.emailFormatValid('Invalid email address');
-      const nonEmptyArray = validators.nonEmptyArray('Required at least one staff');
-      const validPhoneNumber = validators.validPhoneNumber("Invalid phone number");
+      const required_ = required(intl.formatMessage(
+        { id: 'EditListingContactsForm.fieldRequired' }
+      ));
+      const emailFormatValid_ = emailFormatValid(intl.formatMessage(
+        { id: 'EditListingContactsForm.emailInvalid' }
+      ));
+      const nonEmptyArray_ = nonEmptyArray(intl.formatMessage(
+        { id: 'EditListingContactsForm.nonEmptyArray' }
+      ));
+
       return (
         <form onSubmit={handleSubmit}>
-          <FieldArray name="contacts" validate={nonEmptyArray}>
+          <FieldArray name="contacts" validate={nonEmptyArray_}>
             {({ fields }) => (
               <div key={`${formId}.index`}>
                 {fields.map((name, index) => (
@@ -76,16 +73,16 @@ export const EditListingContactsFormComponent = props => (
                     <FieldTextInput
                       className={css.field}
                       type="text"
-                      id={`${index}.email`}
+                      id={`${name}.email`}
                       name={`${name}.email`}
-                      label="Email"
-                      validate={validators.composeValidators(required, emailFormatValid)}
+                      label={intl.formatMessage({ id: "EditListingContactsForm.emailLabel" })}
+                      validate={composeValidators(required_, emailFormatValid_)}
                     />
                     <FieldPhoneNumberInput
+                      id={`${name}.phoneNumber`}
                       name={`${name}.phoneNumber`}
-                      id={`${index}.phoneNumber`}
-                      label="Phone number"
-                      validate={validators.composeValidators(required, validPhoneNumber)}
+                      label={intl.formatMessage({ id: "EditListingContactsForm.phoneNumberLabel" })}
+                      validate={required_}
                     />
                   </div>
 
@@ -127,18 +124,11 @@ EditListingContactsFormComponent.propTypes = {
   formId: string,
   intl: intlShape.isRequired,
   onSubmit: func.isRequired,
-  marketplaceCurrency: string.isRequired,
-  unitType: string.isRequired,
-  listingMinimumPriceSubUnits: number,
   saveActionMsg: string.isRequired,
   disabled: bool.isRequired,
   ready: bool.isRequired,
   updated: bool.isRequired,
   updateInProgress: bool.isRequired,
-  fetchErrors: shape({
-    showListingsError: propTypes.error,
-    updateListingError: propTypes.error,
-  }),
 };
 
 export default compose(injectIntl)(EditListingContactsFormComponent);

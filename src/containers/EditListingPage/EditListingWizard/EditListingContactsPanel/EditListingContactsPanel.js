@@ -5,7 +5,6 @@ import classNames from 'classnames';
 // Import configs and util modules
 import { FormattedMessage } from '../../../../util/reactIntl';
 import { LISTING_STATE_DRAFT } from '../../../../util/types';
-import { types as sdkTypes } from '../../../../util/sdkLoader';
 
 // Import shared components
 import { H3, ListingLink } from '../../../../components';
@@ -16,9 +15,9 @@ import css from './EditListingContactsPanel.module.css';
 
 const getInitialValues = params => {
   const { listing } = params;
-  const { publicData } = listing?.attributes || {};
+  const { contacts } = listing?.attributes?.publicData || {};
 
-  return { publicData};
+  return { contacts };
 };
 
 const EditListingContactsPanel = props => {
@@ -26,21 +25,17 @@ const EditListingContactsPanel = props => {
     className,
     rootClassName,
     listing,
-    marketplaceCurrency,
-    listingMinimumPriceSubUnits,
     disabled,
     ready,
     onSubmit,
     submitButtonText,
     panelUpdated,
     updateInProgress,
-    errors,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
   const initialValues = getInitialValues(props);
   const isPublished = listing?.id && listing?.attributes?.state !== LISTING_STATE_DRAFT;
-  const unitType = listing?.attributes?.publicData?.unitType;
 
   return (
     <div className={classes}>
@@ -58,29 +53,23 @@ const EditListingContactsPanel = props => {
         )}
       </H3>
       <EditListingContactsForm
-          className={css.form}
-          initialValues={initialValues.publicData}
+          initialValues={initialValues}
           onSubmit={values => {
             const { contacts } = values;
-
             // New values for listing attributes
             const updateValues = {
               publicData: {
-                "contacts": contacts,
+                contacts,
               },
             };
             console.log(updateValues);
             onSubmit(updateValues);
           }}
-          marketplaceCurrency={marketplaceCurrency}
-          unitType={unitType}
-          listingMinimumPriceSubUnits={listingMinimumPriceSubUnits}
           saveActionMsg={submitButtonText}
           disabled={disabled}
           ready={ready}
           updated={panelUpdated}
           updateInProgress={updateInProgress}
-          fetchErrors={errors}
         />
     </div>
   );
@@ -107,7 +96,6 @@ EditListingContactsPanel.propTypes = {
   submitButtonText: string.isRequired,
   panelUpdated: bool.isRequired,
   updateInProgress: bool.isRequired,
-  errors: object.isRequired,
 };
 
 export default EditListingContactsPanel;

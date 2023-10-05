@@ -1,24 +1,19 @@
 import React from 'react';
-import { bool, func, number, shape, string } from 'prop-types';
+import { bool, func, string } from 'prop-types';
 import { compose } from 'redux';
 import { Form as FinalForm } from 'react-final-form';
-import classNames from 'classnames';
 import arrayMutators from 'final-form-arrays'
 
 // Import configs and util modules
 import { intlShape, injectIntl } from '../../../../util/reactIntl';
-import { propTypes } from '../../../../util/types';
-import * as validators from '../../../../util/validators';
+import { required, emailFormatValid, nonEmptyArray, composeValidators } from '../../../../util/validators';
 
 // Import shared components
 import { Button, FieldPhoneNumberInput, FieldTextInput } from '../../../../components';
 
-
 // Import modules from this directory
 import css from './EditListingStaffsForm.module.css';
 import { FieldArray } from 'react-final-form-arrays';
-
-
 
 export const EditListingStaffsFormComponent = props => (
   <FinalForm
@@ -30,35 +25,33 @@ export const EditListingStaffsFormComponent = props => (
     render={formRenderProps => {
       const {
         formId,
-        autoFocus,
-        className,
         disabled,
         ready,
         handleSubmit,
-        marketplaceCurrency,
-        unitType,
-        listingMinimumPriceSubUnits,
         intl,
         invalid,
         pristine,
         saveActionMsg,
         updated,
         updateInProgress,
-        fetchErrors,
       } = formRenderProps;
 
-      const classes = classNames(css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
       const submitDisabled = invalid || disabled || submitInProgress || pristine;
-      const { updateListingError, showListingsError } = fetchErrors || {};
 
-      const required = validators.required('This field is required');
-      const emailFormatValid = validators.emailFormatValid('Invalid email address');
-      const nonEmptyArray = validators.nonEmptyArray('Required at least one staff');
+      const required_ = required(intl.formatMessage(
+        { id: 'EditListingStaffsForm.fieldRequired' }
+      ));
+      const emailFormatValid_ = emailFormatValid(intl.formatMessage(
+        { id: 'EditListingStaffsForm.emailInvalid' }
+      ));
+      const nonEmptyArray_ = nonEmptyArray(intl.formatMessage(
+        { id: 'EditListingStaffsForm.nonEmptyArray' }
+      ));
       return (
         <form onSubmit={handleSubmit}>
-          <FieldArray name="staffs" validate={nonEmptyArray}>
+          <FieldArray name="staffs" validate={nonEmptyArray_}>
             {({ fields }) => (
               <div key={`${formId}.index`}>
                 {fields.map((name, index) => (
@@ -77,32 +70,32 @@ export const EditListingStaffsFormComponent = props => (
                     <FieldTextInput
                       className={css.field}
                       type="text"
-                      id={`${index}.firstName`}
+                      id={`${name}.firstName`}
                       name={`${name}.firstName`}
-                      label="First Name"
-                      validate={required}
+                      label={intl.formatMessage({ id: 'EditListingStaffsForm.firstNameLabel' })}
+                      validate={required_}
                     />
                     <FieldTextInput
                       className={css.field}
                       type="text"
-                      id={`${index}.lastName`}
+                      id={`${name}.lastName`}
                       name={`${name}.lastName`}
-                      label="Last Name"
-                      validate={required}
+                      label={intl.formatMessage({ id: 'EditListingStaffsForm.lastNameLabel' })}
+                      validate={required_}
                     />
                     <FieldTextInput
                       className={css.field}
                       type="text"
-                      id={`${index}.email`}
+                      id={`${name}.email`}
                       name={`${name}.email`}
-                      label="Email"
-                      validate={validators.composeValidators(required, emailFormatValid)}
+                      label={intl.formatMessage({ id: 'EditListingStaffsForm.emailLabel' })}
+                      validate={composeValidators(required_, emailFormatValid_)}
                     />
                     <FieldPhoneNumberInput
-                      id={`${index}.phoneNumber`}
+                      id={`${name}.phoneNumber`}
                       name={`${name}.phoneNumber`}
-                      label="Phone number"
-                      validate={required}
+                      label={intl.formatMessage({ id: 'EditListingStaffsForm.phoneNumberLabel' })}
+                      validate={required_}
                     />
                   </div>
 
@@ -144,18 +137,11 @@ EditListingStaffsFormComponent.propTypes = {
   formId: string,
   intl: intlShape.isRequired,
   onSubmit: func.isRequired,
-  marketplaceCurrency: string.isRequired,
-  unitType: string.isRequired,
-  listingMinimumPriceSubUnits: number,
   saveActionMsg: string.isRequired,
   disabled: bool.isRequired,
   ready: bool.isRequired,
   updated: bool.isRequired,
   updateInProgress: bool.isRequired,
-  fetchErrors: shape({
-    showListingsError: propTypes.error,
-    updateListingError: propTypes.error,
-  }),
 };
 
 export default compose(injectIntl)(EditListingStaffsFormComponent);

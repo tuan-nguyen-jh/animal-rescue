@@ -73,7 +73,7 @@ import SectionMapMaybe from './SectionMapMaybe';
 import SectionGallery from './SectionGallery';
 
 import css from './ListingPage.module.css';
-import SectionJSONMaybe from './SectionJSONMaybe';
+import SectionContactsMaybe from './SectionContactsMaybe';
 
 const MIN_LENGTH_FOR_LONG_WORDS_IN_TITLE = 16;
 
@@ -338,7 +338,7 @@ export const ListingPageComponent = props => {
                   ]
                   : pickedElements;
             }, [])}
-            <SectionJSONMaybe
+            <SectionContactsMaybe
               json={publicData.contacts}
               heading={intl.formatMessage({ id: 'ListingPage.contactsTitle' })}
             />

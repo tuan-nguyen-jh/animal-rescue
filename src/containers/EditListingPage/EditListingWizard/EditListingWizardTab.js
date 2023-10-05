@@ -261,8 +261,6 @@ const EditListingWizardTab = props => {
       return (
         <EditListingStaffsPanel
           {...panelProps(STAFFS)}
-          marketplaceCurrency={config.currency}
-          listingMinimumPriceSubUnits={config.listingMinimumPriceSubUnits}
         />
       );
     }
@@ -270,8 +268,6 @@ const EditListingWizardTab = props => {
       return (
         <EditListingContactsPanel
           {...panelProps(CONTACTS)}
-          marketplaceCurrency={config.currency}
-          listingMinimumPriceSubUnits={config.listingMinimumPriceSubUnits}
         />
       );
     }

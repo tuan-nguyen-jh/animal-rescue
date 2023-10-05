@@ -1,10 +1,11 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Heading } from '../../components';
 
 import css from './ListingPage.module.css';
 
 
-const SectionJSONMaybe = props => {
+const SectionContactsMaybe = props => {
   const { json, heading, showAsIngress = false } = props;
   const textClass = showAsIngress ? css.ingress : css.text;
 
@@ -27,4 +28,4 @@ const SectionJSONMaybe = props => {
   ) : null;
 };
 
-export default SectionJSONMaybe;
+export default SectionContactsMaybe;
