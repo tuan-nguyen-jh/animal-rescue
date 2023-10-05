@@ -12,7 +12,7 @@
     {:name :action/decline-booking}],
    :from :state/booking-request-sent,
    :to :state/request-declined}
-  {:name :transition/expire-request,
+  {:name :transition/sent-request-expire,
    :at
    {:fn/plus
     [{:fn/timepoint [:time/first-entered-state :state/booking-request-sent]}
@@ -21,13 +21,13 @@
    [{:name :action/decline-booking}],
    :from :state/booking-request-sent,
    :to :state/request-expired}
-  {:name :transition/decline,
+  {:name :transition/customer-decline,
    :actor :actor.role/customer,
    :actions
    [{:name :action/decline-booking}],
    :from :state/booking-request-sent,
    :to :state/request-declined}
-  {:name :transition/decline,
+  {:name :transition/provider-decline,
    :actor :actor.role/provider,
    :actions
    [{:name :action/decline-booking}]
@@ -39,26 +39,27 @@
    [{:name :action/accept-booking},
     {:name :action/privileged-set-line-items}],
    :from :state/booking-request-sent,
-   :to :state/request-accepted}
-  {:name :transition/decline,
+   :to :state/request-accepted,
+   :privileged? true}
+  {:name :transition/provider-cancel,
    :actor :actor.role/provider,
    :actions
-   [{:name :action/decline-booking}]
+   [{:name :action/cancel-booking}]
    :from :state/request-accepted
-   :to :state/request-declined}
-  {:name :transition/decline,
+   :to :state/request-canceled}
+  {:name :transition/customer-cancel,
    :actor :actor.role/customer,
    :actions
-   [{:name :action/decline-booking}]
+   [{:name :action/cancel-booking}]
    :from :state/request-accepted
-   :to :state/request-declined}
-  {:name :transition/decline,
+   :to :state/request-canceled}
+  {:name :transition/operator-cancel,
    :actor :actor.role/operator,
    :actions
-   [{:name :action/decline-booking}]
+   [{:name :action/cancel-booking}]
    :from :state/request-accepted
-   :to :state/request-declined}
-  {:name :transition/expire-request,
+   :to :state/request-canceled}
+  {:name :transition/accepted-request-expire,
    :at
    {:fn/plus
     [{:fn/timepoint [:time/first-entered-state :state/booking-request-sent]}
@@ -71,14 +72,15 @@
    :actor :actor.role/customer,
    :actions
    [],
-   :from state/request-accepted,
-   :to state/officer-dispatched}
+   :from :state/request-accepted,
+   :to :state/officer-dispatched}
   {:name :transition/finish
    :actor :actor.role/provider,
    :actions
    [{:name :action/privileged-set-line-items}],
    :from :state/officer-dispatched,
-   :to :state/exact-fee-calculated}
+   :to :state/exact-fee-calculated,
+   :privileged? true}
   {:name :transition/request-payment,
    :actor :actor.role/customer,
    :actions
@@ -106,13 +108,13 @@
    :actions
    [{:name :action/stripe-confirm-payment-intent}],
    :from :state/pending-payment,
-   :to :state/rescue-completed}
+   :to :state/completed}
   {:name :transition/complete,
    :at
    {:fn/plus
     [{:fn/timepoint [:time/booking-end]} {:fn/period ["P2D"]}]},
    :actions [{:name :action/stripe-create-payout}],
-   :from :state/accepted,
+   :from :state/completed,
    :to :state/delivered}
   {:name :transition/review-1-by-provider,
    :actor :actor.role/provider,
@@ -169,11 +171,11 @@
    :to :actor.role/customer,
    :template :booking-accepted-request} 
   {:name :notification/booking-declined-request,
-   :on :transition/decline,
+   :on :transition/provider-decline,
    :to :actor.role/customer,
    :template :booking-declined-request}
   {:name :notification/booking-expired-request,
-   :on :transition/expire-request,
+   :on :transition/sent-request-expire,
    :to :actor.role/customer,
    :template :booking-expired-request}
   {:name :notification/booking-money-paid,
@@ -187,19 +189,7 @@
   {:name :notification/review-period-start-customer,
    :on :transition/complete,
    :to :actor.role/customer,
-   :template :booking-review-by-customer-wanted}
-  {:name :notification/booking-money-paid-operator-complete,
-   :on :transition/operator-complete,
-   :to :actor.role/provider,
-   :template :booking-money-paid}
-  {:name :notification/review-period-start-provider-operator-complete,
-   :on :transition/operator-complete,
-   :to :actor.role/provider,
-   :template :booking-review-by-provider-wanted}
-  {:name :notification/review-period-start-customer-operator-complete,
-   :on :transition/operator-complete,
-   :to :actor.role/customer,
-   :template :booking-review-by-customer-wanted}
+   :template :booking-review-by-customer-wanted} 
   {:name :notification/review-by-provider-first,
    :on :transition/review-1-by-provider,
    :to :actor.role/customer,
