@@ -48,7 +48,7 @@ export const EditListingContactsFormComponent = props => (
       const classes = classNames(css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
-      const submitDisabled = invalid || disabled || submitInProgress;
+      const submitDisabled = invalid || disabled || submitInProgress || pristine;
 
       const required = validators.required('This field is required');
       const emailFormatValid = validators.emailFormatValid('Invalid email address');
@@ -62,14 +62,16 @@ export const EditListingContactsFormComponent = props => (
                 {fields.map((name, index) => (
 
                   <div key={name} className={css.contactForm}>
-                    <p className={css.staffIndex}>
-                      Contact #{index + 1}
-                    </p>
-                    <button className={css.closeButton} type="button" onClick={() => {
-                      fields.remove(index);
-                    }}>
-                      X
-                    </button>
+                    <div className={css.header}>
+                      <p className={css.staffIndex}>
+                        Contact #{index + 1}
+                      </p>
+                      <button className={css.closeButton} type="button" onClick={() => {
+                        fields.remove(index);
+                      }}>
+                        X
+                      </button>
+                    </div>
 
                     <FieldTextInput
                       className={css.field}

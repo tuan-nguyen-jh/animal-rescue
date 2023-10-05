@@ -11,11 +11,13 @@ import { propTypes } from '../../../../util/types';
 import * as validators from '../../../../util/validators';
 
 // Import shared components
-import { Button, FieldTextInput, FieldPhoneNumberInput } from '../../../../components';
+import { Button, FieldPhoneNumberInput, FieldTextInput } from '../../../../components';
+
 
 // Import modules from this directory
 import css from './EditListingStaffsForm.module.css';
 import { FieldArray } from 'react-final-form-arrays';
+
 
 
 export const EditListingStaffsFormComponent = props => (
@@ -48,13 +50,12 @@ export const EditListingStaffsFormComponent = props => (
       const classes = classNames(css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
-      const submitDisabled = invalid || disabled || submitInProgress;
+      const submitDisabled = invalid || disabled || submitInProgress || pristine;
       const { updateListingError, showListingsError } = fetchErrors || {};
 
       const required = validators.required('This field is required');
       const emailFormatValid = validators.emailFormatValid('Invalid email address');
       const nonEmptyArray = validators.nonEmptyArray('Required at least one staff');
-      const validPhoneNumber = validators.validPhoneNumber("Invalid phone number");
       return (
         <form onSubmit={handleSubmit}>
           <FieldArray name="staffs" validate={nonEmptyArray}>
@@ -63,15 +64,16 @@ export const EditListingStaffsFormComponent = props => (
                 {fields.map((name, index) => (
 
                   <div key={name} className={css.contactForm}>
-                    <p className={css.staffIndex}>
-                      Staff #{index + 1}
-                    </p>
-                    <button className={css.closeButton} type="button" onClick={() => {
-                      fields.remove(index);
-                    }}>
-                      X
-                    </button>
-
+                    <div className={css.header}>
+                      <p className={css.staffIndex}>
+                        Staff #{index + 1}
+                      </p>
+                      <button className={css.closeButton} type="button" onClick={() => {
+                        fields.remove(index);
+                      }}>
+                        X
+                      </button>
+                    </div>
                     <FieldTextInput
                       className={css.field}
                       type="text"
@@ -97,10 +99,10 @@ export const EditListingStaffsFormComponent = props => (
                       validate={validators.composeValidators(required, emailFormatValid)}
                     />
                     <FieldPhoneNumberInput
-                      name={`${name}.phoneNumber`}
                       id={`${index}.phoneNumber`}
+                      name={`${name}.phoneNumber`}
                       label="Phone number"
-                      validate={validators.composeValidators(required, validPhoneNumber)}
+                      validate={required}
                     />
                   </div>
 

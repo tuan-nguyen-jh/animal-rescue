@@ -1,18 +1,16 @@
-import React, { Component } from 'react';
-import { array, bool, func, number, object, string } from 'prop-types';
-import { compose } from 'redux';
-import { Form as FinalForm, FormSpy } from 'react-final-form';
 import classNames from 'classnames';
+import { array, bool, func, number, object, string } from 'prop-types';
+import React, { Component } from 'react';
+import { Form as FinalForm, FormSpy } from 'react-final-form';
+import { compose } from 'redux';
 
-import { FormattedMessage, intlShape, injectIntl } from '../../../util/reactIntl';
 import { timestampToDate } from '../../../util/dates';
+import { FormattedMessage, injectIntl, intlShape } from '../../../util/reactIntl';
 import { propTypes } from '../../../util/types';
-import { BOOKING_PROCESS_NAME } from '../../../transactions/transaction';
 import { required } from '../../../util/validators';
 
-import { FieldRadioButton, FieldSelect, Form, H6, PrimaryButton } from '../../../components';
+import { FieldSelect, Form, PrimaryButton } from '../../../components';
 
-import EstimatedCustomerBreakdownMaybe from '../EstimatedCustomerBreakdownMaybe';
 import FieldDateAndTimeInput from './FieldDateAndTimeInput';
 
 import css from './BookingTimeForm.module.css';
@@ -144,23 +142,6 @@ export class BookingTimeFormComponent extends Component {
                   dayCountAvailableForBooking={dayCountAvailableForBooking}
                 />
               ) : null}
-
-              {/* {showEstimatedBreakdown ? (
-                <div className={css.priceBreakdownContainer}>
-                  <H6 as="h3" className={css.bookingBreakdownTitle}>
-                    <FormattedMessage id="BookingTimeForm.priceBreakdownTitle" />
-                  </H6>
-                  <hr className={css.totalDivider} />
-                  <EstimatedCustomerBreakdownMaybe
-                    breakdownData={breakdownData}
-                    lineItems={lineItems}
-                    timeZone={timeZone}
-                    currency={unitPrice.currency}
-                    marketplaceName={marketplaceName}
-                    processName={BOOKING_PROCESS_NAME}
-                  />
-                </div>
-              ) : null} */}
 
               {fetchLineItemsError ? (
                 <span className={css.sideBarError}>

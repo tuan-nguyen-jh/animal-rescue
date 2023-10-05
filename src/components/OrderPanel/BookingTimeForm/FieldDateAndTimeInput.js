@@ -460,7 +460,7 @@ class FieldDateAndTimeInput extends Component {
     const nextBoundary = findNextBoundary(TODAY, 'hour', timeZone);
     const placeholderTime = formatDateIntoPartials(nextBoundary, intl, { timeZone })?.time;
     const startOfToday = getStartOf(TODAY, 'day', timeZone);
-    const bookingEndTimeAvailable = bookingStartDate && (bookingStartTime || startTime);
+
     return (
       <div className={classes}>
         <div className={css.formRow}>
@@ -525,52 +525,6 @@ class FieldDateAndTimeInput extends Component {
           </FieldSelect>
         </div>
 
-        {/* <div className={css.formRow}>
-          <div className={css.field}>
-            <FieldSelect
-              name="bookingStartTime"
-              id={formId ? `${formId}.bookingStartTime` : 'bookingStartTime'}
-              className={bookingStartDate ? css.fieldSelect : css.fieldSelectDisabled}
-              selectClassName={bookingStartDate ? css.select : css.selectDisabled}
-              label={intl.formatMessage({ id: 'FieldDateAndTimeInput.time' })}
-              disabled={!bookingStartDate}
-              onChange={this.onBookingStartTimeChange}
-            >
-              {bookingStartDate ? (
-                availableStartTimes.map(p => (
-                  <option key={p.timeOfDay} value={p.timestamp}>
-                    {p.timeOfDay}
-                  </option>
-                ))
-              ) : (
-                <option>{placeholderTime}</option>
-              )}
-            </FieldSelect>
-          </div>
-
-          <div className={bookingStartDate ? css.lineBetween : css.lineBetweenDisabled}>-</div>
-
-          <div className={css.field}>
-            <FieldSelect
-              name="bookingEndTime"
-              id={formId ? `${formId}.bookingEndTime` : 'bookingEndTime'}
-              className={bookingStartDate ? css.fieldSelect : css.fieldSelectDisabled}
-              selectClassName={bookingStartDate ? css.select : css.selectDisabled}
-              label={intl.formatMessage({ id: 'FieldDateAndTimeInput.endTime' })}
-              disabled={!bookingEndTimeAvailable}
-            >
-              {bookingEndTimeAvailable ? (
-                availableEndTimes.map(p => (
-                  <option key={p.timeOfDay === '00:00' ? '24:00' : p.timeOfDay} value={p.timestamp}>
-                    {p.timeOfDay === '00:00' ? '24:00' : p.timeOfDay}
-                  </option>
-                ))
-              ) : (
-                <option>{placeholderTime}</option>
-              )}
-            </FieldSelect>
-          </div>
-        </div> */}
       </div>
     );
   }

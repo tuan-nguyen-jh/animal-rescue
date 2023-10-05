@@ -60,9 +60,6 @@
 }
 
 .contactForm .closeButton {
-  position: absolute;
-  top: 10px;
-  right: 10px;
   background: none;
   border: none;
   font-size: 20px;
@@ -79,5 +76,19 @@
 }
 
 .staffIndex{
-  font-size: 1.35rem;
+  font-size: 1.25rem;
+}
+
+.field {
+  margin-bottom: 12px;
+}
+
+.header{
+  display: flex;
+  justify-content: space-between;
+}
+
+.header p{
+  margin: 0;
+  margin-bottom: 10px;
 }
