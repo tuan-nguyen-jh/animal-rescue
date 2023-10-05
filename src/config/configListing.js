@@ -47,33 +47,6 @@
  *   - requiredMessage (optional):    Message for those fields, which are mandatory.
  */
 export const listingFields = [
-  // {
-  //   key: 'category',
-  //   scope: 'public',
-  //   schemaType: 'enum',
-  //   enumOptions: [
-  //     { option: 'city-bikes', label: 'City bikes' },
-  //     { option: 'electric-bikes', label: 'Electric bikes' },
-  //     { option: 'mountain-bikes', label: 'Mountain bikes' },
-  //     { option: 'childrens-bikes', label: "Children's bikes" },
-  //   ],
-  //   filterConfig: {
-  //     indexForSearch: true,
-  //     filterType: 'SelectMultipleFilter',
-  //     label: 'Category',
-  //     group: 'primary',
-  //   },
-  //   showConfig: {
-  //     label: 'Category',
-  //     isDetail: true,
-  //   },
-  //   saveConfig: {
-  //     label: 'Category',
-  //     placeholderMessage: 'Select an option…',
-  //     isRequired: true,
-  //     requiredMessage: 'You need to select a category.',
-  //   },
-  // },
   {
     key: 'service',
     scope: 'public',
@@ -99,31 +72,6 @@ export const listingFields = [
       requiredMessage: 'You need to select at least an option',
     },
   },
-  // {
-  //   key: 'accessories',
-  //   scope: 'public',
-  //   schemaType: 'multi-enum',
-  //   enumOptions: [
-  //     { option: 'bell', label: 'Bell' },
-  //     { option: 'lights', label: 'Lights' },
-  //     { option: 'lock', label: 'Lock' },
-  //     { option: 'mudguard', label: 'Mudguard' },
-  //   ],
-  //   filterConfig: {
-  //     indexForSearch: true,
-  //     label: 'Accessories',
-  //     searchMode: 'has_all',
-  //     group: 'secondary',
-  //   },
-  //   showConfig: {
-  //     label: 'Accessories',
-  //   },
-  //   saveConfig: {
-  //     label: 'Accessories',
-  //     placeholderMessage: 'Select an option…',
-  //     isRequired: false,
-  //   },
-  // },
 {
     key: 'type-of-animal',
     scope: 'public',
@@ -247,30 +195,6 @@ export const listingFields = [
       isRequired: true,
     }
   }
-  // // An example of how to use transaction type specific custom fields and private data.
-  // {
-  //   key: 'note',
-  //   scope: 'public',
-  //   includeForListingTypes: ['product-selling'],
-  //   schemaType: 'text',
-  //   showConfig: {
-  //     label: 'Extra notes',
-  //   },
-  //   saveConfig: {
-  //     label: 'Extra notes',
-  //     placeholderMessage: 'Some public extra note about this bike...',
-  //   },
-  // },
-  // {
-  //   key: 'privatenote',
-  //   scope: 'private',
-  //   includeForListingTypes: ['daily-booking'],
-  //   schemaType: 'text',
-  //   saveConfig: {
-  //     label: 'Private notes',
-  //     placeholderMessage: 'Some private note about this bike...',
-  //   },
-  // },
 ];
 
 ///////////////////////////////////////////////////////////////////////
@@ -323,57 +247,6 @@ export const listingTypes = [
       unitType: 'hour',
     },
   },
-  // {
-  //   listingType: 'daily-booking',
-  //   label: 'Daily booking',
-  //   transactionType: {
-  //     process: 'default-booking',
-  //     alias: 'default-booking/release-1',
-  //     unitType: 'day',
-  //   },
-  // },
-  // // Here are some examples for other listingTypes
-  // // TODO: SearchPage does not work well if both booking and product selling are used at the same time
-  // {
-  //   listingType: 'nightly-booking',
-  //   label: 'Nightly booking',
-  //   transactionType: {
-  //     process: 'default-booking',
-  //     alias: 'default-booking/release-1',
-  //     unitType: 'night',
-  //   },
-  // },
-  // {
-  //   listingType: 'hourly-booking',
-  //   label: 'Hourly booking',
-  //   transactionType: {
-  //     process: 'default-booking',
-  //     alias: 'default-booking/release-1',
-  //     unitType: 'hour',
-  //   },
-  // },
-  // {
-  //   listingType: 'product-selling',
-  //   label: 'Sell bicycles',
-  //   transactionType: {
-  //     process: 'default-purchase',
-  //     alias: 'default-purchase/release-1',
-  //     unitType: 'item',
-  //   },
-  //   stockType: 'multipleItems',
-  // },
-  // {
-  //   listingType: 'inquiry',
-  //   label: 'Inquiry',
-  //   transactionType: {
-  //     process: 'default-inquiry',
-  //     alias: 'default-inquiry/release-1',
-  //     unitType: 'inquiry',
-  //   },
-  //   defaultListingFields: {
-  //     price: false,
-  //   },
-  // },
 ];
 
 // SearchPage can enforce listing query to only those listings with valid listingType
