@@ -1,0 +1,161 @@
+{:format :v3,
+ :transitions
+ [{:name :transition/request-booking,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/create-proposed-booking, :config {:type :time}}],
+   :to :state/booking-request-sent}
+  {:name :transition/decline-booking-request,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/update-protected-data}
+    {:name :action/decline-booking}],
+   :from :state/booking-request-sent,
+   :to :state/request-declined}
+  {:name :transition/expire-request,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/first-entered-state :state/booking-request-sent]}
+     {:fn/period ["PT15M"]}]},
+   :actions
+   [{:name :action/decline-booking}],
+   :from :state/booking-request-sent,
+   :to :state/request-expired}
+  {:name :transition/decline,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/decline-booking}],
+   :from :state/booking-request-sent,
+   :to :state/request-declined}
+  {:name :transition/decline,
+   :actor :actor.role/provider,
+   :actions
+   [{:name :action/decline-booking}]
+   :from :state/booking-request-sent
+   :to :state/request-declined}
+  {:name :transition/accept,
+   :actor :actor.role/provider,
+   :actions
+   [{:name :action/accept-booking},
+    {:name :action/privileged-set-line-items}],
+   :from :state/booking-request-sent,
+   :to :state/request-accepted}
+  {:name :transition/decline,
+   :actor :actor.role/provider,
+   :actions
+   [{:name :action/decline-booking}]
+   :from :state/request-accepted
+   :to :state/request-declined}
+  {:name :transition/decline,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/decline-booking}]
+   :from :state/request-accepted
+   :to :state/request-declined}
+  {:name :transition/decline,
+   :actor :actor.role/operator,
+   :actions
+   [{:name :action/decline-booking}]
+   :from :state/request-accepted
+   :to :state/request-declined}
+  {:name :transition/expire-request,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/first-entered-state :state/booking-request-sent]}
+     {:fn/period ["P1D"]}]},
+   :actions
+   [{:name :action/decline-booking}],
+   :from :state/request-accepted,
+   :to :state/request-expired}
+  {:name :transition/confirm-request,
+   :actor :actor.role/customer,
+   :actions
+   [],
+   :from state/request-accepted,
+   :to state/officer-dispatched}
+  {:name :transition/finish
+   :actor :actor.role/provider,
+   :actions
+   [{:name :action/privileged-set-line-items}],
+   :from :state/officer-dispatched,
+   :to :state/exact-fee-calculated}
+  {:name :transition/request-payment,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/update-protected-data}
+    {:name :action/privileged-set-line-items}
+    {:name :action/stripe-create-payment-intent-push}],
+   :from :state/exact-fee-calculated,
+   :to :state/pending-payment,
+   :privileged? true}
+  {:name :transition/expire-payment,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/first-entered-state :state/pending-payment]}
+     {:fn/period ["PT15M"]}]},
+   :actions
+   [{:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}
+      ;; Keep this action last in the list of actions for
+      ;; the transition
+    {:name :action/cancel-booking}],
+   :from :state/pending-payment,
+   :to :state/payment-expired}
+  {:name :transition/confirm-payment,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/stripe-confirm-payment-intent}],
+   :from :state/pending-payment,
+   :to :state/rescue-completed}
+  {:name :transition/complete,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/booking-end]} {:fn/period ["P2D"]}]},
+   :actions [{:name :action/stripe-create-payout}],
+   :from :state/accepted,
+   :to :state/delivered}
+  {:name :transition/review-1-by-provider,
+   :actor :actor.role/provider,
+   :actions [{:name :action/post-review-by-provider}],
+   :from :state/completed,
+   :to :state/reviewed-by-provider}
+  {:name :transition/review-2-by-provider,
+   :actor :actor.role/provider,
+   :actions
+   [{:name :action/post-review-by-provider}
+    {:name :action/publish-reviews}],
+   :from :state/reviewed-by-customer,
+   :to :state/reviewed}
+  {:name :transition/review-1-by-customer,
+   :actor :actor.role/customer,
+   :actions [{:name :action/post-review-by-customer}],
+   :from :state/completed,
+   :to :state/reviewed-by-customer}
+  {:name :transition/review-2-by-customer,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/post-review-by-customer}
+    {:name :action/publish-reviews}],
+   :from :state/reviewed-by-provider,
+   :to :state/reviewed}
+  {:name :transition/expire-review-period,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/booking-end]} {:fn/period ["P7D"]}]},
+   :actions [],
+   :from :state/completed,
+   :to :state/reviewed}
+  {:name :transition/expire-provider-review-period,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/booking-end]} {:fn/period ["P7D"]}]},
+   :actions [{:name :action/publish-reviews}],
+   :from :state/reviewed-by-customer,
+   :to :state/reviewed}
+  {:name :transition/expire-customer-review-period,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/booking-end]} {:fn/period ["P7D"]}]},
+   :actions [{:name :action/publish-reviews}],
+   :from :state/reviewed-by-provider,
+   :to :state/reviewed}]}
