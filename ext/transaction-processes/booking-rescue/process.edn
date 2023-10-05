@@ -5,13 +5,6 @@
    :actions
    [{:name :action/create-proposed-booking, :config {:type :time}}],
    :to :state/booking-request-sent}
-  {:name :transition/decline-booking-request,
-   :actor :actor.role/customer,
-   :actions
-   [{:name :action/update-protected-data}
-    {:name :action/decline-booking}],
-   :from :state/booking-request-sent,
-   :to :state/request-declined}
   {:name :transition/sent-request-expire,
    :at
    {:fn/plus
