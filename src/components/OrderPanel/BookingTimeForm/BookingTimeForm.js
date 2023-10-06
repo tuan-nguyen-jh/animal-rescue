@@ -109,7 +109,6 @@ export class BookingTimeFormComponent extends Component {
                 subscription={{ values: true }}
                 onChange={values => {
                   this.handleOnChange(values);
-                  console.log(values)
                 }}
               />
               {monthlyTimeSlots && timeZone ? (
