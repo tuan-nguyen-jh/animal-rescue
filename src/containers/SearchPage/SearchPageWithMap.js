@@ -166,7 +166,9 @@ export class SearchPageComponent extends Component {
     const { history, routeConfiguration, config } = this.props;
 
     // Reset state
-    this.setState({ currentQueryParams: {} });
+    this.setState({ currentQueryParams: {
+      pub_listingType: this.state.currentQueryParams === ACC_LISTING_TYPE ? 'acc' : 'animal'
+    } });
 
     // Reset routing params
     const queryParams = {
@@ -399,7 +401,7 @@ export class SearchPageComponent extends Component {
       : css.topbar;
 
     const currentFilter = availableFilters.filter(filter => {
-      return filter.includeForListingTypes?.[0] === currentListingTypeQuery;
+        return filter?.includeForListingTypes?.[0] === currentListingTypeQuery;
     });
 
     // Create a final filter buttons based on current query params
