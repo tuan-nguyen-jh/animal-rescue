@@ -859,7 +859,7 @@ export const mergeConfig = (configAsset = {}, defaultConfigs = {}) => {
 
 export const getListingFieldConfigEnumOptions = (listingFieldKey) => {
   for (let config of listingFields){
-    if (config.key == listingFieldKey){
+    if (config.key === listingFieldKey){
       return config.enumOptions
     }
   }

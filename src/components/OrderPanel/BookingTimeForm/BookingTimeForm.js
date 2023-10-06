@@ -10,11 +10,13 @@ import { propTypes } from '../../../util/types';
 import { autocompletePlaceSelected, autocompleteSearchRequired, composeValidators, required } from '../../../util/validators';
 
 import { FieldLocationAutocompleteInput, FieldSelect, FieldTextInput, Form, PrimaryButton } from '../../../components';
+import { getListingFieldConfigEnumOptions } from '../../../util/configHelpers';
+
+import { CONFIG_LISTING_FIELD_KEY, SERVICE_RESCUE } from '../../../config/configBookingService';
 
 import FieldDateAndTimeInput from './FieldDateAndTimeInput';
 
 import css from './BookingTimeForm.module.css';
-import { getListingFieldConfigEnumOptions } from '../../../util/configHelpers';
 
 const identity = v => v;
 
@@ -157,7 +159,7 @@ export class BookingTimeFormComponent extends Component {
               <FormSpy
                 subscription={{ values: true }}>
                 {(props) => {
-                  if (props.values.selectService === 'rescue') {
+                  if (props.values.selectService === SERVICE_RESCUE) {
                     return (
                       <div>
                         <hr className={css.totalDivider} />
@@ -190,7 +192,7 @@ export class BookingTimeFormComponent extends Component {
                           <option disabled value="">
                             {intl.formatMessage({ id: "BookingTimeForm.typeOfAnimalPlaceholder" })}
                           </option>
-                          {getListingFieldConfigEnumOptions('type-of-animal').map(
+                          {getListingFieldConfigEnumOptions(CONFIG_LISTING_FIELD_KEY).map(
                             (value, index) => <option key={index} value={value.option}>{value?.label}</option>)}
                         </FieldSelect>
                         <FieldTextInput
