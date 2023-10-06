@@ -112,7 +112,7 @@
   {:name :transition/review-1-by-provider,
    :actor :actor.role/provider,
    :actions [{:name :action/post-review-by-provider}],
-   :from :state/completed,
+   :from :state/delivered,
    :to :state/reviewed-by-provider}
   {:name :transition/review-2-by-provider,
    :actor :actor.role/provider,
@@ -124,7 +124,7 @@
   {:name :transition/review-1-by-customer,
    :actor :actor.role/customer,
    :actions [{:name :action/post-review-by-customer}],
-   :from :state/completed,
+   :from :state/delivered,
    :to :state/reviewed-by-customer}
   {:name :transition/review-2-by-customer,
    :actor :actor.role/customer,
@@ -138,7 +138,7 @@
    {:fn/plus
     [{:fn/timepoint [:time/booking-end]} {:fn/period ["P7D"]}]},
    :actions [],
-   :from :state/completed,
+   :from :state/delivered,
    :to :state/reviewed}
   {:name :transition/expire-provider-review-period,
    :at
