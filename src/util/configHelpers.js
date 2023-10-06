@@ -1,3 +1,4 @@
+import { listingFields } from '../config/configListing';
 import { subUnitDivisors } from '../config/settingsCurrency';
 import { getSupportedProcessesInfo } from '../transactions/transaction';
 
@@ -855,3 +856,12 @@ export const mergeConfig = (configAsset = {}, defaultConfigs = {}) => {
     hasMandatoryConfigurations: hasMandatoryConfigs(configAsset),
   };
 };
+
+export const getListingFieldConfigEnumOptions = (listingFieldKey) => {
+  for (let config of listingFields){
+    if (config.key === listingFieldKey){
+      return config.enumOptions
+    }
+  }
+  return []
+}

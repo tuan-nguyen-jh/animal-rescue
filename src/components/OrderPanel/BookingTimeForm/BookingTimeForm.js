@@ -7,13 +7,18 @@ import { compose } from 'redux';
 import { timestampToDate } from '../../../util/dates';
 import { FormattedMessage, injectIntl, intlShape } from '../../../util/reactIntl';
 import { propTypes } from '../../../util/types';
-import { required } from '../../../util/validators';
+import { autocompletePlaceSelected, autocompleteSearchRequired, composeValidators, required } from '../../../util/validators';
 
-import { FieldSelect, Form, PrimaryButton } from '../../../components';
+import { FieldLocationAutocompleteInput, FieldSelect, FieldTextInput, Form, PrimaryButton } from '../../../components';
+import { getListingFieldConfigEnumOptions } from '../../../util/configHelpers';
+
+import { CONFIG_LISTING_FIELD_KEY, SERVICE_RESCUE } from '../../../config/configBookingService';
 
 import FieldDateAndTimeInput from './FieldDateAndTimeInput';
 
 import css from './BookingTimeForm.module.css';
+
+const identity = v => v;
 
 export class BookingTimeFormComponent extends Component {
   constructor(props) {
@@ -90,8 +95,15 @@ export class BookingTimeFormComponent extends Component {
             timeZone,
             fetchLineItemsInProgress,
             fetchLineItemsError,
+            autoFocus
           } = fieldRenderProps;
 
+          const addressRequiredMessage = intl.formatMessage({
+            id: 'BookingTimeForm.addressRequired',
+          });
+          const addressNotRecognizedMessage = intl.formatMessage({
+            id: 'BookingTimeForm.addressNotRecognized',
+          });
 
           return (
             <Form onSubmit={handleSubmit} className={classes} enforcePagePreloadFor="CheckoutPage">
@@ -133,14 +145,73 @@ export class BookingTimeFormComponent extends Component {
               <hr className={css.totalDivider} />
 
               <FieldSelect
-                id="select-service"
-                name="select-servcie"
-                label={intl.formatMessage({id:"BookingTimeForm.serviceLabel"})}
-                validate={required(intl.formatMessage({id:"BookingTimeForm.serviceRequired"}))}
+                id="selectService"
+                name="selectService"
+                label={intl.formatMessage({ id: "BookingTimeForm.serviceLabel" })}
+                validate={required(intl.formatMessage({ id: "BookingTimeForm.serviceRequired" }))}
               >
-                <option disabled value="">{intl.formatMessage({id:"BookingTimeForm.servicePlaceholder"})}</option>
+                <option disabled value="">
+                  {intl.formatMessage({ id: "BookingTimeForm.servicePlaceholder" })}
+                </option>
                 {service.map((value, index) => <option key={index} value={value}>{value.toUpperCase()}</option>)}
               </FieldSelect>
+
+              <FormSpy
+                subscription={{ values: true }}>
+                {(props) => {
+                  if (props.values.selectService === SERVICE_RESCUE) {
+                    return (
+                      <div>
+                        <hr className={css.totalDivider} />
+                        <FieldLocationAutocompleteInput
+                          inputClassName={css.locationAutocompleteInput}
+                          iconClassName={css.locationAutocompleteInputIcon}
+                          predictionsClassName={css.predictionsRoot}
+                          validClassName={css.validLocation}
+                          autoFocus={autoFocus}
+                          name="location"
+                          label={intl.formatMessage({ id: 'BookingTimeForm.rescueAddressLabel' })}
+                          placeholder={intl.formatMessage({
+                            id: 'BookingTimeForm.addressPlaceholder',
+                          })}
+                          useDefaultPredictions={false}
+                          format={identity}
+                          valueFromForm={values.location}
+                          validate={composeValidators(
+                            autocompleteSearchRequired(addressRequiredMessage),
+                            autocompletePlaceSelected(addressNotRecognizedMessage)
+                          )}
+                        />
+                        <FieldSelect
+                          id="typeAnimal"
+                          name="typeAnimal"
+                          className={css.rescueInfoField}
+                          label={intl.formatMessage({ id: "BookingTimeForm.typeOfAnimalLabel" })}
+                          validate={required(intl.formatMessage({ id: "BookingTimeForm.typeOfAnimalRequired" }))}
+                        >
+                          <option disabled value="">
+                            {intl.formatMessage({ id: "BookingTimeForm.typeOfAnimalPlaceholder" })}
+                          </option>
+                          {getListingFieldConfigEnumOptions(CONFIG_LISTING_FIELD_KEY).map(
+                            (value, index) => <option key={index} value={value.option}>{value?.label}</option>)}
+                        </FieldSelect>
+                        <FieldTextInput
+                          className={css.rescueInfoField}
+                          type="textarea"
+                          id="rescueDescription"
+                          name="rescueDescription"
+                          label={intl.formatMessage({ id: "BookingTimeForm.desciptionRescueLabel" })}
+                          placeholder={intl.formatMessage({ id: "BookingTimeForm.desciptionRescuePlaceholder" })}
+                          validate={required(intl.formatMessage({ id: "BookingTimeForm.requiredTextInput" }))}
+                        />
+                      </div>
+                    )
+                  }
+                  return (
+                    <hr className={css.totalDivider} />
+                  )
+                }}
+              </FormSpy>
 
               <div className={css.submitButton}>
                 <PrimaryButton type="submit" inProgress={fetchLineItemsInProgress}>
