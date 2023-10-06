@@ -23,6 +23,7 @@ import {
   fetchStripeAccount,
 } from '../../ducks/stripeConnectAccount.duck';
 import { fetchCurrentUser } from '../../ducks/user.duck';
+import { ACC_LISTING_TYPE } from '../../config/configListing';
 
 const { UUID } = sdkTypes;
 
@@ -168,6 +169,9 @@ export const SAVE_PAYOUT_DETAILS_REQUEST = 'app/EditListingPage/SAVE_PAYOUT_DETA
 export const SAVE_PAYOUT_DETAILS_SUCCESS = 'app/EditListingPage/SAVE_PAYOUT_DETAILS_SUCCESS';
 export const SAVE_PAYOUT_DETAILS_ERROR = 'app/EditListingPage/SAVE_PAYOUT_DETAILS_ERROR';
 
+export const UPDATE_FETCH_LISTINGS = 'app/EditListingPage/UPDATE_FETCH_LISTINGS';
+export const UPDATE_FETCH_LISTINGS_ERROR = 'app/EditListingPage/UPDATE_FETCH_LISTINGS_ERROR';
+
 // ================ Reducer ================ //
 
 const initialState = {
@@ -208,6 +212,7 @@ const initialState = {
   updateInProgress: false,
   payoutDetailsSaveInProgress: false,
   payoutDetailsSaved: false,
+  listingACCs: [],
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -451,6 +456,11 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, payoutDetailsSaveInProgress: false };
     case SAVE_PAYOUT_DETAILS_SUCCESS:
       return { ...state, payoutDetailsSaveInProgress: false, payoutDetailsSaved: true };
+    
+    case UPDATE_FETCH_LISTINGS:
+      return { ...state, listingACCs: payload}
+    case UPDATE_FETCH_LISTINGS_ERROR:
+      return { ...state, listingACCs: []}
 
     default:
       return state;
@@ -474,6 +484,16 @@ export const removeListingImage = imageId => ({
   type: REMOVE_LISTING_IMAGE,
   payload: { imageId },
 });
+
+export const updateFetchListings = (listingACCs) => ({
+  type: UPDATE_FETCH_LISTINGS,
+  payload: listingACCs
+});
+
+export const updateFetchListingsError = () => ({
+  type: UPDATE_FETCH_LISTINGS_ERROR,
+});
+
 
 // All the action creators that don't have the {Success, Error} suffix
 // take the params object that the corresponding SDK endpoint method
@@ -532,7 +552,10 @@ export const savePayoutDetailsRequest = requestAction(SAVE_PAYOUT_DETAILS_REQUES
 export const savePayoutDetailsSuccess = successAction(SAVE_PAYOUT_DETAILS_SUCCESS);
 export const savePayoutDetailsError = errorAction(SAVE_PAYOUT_DETAILS_ERROR);
 
+// export const fetchListings = requestAction(UPDATE_FETCH_LISTINGS)
+
 // ================ Thunk ================ //
+
 
 export function requestShowListing(actionPayload, config) {
   return (dispatch, getState, sdk) => {
@@ -903,6 +926,17 @@ export const savePayoutDetails = (values, isUpdateCall) => (dispatch, getState, 
     .catch(() => dispatch(savePayoutDetailsError()));
 };
 
+export const fetchACCListings = () => async (dispatch, getState, sdk) => {
+  try {
+    const response = await sdk.listings.query({ pub_listingType: ACC_LISTING_TYPE})
+    const listingACCs = denormalisedResponseEntities(response)
+    dispatch(updateFetchListings(listingACCs))
+  } catch(err) {
+    dispatch(updateFetchListingsError());
+    console.err(err);
+  }
+}
+
 // loadData is run for each tab of the wizard. When editing an
 // existing listing, the listing must be fetched first.
 export const loadData = (params, search, config) => (dispatch, getState, sdk) => {
@@ -911,7 +945,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
 
   if (type === 'new') {
     // No need to listing data when creating a new listing
-    return Promise.all([dispatch(fetchCurrentUser())])
+    return Promise.all([dispatch(fetchCurrentUser()), dispatch(fetchACCListings())])
       .then(response => {
         const currentUser = getState().user.currentUser;
         if (currentUser && currentUser.stripeAccount) {
@@ -925,7 +959,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   }
 
   const payload = { id: new UUID(id) };
-  return Promise.all([dispatch(requestShowListing(payload, config)), dispatch(fetchCurrentUser())])
+  return Promise.all([dispatch(requestShowListing(payload, config)), dispatch(fetchCurrentUser()), dispatch(fetchACCListings())])
     .then(response => {
       const currentUser = getState().user.currentUser;
       if (currentUser && currentUser.stripeAccount) {
