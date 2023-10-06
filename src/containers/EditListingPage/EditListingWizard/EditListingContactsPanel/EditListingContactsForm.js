@@ -9,7 +9,7 @@ import { intlShape, injectIntl } from '../../../../util/reactIntl';
 import { composeValidators, required, emailFormatValid, nonEmptyArray } from '../../../../util/validators';
 
 // Import shared components
-import { Button, FieldTextInput, FieldPhoneNumberInput } from '../../../../components';
+import { Button, FieldTextInput, FieldPhoneNumberInput, IconAdd, IconClose } from '../../../../components';
 
 // Import modules from this directory
 import css from './EditListingContactsForm.module.css';
@@ -41,19 +41,19 @@ export const EditListingContactsFormComponent = props => (
       const submitInProgress = updateInProgress;
       const submitDisabled = invalid || disabled || submitInProgress || pristine;
 
-      const required_ = required(intl.formatMessage(
+      const requiredContactsForm = required(intl.formatMessage(
         { id: 'EditListingContactsForm.fieldRequired' }
       ));
-      const emailFormatValid_ = emailFormatValid(intl.formatMessage(
+      const emailFormatValidContactsForm = emailFormatValid(intl.formatMessage(
         { id: 'EditListingContactsForm.emailInvalid' }
       ));
-      const nonEmptyArray_ = nonEmptyArray(intl.formatMessage(
+      const nonEmptyArrayContactsForm = nonEmptyArray(intl.formatMessage(
         { id: 'EditListingContactsForm.nonEmptyArray' }
       ));
 
       return (
         <form onSubmit={handleSubmit}>
-          <FieldArray name="contacts" validate={nonEmptyArray_}>
+          <FieldArray name="contacts" validate={nonEmptyArrayContactsForm}>
             {({ fields }) => (
               <div key={`${formId}.index`}>
                 {fields.map((name, index) => (
@@ -61,12 +61,12 @@ export const EditListingContactsFormComponent = props => (
                   <div key={name} className={css.contactForm}>
                     <div className={css.header}>
                       <p className={css.staffIndex}>
-                        Contact #{index + 1}
+                        {intl.formatMessage({id: "EditListingContactsForm.contactFormLabel"})} #{index + 1}
                       </p>
                       <button className={css.closeButton} type="button" onClick={() => {
                         fields.remove(index);
                       }}>
-                        X
+                        <IconClose/>
                       </button>
                     </div>
 
@@ -76,13 +76,13 @@ export const EditListingContactsFormComponent = props => (
                       id={`${name}.email`}
                       name={`${name}.email`}
                       label={intl.formatMessage({ id: "EditListingContactsForm.emailLabel" })}
-                      validate={composeValidators(required_, emailFormatValid_)}
+                      validate={composeValidators(requiredContactsForm, emailFormatValidContactsForm)}
                     />
                     <FieldPhoneNumberInput
                       id={`${name}.phoneNumber`}
                       name={`${name}.phoneNumber`}
                       label={intl.formatMessage({ id: "EditListingContactsForm.phoneNumberLabel" })}
-                      validate={required_}
+                      validate={requiredContactsForm}
                     />
                   </div>
 
@@ -94,7 +94,7 @@ export const EditListingContactsFormComponent = props => (
                     fields.push({ email: '', phoneNumber: '' });
                   }}
                 >
-                  +
+                  <IconAdd/>
                 </button>
               </div>
             )}

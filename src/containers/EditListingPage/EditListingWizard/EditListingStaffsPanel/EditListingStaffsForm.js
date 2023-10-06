@@ -9,7 +9,7 @@ import { intlShape, injectIntl } from '../../../../util/reactIntl';
 import { required, emailFormatValid, nonEmptyArray, composeValidators } from '../../../../util/validators';
 
 // Import shared components
-import { Button, FieldPhoneNumberInput, FieldTextInput } from '../../../../components';
+import { Button, FieldPhoneNumberInput, FieldTextInput, IconAdd, IconClose } from '../../../../components';
 
 // Import modules from this directory
 import css from './EditListingStaffsForm.module.css';
@@ -40,18 +40,18 @@ export const EditListingStaffsFormComponent = props => (
       const submitInProgress = updateInProgress;
       const submitDisabled = invalid || disabled || submitInProgress || pristine;
 
-      const required_ = required(intl.formatMessage(
+      const requiredStaffsForm = required(intl.formatMessage(
         { id: 'EditListingStaffsForm.fieldRequired' }
       ));
-      const emailFormatValid_ = emailFormatValid(intl.formatMessage(
+      const emailFormatValidStaffsForm = emailFormatValid(intl.formatMessage(
         { id: 'EditListingStaffsForm.emailInvalid' }
       ));
-      const nonEmptyArray_ = nonEmptyArray(intl.formatMessage(
+      const nonEmptyArrayStaffsForm = nonEmptyArray(intl.formatMessage(
         { id: 'EditListingStaffsForm.nonEmptyArray' }
       ));
       return (
         <form onSubmit={handleSubmit}>
-          <FieldArray name="staffs" validate={nonEmptyArray_}>
+          <FieldArray name="staffs" validate={nonEmptyArrayStaffsForm}>
             {({ fields }) => (
               <div key={`${formId}.index`}>
                 {fields.map((name, index) => (
@@ -59,12 +59,12 @@ export const EditListingStaffsFormComponent = props => (
                   <div key={name} className={css.contactForm}>
                     <div className={css.header}>
                       <p className={css.staffIndex}>
-                        Staff #{index + 1}
+                        {intl.formatMessage({ id: "EditListingStaffsForm.staffFormLabel" })} #{index + 1}
                       </p>
                       <button className={css.closeButton} type="button" onClick={() => {
                         fields.remove(index);
                       }}>
-                        X
+                        <IconClose />
                       </button>
                     </div>
                     <FieldTextInput
@@ -73,7 +73,7 @@ export const EditListingStaffsFormComponent = props => (
                       id={`${name}.firstName`}
                       name={`${name}.firstName`}
                       label={intl.formatMessage({ id: 'EditListingStaffsForm.firstNameLabel' })}
-                      validate={required_}
+                      validate={requiredStaffsForm}
                     />
                     <FieldTextInput
                       className={css.field}
@@ -81,7 +81,7 @@ export const EditListingStaffsFormComponent = props => (
                       id={`${name}.lastName`}
                       name={`${name}.lastName`}
                       label={intl.formatMessage({ id: 'EditListingStaffsForm.lastNameLabel' })}
-                      validate={required_}
+                      validate={requiredStaffsForm}
                     />
                     <FieldTextInput
                       className={css.field}
@@ -89,13 +89,13 @@ export const EditListingStaffsFormComponent = props => (
                       id={`${name}.email`}
                       name={`${name}.email`}
                       label={intl.formatMessage({ id: 'EditListingStaffsForm.emailLabel' })}
-                      validate={composeValidators(required_, emailFormatValid_)}
+                      validate={composeValidators(requiredStaffsForm, emailFormatValidStaffsForm)}
                     />
                     <FieldPhoneNumberInput
                       id={`${name}.phoneNumber`}
                       name={`${name}.phoneNumber`}
                       label={intl.formatMessage({ id: 'EditListingStaffsForm.phoneNumberLabel' })}
-                      validate={required_}
+                      validate={requiredStaffsForm}
                     />
                   </div>
 
@@ -107,7 +107,7 @@ export const EditListingStaffsFormComponent = props => (
                     fields.push({ firstName: '', lastName: '', email: '', phoneNumber: '' });
                   }}
                 >
-                  +
+                  <IconAdd/>
                 </button>
               </div>
             )}

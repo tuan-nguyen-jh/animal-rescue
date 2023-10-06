@@ -230,12 +230,3 @@ export const validSGID = message => value => {
 
 export const composeValidators = (...validators) => value =>
   validators.reduce((error, validator) => error || validator(value), VALID);
-
-const phoneRegex = /^[0-9\s()+-]*$/;
-export const validPhoneNumber = message => value => {
-  if (phoneRegex.test(value)) {
-    return VALID
-  } else {
-    return message
-  }
-}

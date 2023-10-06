@@ -14,9 +14,7 @@ import EditListingContactsForm from './EditListingContactsForm';
 import css from './EditListingContactsPanel.module.css';
 
 const getInitialValues = params => {
-  const { listing } = params;
-  const { contacts } = listing?.attributes?.publicData || {};
-
+  const { contacts } = params?.listing?.attributes?.publicData || {};
   return { contacts };
 };
 
@@ -35,7 +33,7 @@ const EditListingContactsPanel = props => {
 
   const classes = classNames(rootClassName || css.root, className);
   const initialValues = getInitialValues(props);
-  const isPublished = listing?.id && listing?.attributes?.state !== LISTING_STATE_DRAFT;
+  const isPublished = listing?.attributes?.state !== LISTING_STATE_DRAFT;
 
   return (
     <div className={classes}>
@@ -62,7 +60,6 @@ const EditListingContactsPanel = props => {
                 contacts,
               },
             };
-            console.log(updateValues);
             onSubmit(updateValues);
           }}
           saveActionMsg={submitButtonText}

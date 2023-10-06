@@ -14,9 +14,7 @@ import EditListingStaffsForm from './EditListingStaffsForm';
 import css from './EditListingStaffsPanel.module.css';
 
 const getInitialValues = params => {
-  const { listing } = params;
-  const { staffs } = listing?.attributes?.publicData || {};
-
+  const { staffs } = params?.listing?.attributes?.publicData || {};
   return { staffs };
 };
 
