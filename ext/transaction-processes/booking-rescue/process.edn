@@ -1,6 +1,17 @@
 {:format :v3,
  :transitions
- [{:name :transition/request-booking,
+ [{:name :transition/inquire,
+   :actor :actor.role/customer,
+   :actions [{:name :action/update-protected-data}],
+   :to :state/inquiry}
+  {:name :transition/request-after-inquiry,
+   :actor :actor.role/customer,
+   :actions
+  [{:name :action/create-proposed-booking, :config {:type :time}}],
+   :from :state/inquiry,
+   :to :state/booking-request-sent,
+   :privileged? true}
+  {:name :transition/request-booking,
    :actor :actor.role/customer,
    :actions
    [{:name :action/create-proposed-booking, :config {:type :time}}],
