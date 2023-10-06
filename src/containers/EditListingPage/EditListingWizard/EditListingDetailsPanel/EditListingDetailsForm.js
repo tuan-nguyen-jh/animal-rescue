@@ -113,33 +113,33 @@ const FieldSelectListingType = props => {
 };
 
 const FieldSelectACCName = props => {
-  const { name, formApi, intl, listingACCs, } = props;
+  const { name, formApi, intl, listingACCs } = props;
 
   return (
-      <FieldSelect
-        id={name}
-        name={name}
-        className={css.listingTypeSelect}
-        label={intl.formatMessage({ id: 'EditListingDetailsForm.ACCNameLabel' })}
-        validate={required(
-          intl.formatMessage({
-            id: 'EditListingDetailsForm.ACCNameRequired',
-          })
-        )}
-      >
-        <option disabled value="">
-          {intl.formatMessage({ id: 'EditListingDetailsForm.ACCNamePlaceholder' })}
-        </option>
-        {listingACCs.map(acc => {
-          return (
-            <option key={acc?.id.uuid} value={acc?.attributes.title}>
-              {acc?.attributes.title}
-            </option>
-          );
-        })}
-      </FieldSelect>
-  )
-}
+    <FieldSelect
+      id={name}
+      name={name}
+      className={css.listingTypeSelect}
+      label={intl.formatMessage({ id: 'EditListingDetailsForm.ACCNameLabel' })}
+      validate={required(
+        intl.formatMessage({
+          id: 'EditListingDetailsForm.ACCNameRequired',
+        })
+      )}
+    >
+      <option disabled value="">
+        {intl.formatMessage({ id: 'EditListingDetailsForm.ACCNamePlaceholder' })}
+      </option>
+      {listingACCs.map(acc => {
+        return acc ? (
+          <option key={acc.id.uuid} value={acc.attributes.title}>
+            {acc.attributes.title}
+          </option>
+        ) : null;
+      })}
+    </FieldSelect>
+  );
+};
 
 // Add collect data for listing fields (both publicData and privateData) based on configuration
 const AddListingFields = props => {
@@ -167,7 +167,6 @@ const AddListingFields = props => {
         ]
       : pickedFields;
   }, []);
-
 
   return <>{fields}</>;
 };
@@ -275,13 +274,15 @@ const EditListingDetailsFormComponent = props => (
             intl={intl}
           />
 
-          {listingType === ANIMAL_LISTING_TYPE && <FieldSelectACCName
-            id="accname"
-            name={intl.formatMessage({id: "EditListingDetailsForm.ACCNameLabel"})}
-            intl={intl}
-            formApi={formApi}
-            listingACCs={listingACCs}
-          />}
+          {listingType === ANIMAL_LISTING_TYPE && (
+            <FieldSelectACCName
+              id="accname"
+              name={intl.formatMessage({ id: 'EditListingDetailsForm.ACCNameLabel' })}
+              intl={intl}
+              formApi={formApi}
+              listingACCs={listingACCs}
+            />
+          )}
 
           <Button
             className={css.submitButton}

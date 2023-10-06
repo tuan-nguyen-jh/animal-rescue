@@ -933,7 +933,7 @@ export const fetchACCListings = () => async (dispatch, getState, sdk) => {
     dispatch(updateFetchListings(listingACCs))
   } catch(err) {
     dispatch(updateFetchListingsError());
-    throw err;
+    console.err(err);
   }
 }
 

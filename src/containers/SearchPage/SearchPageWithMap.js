@@ -169,8 +169,13 @@ export class SearchPageComponent extends Component {
     this.setState({ currentQueryParams: {} });
 
     // Reset routing params
-    const queryParams = { pub_listingType: this.state.currentQueryParams.pub_listingType === ACC_LISTING_TYPE ? ACC_LISTING_TYPE : ANIMAL_LISTING_TYPE}
-    history.push(createResourceLocatorString('SearchPage', routeConfiguration, {},queryParams));
+    const queryParams = {
+      pub_listingType:
+        this.state.currentQueryParams.pub_listingType === ACC_LISTING_TYPE
+          ? ACC_LISTING_TYPE
+          : ANIMAL_LISTING_TYPE,
+    };
+    history.push(createResourceLocatorString('SearchPage', routeConfiguration, {}, queryParams));
   }
 
   getHandleChangedValueFn(useHistoryPush) {
@@ -227,6 +232,16 @@ export class SearchPageComponent extends Component {
       : omit(urlQueryParams, urlParam);
 
     history.push(createResourceLocatorString('SearchPage', routeConfiguration, {}, queryParams));
+  }
+
+  createFinalFilters(currentListingTypeQuery, currentFilter, defaultFilters, keywordsFilter) {
+    return [
+      ...(currentListingTypeQuery === ACC_LISTING_TYPE
+        ? [...currentFilter, ...defaultFilters]
+        : currentListingTypeQuery === ANIMAL_LISTING_TYPE
+        ? [...currentFilter, keywordsFilter]
+        : [...defaultFilters]),
+    ];
   }
 
   render() {
@@ -291,7 +306,7 @@ export class SearchPageComponent extends Component {
       ...customSecondaryFilters,
     ];
 
-    const [,,keywordsFilter] = defaultFilters;
+    const [, , keywordsFilter] = defaultFilters;
 
     const hasSecondaryFilters = !!(customSecondaryFilters && customSecondaryFilters.length > 0);
 
@@ -384,19 +399,16 @@ export class SearchPageComponent extends Component {
       : css.topbar;
 
     const currentFilter = availableFilters.filter(filter => {
-      if (filter.includeForListingTypes) {
-        return filter.includeForListingTypes[0] === currentListingTypeQuery;
-      }
+      return filter.includeForListingTypes?.[0] === currentListingTypeQuery;
     });
 
     // Create a final filter buttons based on current query params
-    const finalFilter = [
-      ...(currentListingTypeQuery === ACC_LISTING_TYPE
-        ? [...currentFilter, ...defaultFilters]
-        : currentListingTypeQuery === ANIMAL_LISTING_TYPE
-        ? [...currentFilter, keywordsFilter]
-        : [...defaultFilters]),
-    ];
+    const finalFilter = this.createFinalFilters(
+      currentListingTypeQuery,
+      currentFilter,
+      defaultFilters,
+      keywordsFilter
+    );
 
     // N.B. openMobileMap button is sticky.
     // For some reason, stickyness doesn't work on Safari, if the element is <button>
