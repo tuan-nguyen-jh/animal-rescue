@@ -1,17 +1,16 @@
-import React, { Component } from 'react';
-import { array, bool, func, number, object, string } from 'prop-types';
-import { compose } from 'redux';
-import { Form as FinalForm, FormSpy } from 'react-final-form';
 import classNames from 'classnames';
+import { array, bool, func, number, object, string } from 'prop-types';
+import React, { Component } from 'react';
+import { Form as FinalForm, FormSpy } from 'react-final-form';
+import { compose } from 'redux';
 
-import { FormattedMessage, intlShape, injectIntl } from '../../../util/reactIntl';
 import { timestampToDate } from '../../../util/dates';
+import { FormattedMessage, injectIntl, intlShape } from '../../../util/reactIntl';
 import { propTypes } from '../../../util/types';
-import { BOOKING_PROCESS_NAME } from '../../../transactions/transaction';
+import { required } from '../../../util/validators';
 
-import { Form, H6, PrimaryButton } from '../../../components';
+import { FieldSelect, Form, PrimaryButton } from '../../../components';
 
-import EstimatedCustomerBreakdownMaybe from '../EstimatedCustomerBreakdownMaybe';
 import FieldDateAndTimeInput from './FieldDateAndTimeInput';
 
 import css from './BookingTimeForm.module.css';
@@ -84,33 +83,15 @@ export class BookingTimeFormComponent extends Component {
             intl,
             isOwnListing,
             listingId,
+            service,
             values,
             monthlyTimeSlots,
             onFetchTimeSlots,
             timeZone,
-            lineItems,
             fetchLineItemsInProgress,
             fetchLineItemsError,
           } = fieldRenderProps;
 
-          const startTime = values && values.bookingStartTime ? values.bookingStartTime : null;
-          const endTime = values && values.bookingEndTime ? values.bookingEndTime : null;
-          const startDate = startTime ? timestampToDate(startTime) : null;
-          const endDate = endTime ? timestampToDate(endTime) : null;
-
-          // This is the place to collect breakdown estimation data. See the
-          // EstimatedCustomerBreakdownMaybe component to change the calculations
-          // for customized payment processes.
-          const breakdownData =
-            startDate && endDate
-              ? {
-                  startDate,
-                  endDate,
-                }
-              : null;
-
-          const showEstimatedBreakdown =
-            breakdownData && lineItems && !fetchLineItemsInProgress && !fetchLineItemsError;
 
           return (
             <Form onSubmit={handleSubmit} className={classes} enforcePagePreloadFor="CheckoutPage">
@@ -143,28 +124,23 @@ export class BookingTimeFormComponent extends Component {
                 />
               ) : null}
 
-              {showEstimatedBreakdown ? (
-                <div className={css.priceBreakdownContainer}>
-                  <H6 as="h3" className={css.bookingBreakdownTitle}>
-                    <FormattedMessage id="BookingTimeForm.priceBreakdownTitle" />
-                  </H6>
-                  <hr className={css.totalDivider} />
-                  <EstimatedCustomerBreakdownMaybe
-                    breakdownData={breakdownData}
-                    lineItems={lineItems}
-                    timeZone={timeZone}
-                    currency={unitPrice.currency}
-                    marketplaceName={marketplaceName}
-                    processName={BOOKING_PROCESS_NAME}
-                  />
-                </div>
-              ) : null}
-
               {fetchLineItemsError ? (
                 <span className={css.sideBarError}>
                   <FormattedMessage id="BookingTimeForm.fetchLineItemsError" />
                 </span>
               ) : null}
+
+              <hr className={css.totalDivider} />
+
+              <FieldSelect
+                id="select-service"
+                name="select-servcie"
+                label={intl.formatMessage({id:"BookingTimeForm.serviceLabel"})}
+                validate={required(intl.formatMessage({id:"BookingTimeForm.serviceRequired"}))}
+              >
+                <option disabled value="">{intl.formatMessage({id:"BookingTimeForm.servicePlaceholder"})}</option>
+                {service.map((value, index) => <option key={index} value={value}>{value.toUpperCase()}</option>)}
+              </FieldSelect>
 
               <div className={css.submitButton}>
                 <PrimaryButton type="submit" inProgress={fetchLineItemsInProgress}>
@@ -215,7 +191,6 @@ BookingTimeFormComponent.propTypes = {
   timeZone: string.isRequired,
 
   onFetchTransactionLineItems: func.isRequired,
-  lineItems: array,
   fetchLineItemsInProgress: bool.isRequired,
   fetchLineItemsError: propTypes.error,
 
@@ -227,6 +202,8 @@ BookingTimeFormComponent.propTypes = {
   endDatePlaceholder: string,
 
   dayCountAvailableForBooking: number.isRequired,
+
+  service: array,
 };
 
 const BookingTimeForm = compose(injectIntl)(BookingTimeFormComponent);

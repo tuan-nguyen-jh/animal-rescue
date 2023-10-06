@@ -20,7 +20,7 @@
   background-color: var(--colorGrey100);
 
   @media (--viewportMedium) {
-    margin: 7px 0 0px 0;
+    margin: 24px 0 20px 0;
   }
 }
 
