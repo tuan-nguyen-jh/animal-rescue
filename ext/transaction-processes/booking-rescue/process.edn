@@ -9,7 +9,7 @@
    :at
    {:fn/plus
     [{:fn/timepoint [:time/first-entered-state :state/booking-request-sent]}
-     {:fn/period ["PT15M"]}]},
+     {:fn/period ["P1D"]}]},
    :actions
    [{:name :action/decline-booking}],
    :from :state/booking-request-sent,
