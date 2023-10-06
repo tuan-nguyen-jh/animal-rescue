@@ -46,119 +46,146 @@
  *   - isRequired (optional):         Is the field required for providers to fill
  *   - requiredMessage (optional):    Message for those fields, which are mandatory.
  */
+export const ANIMAL_LISTING_TYPE = 'animal';
+export const ACC_LISTING_TYPE = 'acc';
+
 export const listingFields = [
   {
-    key: 'category',
+    key: 'service',
     scope: 'public',
-    schemaType: 'enum',
-    enumOptions: [
-      { option: 'city-bikes', label: 'City bikes' },
-      { option: 'electric-bikes', label: 'Electric bikes' },
-      { option: 'mountain-bikes', label: 'Mountain bikes' },
-      { option: 'childrens-bikes', label: "Children's bikes" },
-    ],
+    includeForListingTypes: [ACC_LISTING_TYPE],
+    schemaType: 'multi-enum',
+    enumOptions: [{ option: 'adoption', label: 'Adoption' }, { option: 'rescue', label: 'Rescue' }],
     filterConfig: {
       indexForSearch: true,
-      filterType: 'SelectMultipleFilter',
-      label: 'Category',
+      label: 'Service',
       group: 'primary',
     },
     showConfig: {
-      label: 'Category',
+      label: 'Service',
       isDetail: true,
     },
     saveConfig: {
-      label: 'Category',
+      label: 'Service',
       placeholderMessage: 'Select an option…',
       isRequired: true,
-      requiredMessage: 'You need to select a category.',
+      requiredMessage: 'You need to select at least an option',
     },
   },
   {
-    key: 'tire',
+    key: 'typeOfAnimal',
     scope: 'public',
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
     schemaType: 'enum',
     enumOptions: [
-      { option: '29', label: '29' },
-      { option: '28', label: '28' },
-      { option: '27', label: '27' },
-      { option: '26', label: '26' },
-      { option: '24', label: '24' },
-      { option: '20', label: '20' },
-      { option: '18', label: '18' },
+      { option: 'dog', label: 'Dog' },
+      { option: 'cat', label: 'Cat' },
+      { option: 'others', label: 'Others' },
     ],
     filterConfig: {
       indexForSearch: true,
-      label: 'Tire size',
-      group: 'secondary',
+      filterType: 'SelectSingleFilter',
+      label: 'Type of animal',
+      group: 'primary',
     },
     showConfig: {
-      label: 'Tire size',
+      label: 'Type of animal',
       isDetail: true,
     },
     saveConfig: {
-      label: 'Tire size',
-      placeholderMessage: 'Select an option…',
+      label: 'Type of animal',
+      placeholderMessage: 'Select type of animal',
       isRequired: true,
-      requiredMessage: 'You need to select a tire size.',
+      requiredMessage: 'You need to select at least an option',
     },
   },
   {
-    key: 'brand',
+    key: 'birth',
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
     scope: 'public',
-    schemaType: 'enum',
-    enumOptions: [
-      { option: 'cube', label: 'Cube' },
-      { option: 'diamant', label: 'Diamant' },
-      { option: 'ghost', label: 'GHOST' },
-      { option: 'giant', label: 'Giant' },
-      { option: 'kalkhoff', label: 'Kalkhoff' },
-      { option: 'kona', label: 'Kona' },
-      { option: 'otler', label: 'Otler' },
-      { option: 'vermont', label: 'Vermont' },
-    ],
-    filterConfig: {
-      indexForSearch: true,
-      label: 'Brand',
-      group: 'secondary',
-    },
+    schemaType: 'text',
     showConfig: {
-      label: 'Brand',
-      isDetail: true,
+      label: 'Date of birth',
     },
     saveConfig: {
-      label: 'Brand',
-      placeholderMessage: 'Select an option…',
-      isRequired: true,
-      requiredMessage: 'You need to select a brand.',
-    },
-  },
-  {
-    key: 'accessories',
-    scope: 'public',
-    schemaType: 'multi-enum',
-    enumOptions: [
-      { option: 'bell', label: 'Bell' },
-      { option: 'lights', label: 'Lights' },
-      { option: 'lock', label: 'Lock' },
-      { option: 'mudguard', label: 'Mudguard' },
-    ],
-    filterConfig: {
-      indexForSearch: true,
-      label: 'Accessories',
-      searchMode: 'has_all',
-      group: 'secondary',
-    },
-    showConfig: {
-      label: 'Accessories',
-    },
-    saveConfig: {
-      label: 'Accessories',
-      placeholderMessage: 'Select an option…',
+      label: 'Date of birth',
+      placeholderMessage: 'dd/mm/year',
       isRequired: false,
     },
   },
+  {
+    key: 'size',
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
+    scope: 'public',
+    schemaType: 'enum',
+    enumOptions: [
+      { option: 's', label: 'S' },
+      { option: 'm', label: 'M' },
+      { option: 'l', label: 'L' },
+    ],
+    filterConfig: {
+      indexForSearch: true,
+      filterType: 'SelectSingleFilter',
+      label: 'Size of animal',
+      group: 'primary',
+    },
+    showConfig: {
+      label: 'Size of animal',
+      isDetail: true,
+    },
+    saveConfig: {
+      label: 'Size of animal',
+      placeholderMessage: 'Size of animal',
+      isRequired: true,
+      requiredMessage: 'You need to select at least an option',
+    },
+  },
+  {
+    key: 'isAdopted',
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
 
+    scope: 'public',
+    schemaType: 'boolean',
+    saveConfig: {
+      label: 'Is adopted',
+      placeholderMessage: 'Is adopted',
+      isRequired: false,
+    },
+  },
+  {
+    key: 'hostName',
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
+
+    scope: 'public',
+    schemaType: 'text',
+    saveConfig: {
+      label: 'Host name',
+      placeholderMessage: 'Host name',
+      isRequired: false,
+    },
+  },
+  {
+    key: 'hostPhone',
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
+    scope: 'public',
+    schemaType: 'text',
+    saveConfig: {
+      label: 'Host phonenumber',
+      placeholderMessage: 'Host phonenumber',
+      isRequired: false,
+    },
+  },
+  {
+    key: 'dateOfAdoption',
+    includeForListingTypes: [ANIMAL_LISTING_TYPE],
+    scope: 'public',
+    schemaType: 'text',
+    saveConfig: {
+      label: 'Date of adoption',
+      placeholderMessage: 'dd/mm/year',
+      isRequired: false,
+    },
+  },
   // // An example of how to use transaction type specific custom fields and private data.
   // {
   //   key: 'note',
@@ -226,15 +253,15 @@ export const listingFields = [
  */
 
 export const listingTypes = [
-  {
-    listingType: 'daily-booking',
-    label: 'Daily booking',
-    transactionType: {
-      process: 'default-booking',
-      alias: 'default-booking/release-1',
-      unitType: 'day',
-    },
-  },
+  // {
+  //   listingType: 'daily-booking',
+  //   label: 'Daily booking',
+  //   transactionType: {
+  //     process: 'default-booking',
+  //     alias: 'default-booking/release-1',
+  //     unitType: 'day',
+  //   },
+  // },
   // // Here are some examples for other listingTypes
   // // TODO: SearchPage does not work well if both booking and product selling are used at the same time
   // {

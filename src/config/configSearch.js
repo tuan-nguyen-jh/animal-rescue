@@ -45,6 +45,15 @@ export const priceFilter = {
 //   schemaType: 'text',
 // }
 
+export const listingTypeFilter = {
+  key: 'listingType',
+  scope: 'public',
+  enumOptions: [
+    { option: 'acc', label: 'ACC'},
+    { option: 'animal', label: 'Animal'},
+  ]
+}
+
 export const sortConfig = {
   // Enable/disable the sorting control in the SearchPage
   active: true,

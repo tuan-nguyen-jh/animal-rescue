@@ -86,6 +86,7 @@ const EditListingWizardTab = props => {
     history,
     images,
     listing,
+    listingACCs,
     weeklyExceptionQueries,
     monthlyExceptionQueries,
     allExceptions,
@@ -183,6 +184,7 @@ const EditListingWizardTab = props => {
       return (
         <EditListingDetailsPanel
           {...panelProps(DETAILS)}
+          listingACCs={listingACCs}
           onListingTypeChange={onListingTypeChange}
           config={config}
         />

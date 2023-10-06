@@ -48,6 +48,8 @@ import SearchResultsPanel from './SearchResultsPanel/SearchResultsPanel';
 import NoSearchResultsMaybe from './NoSearchResultsMaybe/NoSearchResultsMaybe';
 
 import css from './SearchPage.module.css';
+import FilterListingTypeComponent from './FilterListingTypeComponent';
+import { ACC_LISTING_TYPE, ANIMAL_LISTING_TYPE } from '../../config/configListing';
 
 const MODAL_BREAKPOINT = 768; // Search is in modal on mobile layout
 const SEARCH_WITH_MAP_DEBOUNCE = 300; // Little bit of debounce before search is initiated.
@@ -162,17 +164,19 @@ export class SearchPageComponent extends Component {
   // Reset all filter query parameters
   resetAll(e) {
     const { history, routeConfiguration, config } = this.props;
-    const { listingFields: listingFieldsConfig } = config?.listing || {};
-    const { defaultFilters: defaultFiltersConfig } = config?.search || {};
-
-    const urlQueryParams = validUrlQueryParamsFromProps(this.props);
-    const filterQueryParamNames = getQueryParamNames(listingFieldsConfig, defaultFiltersConfig);
 
     // Reset state
-    this.setState({ currentQueryParams: {} });
+    this.setState({ currentQueryParams: {
+      pub_listingType: this.state.currentQueryParams === ACC_LISTING_TYPE ? 'acc' : 'animal'
+    } });
 
     // Reset routing params
-    const queryParams = omit(urlQueryParams, filterQueryParamNames);
+    const queryParams = {
+      pub_listingType:
+        this.state.currentQueryParams.pub_listingType === ACC_LISTING_TYPE
+          ? ACC_LISTING_TYPE
+          : ANIMAL_LISTING_TYPE,
+    };
     history.push(createResourceLocatorString('SearchPage', routeConfiguration, {}, queryParams));
   }
 
@@ -232,6 +236,16 @@ export class SearchPageComponent extends Component {
     history.push(createResourceLocatorString('SearchPage', routeConfiguration, {}, queryParams));
   }
 
+  createFinalFilters(currentListingTypeQuery, currentFilter, defaultFilters, keywordsFilter) {
+    return [
+      ...(currentListingTypeQuery === ACC_LISTING_TYPE
+        ? [...currentFilter, ...defaultFilters]
+        : currentListingTypeQuery === ANIMAL_LISTING_TYPE
+        ? [...currentFilter, keywordsFilter]
+        : [...defaultFilters]),
+    ];
+  }
+
   render() {
     const {
       intl,
@@ -287,12 +301,14 @@ export class SearchPageComponent extends Component {
       listingFieldsConfig,
       activeListingTypes
     );
-    const availablePrimaryFilters = [...customPrimaryFilters, ...defaultFilters];
+
     const availableFilters = [
       ...customPrimaryFilters,
       ...defaultFilters,
       ...customSecondaryFilters,
     ];
+
+    const [, , keywordsFilter] = defaultFilters;
 
     const hasSecondaryFilters = !!(customSecondaryFilters && customSecondaryFilters.length > 0);
 
@@ -376,12 +392,25 @@ export class SearchPageComponent extends Component {
       routeConfiguration,
       config
     );
+    const currentListingTypeQuery = this.state.currentQueryParams.pub_listingType;
 
     // Set topbar class based on if a modal is open in
     // a child component
     const topbarClasses = this.state.isMobileModalOpen
       ? classNames(css.topbarBehindModal, css.topbar)
       : css.topbar;
+
+    const currentFilter = availableFilters.filter(filter => {
+        return filter?.includeForListingTypes?.[0] === currentListingTypeQuery;
+    });
+
+    // Create a final filter buttons based on current query params
+    const finalFilter = this.createFinalFilters(
+      currentListingTypeQuery,
+      currentFilter,
+      defaultFilters,
+      keywordsFilter
+    );
 
     // N.B. openMobileMap button is sticky.
     // For some reason, stickyness doesn't work on Safari, if the element is <button>
@@ -417,7 +446,17 @@ export class SearchPageComponent extends Component {
               noResultsInfo={noResultsInfo}
               isMapVariant
             >
-              {availableFilters.map(config => {
+              <FilterListingTypeComponent
+                key="SearchFiltersMobile.listingType"
+                idPrefix="SearchFiltersMobile"
+                urlQueryParams={validQueryParams}
+                initialValues={initialValues(this.props, this.state.currentQueryParams)}
+                getHandleChangedValueFn={this.getHandleChangedValueFn}
+                intl={intl}
+                showAsPopup={false}
+                liveEdit
+              />
+              {finalFilter.map(config => {
                 return (
                   <FilterComponent
                     key={`SearchFiltersMobile.${config.key}`}
@@ -445,7 +484,17 @@ export class SearchPageComponent extends Component {
               noResultsInfo={noResultsInfo}
             >
               <SearchFiltersPrimary {...propsForSecondaryFiltersToggle}>
-                {availablePrimaryFilters.map(config => {
+                <FilterListingTypeComponent
+                  key="SearchFiltersPrimary.listingType"
+                  idPrefix="SearchFiltersPrimary"
+                  urlQueryParams={validQueryParams}
+                  initialValues={initialValues(this.props, this.state.currentQueryParams)}
+                  getHandleChangedValueFn={this.getHandleChangedValueFn}
+                  intl={intl}
+                  showAsPopup
+                  contentPlacementOffset={FILTER_DROPDOWN_OFFSET}
+                />
+                {finalFilter.map(config => {
                   return (
                     <FilterComponent
                       key={`SearchFiltersPrimary.${config.key}`}

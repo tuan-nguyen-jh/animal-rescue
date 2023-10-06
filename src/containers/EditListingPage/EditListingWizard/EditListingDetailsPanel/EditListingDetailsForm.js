@@ -15,6 +15,7 @@ import { Form, Button, FieldSelect, FieldTextInput, Heading } from '../../../../
 // Import modules from this directory
 import CustomExtendedDataField from '../CustomExtendedDataField';
 import css from './EditListingDetailsForm.module.css';
+import { ANIMAL_LISTING_TYPE } from '../../../../config/configListing';
 
 const TITLE_MAX_LENGTH = 60;
 
@@ -111,6 +112,35 @@ const FieldSelectListingType = props => {
   );
 };
 
+const FieldSelectACCName = props => {
+  const { name, formApi, intl, listingACCs } = props;
+
+  return (
+    <FieldSelect
+      id={name}
+      name={name}
+      className={css.listingTypeSelect}
+      label={intl.formatMessage({ id: 'EditListingDetailsForm.ACCNameLabel' })}
+      validate={required(
+        intl.formatMessage({
+          id: 'EditListingDetailsForm.ACCNameRequired',
+        })
+      )}
+    >
+      <option disabled value="">
+        {intl.formatMessage({ id: 'EditListingDetailsForm.ACCNamePlaceholder' })}
+      </option>
+      {listingACCs.map(acc => {
+        return acc ? (
+          <option key={acc.id.uuid} value={acc.attributes.title}>
+            {acc.attributes.title}
+          </option>
+        ) : null;
+      })}
+    </FieldSelect>
+  );
+};
+
 // Add collect data for listing fields (both publicData and privateData) based on configuration
 const AddListingFields = props => {
   const { listingType, listingFieldsConfig, intl } = props;
@@ -159,6 +189,7 @@ const EditListingDetailsFormComponent = props => (
         onListingTypeChange,
         intl,
         invalid,
+        listingACCs,
         pristine,
         selectableListingTypes,
         hasExistingListingType,
@@ -170,8 +201,7 @@ const EditListingDetailsFormComponent = props => (
         values,
       } = formRenderProps;
 
-      const { listingType } = values;
-
+      const { listingType, pub_isAdopted } = values;
       const titleRequiredMessage = intl.formatMessage({
         id: 'EditListingDetailsForm.titleRequired',
       });
@@ -240,8 +270,19 @@ const EditListingDetailsFormComponent = props => (
           <AddListingFields
             listingType={listingType}
             listingFieldsConfig={listingFieldsConfig}
+            pub_isAdopted={pub_isAdopted}
             intl={intl}
           />
+
+          {listingType === ANIMAL_LISTING_TYPE && (
+            <FieldSelectACCName
+              id="accname"
+              name={intl.formatMessage({ id: 'EditListingDetailsForm.ACCNameLabel' })}
+              intl={intl}
+              formApi={formApi}
+              listingACCs={listingACCs}
+            />
+          )}
 
           <Button
             className={css.submitButton}

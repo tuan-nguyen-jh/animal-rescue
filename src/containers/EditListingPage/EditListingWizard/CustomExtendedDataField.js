@@ -11,7 +11,7 @@ import {
 import { useIntl } from '../../../util/reactIntl';
 import { required, nonEmptyArray } from '../../../util/validators';
 // Import shared components
-import { FieldCheckboxGroup, FieldSelect, FieldTextInput, FieldBoolean } from '../../../components';
+import { FieldCheckboxGroup, FieldSelect, FieldTextInput, FieldBoolean, FieldDateInput } from '../../../components';
 // Import modules from this directory
 import css from './EditListingWizard.module.css';
 
