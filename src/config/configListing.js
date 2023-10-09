@@ -269,8 +269,8 @@ export const listingTypes = [
     listingType: 'acc',
     label: 'Animal Control Center',
     transactionType: {
-      process: 'default-booking',
-      alias: 'default-booking/release-1',
+      process: 'acc-rescue-booking',
+      alias: 'acc-rescue-booking/release-1',
       unitType: 'hour',
     },
   },
