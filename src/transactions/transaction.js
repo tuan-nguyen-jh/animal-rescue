@@ -15,7 +15,7 @@ export const INQUIRY = 'inquiry';
 
 // Then names of supported processes
 export const PURCHASE_PROCESS_NAME = 'default-purchase';
-export const BOOKING_PROCESS_NAME = 'default-booking';
+export const BOOKING_PROCESS_NAME = 'adoption-booking';
 export const INQUIRY_PROCESS_NAME = 'default-inquiry';
 
 /**

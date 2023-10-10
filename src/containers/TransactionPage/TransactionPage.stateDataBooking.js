@@ -33,7 +33,7 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
       const transitionNames = Array.isArray(nextTransitions)
         ? nextTransitions.map(t => t.attributes.name)
         : [];
-      const requestAfterInquiry = transitions.REQUEST_PAYMENT_AFTER_INQUIRY;
+      const requestAfterInquiry = transitions.REQUEST_AFTER_INQUIRY;
       const hasCorrectNextTransition = transitionNames.includes(requestAfterInquiry);
       const showOrderPanel = !isProviderBanned && hasCorrectNextTransition;
       return { processName, processState, showOrderPanel };
@@ -41,10 +41,10 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
     .cond([states.INQUIRY, PROVIDER], () => {
       return { processName, processState, showDetailCardHeadings: true };
     })
-    .cond([states.PREAUTHORIZED, CUSTOMER], () => {
+    .cond([states.BOOKING_REQUEST_SENT, CUSTOMER], () => {
       return { processName, processState, showDetailCardHeadings: true, showExtraInfo: true };
     })
-    .cond([states.PREAUTHORIZED, PROVIDER], () => {
+    .cond([states.BOOKING_REQUEST_SENT, PROVIDER], () => {
       const primary = isCustomerBanned ? null : actionButtonProps(transitions.ACCEPT, PROVIDER);
       const secondary = isCustomerBanned ? null : actionButtonProps(transitions.DECLINE, PROVIDER);
       return {
@@ -56,7 +56,7 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
         secondaryButtonProps: secondary,
       };
     })
-    .cond([states.DELIVERED, _], () => {
+    .cond([states.COMPLETED, _], () => {
       return {
         processName,
         processState,

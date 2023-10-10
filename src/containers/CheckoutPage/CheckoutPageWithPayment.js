@@ -116,8 +116,8 @@ const fetchSpeculatedTransactionIfNeeded = (orderParams, pageData, fetchSpeculat
       tx?.attributes?.lastTransition === process.transitions.INQUIRE;
 
     const requestTransition = isInquiryInPaymentProcess
-      ? process.transitions.REQUEST_PAYMENT_AFTER_INQUIRY
-      : process.transitions.REQUEST_PAYMENT;
+      ? process.transitions.REQUEST_AFTER_INQUIRY
+      : process.transitions.REQUEST;
     const isPrivileged = process.isPrivileged(requestTransition);
 
     fetchSpeculatedTransaction(
