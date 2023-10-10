@@ -104,8 +104,6 @@ export const OrderBreakdownComponent = props => {
     <div className={classes}>
       <LineItemService
         service={selectService}
-        transaction={transaction}
-        isProvider={isProvider}
         intl={intl}
       />
 
@@ -158,7 +156,7 @@ export const OrderBreakdownComponent = props => {
         marketplaceName={marketplaceName}
         intl={intl}
       />}
-      
+
       <LineItemProviderCommissionRefundMaybe
         lineItems={lineItems}
         isProvider={isProvider}
