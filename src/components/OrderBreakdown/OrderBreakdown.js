@@ -13,6 +13,7 @@ import {
   LINE_ITEM_CUSTOMER_COMMISSION,
   LINE_ITEM_PROVIDER_COMMISSION,
 } from '../../util/types';
+import { SERVICE_RESCUE } from '../../config/configBookingService';
 
 import LineItemBookingPeriod from './LineItemBookingPeriod';
 import LineItemBasePriceMaybe from './LineItemBasePriceMaybe';
@@ -26,6 +27,7 @@ import LineItemProviderCommissionRefundMaybe from './LineItemProviderCommissionR
 import LineItemRefundMaybe from './LineItemRefundMaybe';
 import LineItemTotalPrice from './LineItemTotalPrice';
 import LineItemUnknownItemsMaybe from './LineItemUnknownItemsMaybe';
+import LineItemService from './LineItemService';
 
 import css from './OrderBreakdown.module.css';
 
@@ -43,6 +45,8 @@ export const OrderBreakdownComponent = props => {
     marketplaceName,
   } = props;
 
+  const { selectService } =
+    (transaction?.attributes?.protectedData?.selectServiceInfo) || {};
   const isCustomer = userRole === 'customer';
   const isProvider = userRole === 'provider';
   const lineItems = transaction.attributes.lineItems;
@@ -98,33 +102,49 @@ export const OrderBreakdownComponent = props => {
 
   return (
     <div className={classes}>
+      <LineItemService
+        service={selectService}
+        transaction={transaction}
+        isProvider={isProvider}
+        intl={intl}
+      />
+
       <LineItemBookingPeriod
         booking={booking}
         code={lineItemUnitType}
         dateType={dateType}
         timeZone={timeZone}
+        service={selectService}
       />
 
-      <LineItemBasePriceMaybe lineItems={lineItems} code={lineItemUnitType} intl={intl} />
+      {selectService === SERVICE_RESCUE &&
+        <LineItemBasePriceMaybe
+          lineItems={lineItems}
+          code={lineItemUnitType}
+          intl={intl}
+        />}
+
       <LineItemShippingFeeMaybe lineItems={lineItems} intl={intl} />
       <LineItemPickupFeeMaybe lineItems={lineItems} intl={intl} />
       <LineItemUnknownItemsMaybe lineItems={lineItems} isProvider={isProvider} intl={intl} />
 
-      <LineItemSubTotalMaybe
+      {selectService === SERVICE_RESCUE && <LineItemSubTotalMaybe
         lineItems={lineItems}
         code={lineItemUnitType}
         userRole={userRole}
         intl={intl}
         marketplaceCurrency={currency}
-      />
+      />}
+
       <LineItemRefundMaybe lineItems={lineItems} intl={intl} marketplaceCurrency={currency} />
 
-      <LineItemCustomerCommissionMaybe
+      {selectService === SERVICE_RESCUE && <LineItemCustomerCommissionMaybe
         lineItems={lineItems}
         isCustomer={isCustomer}
         marketplaceName={marketplaceName}
         intl={intl}
-      />
+      />}
+
       <LineItemCustomerCommissionRefundMaybe
         lineItems={lineItems}
         isCustomer={isCustomer}
@@ -132,12 +152,13 @@ export const OrderBreakdownComponent = props => {
         intl={intl}
       />
 
-      <LineItemProviderCommissionMaybe
+      {selectService === SERVICE_RESCUE && <LineItemProviderCommissionMaybe
         lineItems={lineItems}
         isProvider={isProvider}
         marketplaceName={marketplaceName}
         intl={intl}
-      />
+      />}
+      
       <LineItemProviderCommissionRefundMaybe
         lineItems={lineItems}
         isProvider={isProvider}
@@ -145,9 +166,14 @@ export const OrderBreakdownComponent = props => {
         intl={intl}
       />
 
-      <LineItemTotalPrice transaction={transaction} isProvider={isProvider} intl={intl} />
+      {selectService === SERVICE_RESCUE &&
+        <LineItemTotalPrice
+          transaction={transaction}
+          isProvider={isProvider}
+          intl={intl}
+        />}
 
-      {hasCommissionLineItem ? (
+      {hasCommissionLineItem && selectService === SERVICE_RESCUE ? (
         <span className={css.feeInfo}>
           <FormattedMessage id="OrderBreakdown.commissionFeeNote" />
         </span>

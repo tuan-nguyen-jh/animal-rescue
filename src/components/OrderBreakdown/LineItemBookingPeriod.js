@@ -4,21 +4,22 @@ import { LINE_ITEM_NIGHT, DATE_TYPE_DATE, LINE_ITEM_HOUR, propTypes } from '../.
 import { subtractTime } from '../../util/dates';
 
 import css from './OrderBreakdown.module.css';
+import { SERVICE_RESCUE } from '../../config/configBookingService';
 
 const BookingPeriod = props => {
-  const { startDate, endDate, dateType, timeZone } = props;
+  const { startDate, endDate, dateType, timeZone, service } = props;
   const timeZoneMaybe = timeZone ? { timeZone } : null;
 
   const timeFormatOptions =
     dateType === DATE_TYPE_DATE
       ? {
-          weekday: 'long',
-        }
+        weekday: 'long',
+      }
       : {
-          weekday: 'short',
-          hour: 'numeric',
-          minute: 'numeric',
-        };
+        weekday: 'short',
+        hour: 'numeric',
+        minute: 'numeric',
+      };
 
   const dateFormatOptions = {
     month: 'short',
@@ -45,10 +46,14 @@ const BookingPeriod = props => {
             <FormattedMessage id="OrderBreakdown.bookingEnd" />
           </div>
           <div className={css.dayInfo}>
-            <FormattedDate value={endDate} {...timeFormatOptions} {...timeZoneMaybe} />
+            {service !== SERVICE_RESCUE ?
+              <FormattedDate value={endDate} {...timeFormatOptions} {...timeZoneMaybe} /> 
+              : <FormattedMessage id="OrderBreakdown.bookingEnd.dayTimePlaceholder" />}
           </div>
           <div className={css.itemLabel}>
-            <FormattedDate value={endDate} {...dateFormatOptions} {...timeZoneMaybe} />
+            {service !== SERVICE_RESCUE ?
+              <FormattedDate value={endDate} {...timeFormatOptions} {...timeZoneMaybe} /> 
+              : <FormattedMessage id="OrderBreakdown.bookingEnd.monthYearPlaceholder" />}
           </div>
         </div>
       </div>
@@ -57,7 +62,7 @@ const BookingPeriod = props => {
 };
 
 const LineItemBookingPeriod = props => {
-  const { booking, code, dateType, timeZone } = props;
+  const { booking, code, dateType, timeZone, service } = props;
 
   if (!booking) {
     return null;
@@ -82,9 +87,10 @@ const LineItemBookingPeriod = props => {
           endDate={endDay}
           dateType={dateType}
           timeZone={timeZone}
+          service={service}
         />
       </div>
-      <hr className={css.totalDivider} />
+      {service === SERVICE_RESCUE && <hr className={css.totalDivider} />}
     </>
   );
 };
