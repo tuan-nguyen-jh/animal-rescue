@@ -275,6 +275,7 @@ const OrderPanel = props => {
             marketplaceCurrency={marketplaceCurrency}
             dayCountAvailableForBooking={dayCountAvailableForBooking}
             listingId={listing.id}
+            service={publicData?.service || {}}
             isOwnListing={isOwnListing}
             monthlyTimeSlots={monthlyTimeSlots}
             onFetchTimeSlots={onFetchTimeSlots}
@@ -283,7 +284,6 @@ const OrderPanel = props => {
             timeZone={timeZone}
             marketplaceName={marketplaceName}
             onFetchTransactionLineItems={onFetchTransactionLineItems}
-            lineItems={lineItems}
             fetchLineItemsInProgress={fetchLineItemsInProgress}
             fetchLineItemsError={fetchLineItemsError}
           />

@@ -20,7 +20,7 @@
   background-color: var(--colorGrey100);
 
   @media (--viewportMedium) {
-    margin: 7px 0 0px 0;
+    margin: 24px 0 20px 0;
   }
 }
 
@@ -75,5 +75,33 @@
   @media (--viewportMedium) {
     padding: 0;
     margin-top: 72px;
+  }
+}
+
+.rescueInfoField{
+  margin-top: 15px;
+}
+
+.locationAutocompleteInputIcon {
+  display: none;
+}
+
+locationAutocompleteInput:hover, .locationAutocompleteInput:focus{
+  border-bottom-color: var(--colorGrey100);
+}
+
+.predictionsRoot {
+  position: absolute;
+  width: 100%;
+  top: 36px;
+  left: 0;
+  background-color: var(--marketplaceColor);
+  border-bottom-left-radius: var(--borderRadius);
+  border-bottom-right-radius: var(--borderRadius);
+  box-shadow: var(--boxShadowPopup);
+  z-index: calc(var(--zIndexPopup) + 1);
+
+  @media (--viewportMedium) {
+    top: 40px;
   }
 }

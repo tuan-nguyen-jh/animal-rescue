@@ -53,6 +53,31 @@ export const listingFields = [
   {
     key: 'service',
     scope: 'public',
+    includedForListingTypes: ['acc'],
+    schemaType: 'multi-enum',
+    enumOptions: [
+      { option: 'adoption', label: 'Adoption' },
+      { option: 'rescue', label: 'Rescue' },
+    ],
+    filterConfig: {
+      indexForSearch: true,
+      label: 'Service',
+      group: 'secondary',
+    },
+    showConfig: {
+      label: 'Service',
+      isDetail: true,
+    },
+    saveConfig: {
+      label: 'Service',
+      placeholderMessage: 'Select an option…',
+      isRequired: true,
+      requiredMessage: 'You need to select at least an option',
+    },
+  },
+{
+    key: 'type-of-animal',
+    scope: 'public',
     includeForListingTypes: [ACC_LISTING_TYPE],
     schemaType: 'multi-enum',
     enumOptions: [{ option: 'adoption', label: 'Adoption' }, { option: 'rescue', label: 'Rescue' }],
@@ -186,30 +211,17 @@ export const listingFields = [
       isRequired: false,
     },
   },
-  // // An example of how to use transaction type specific custom fields and private data.
-  // {
-  //   key: 'note',
-  //   scope: 'public',
-  //   includeForListingTypes: ['product-selling'],
-  //   schemaType: 'text',
-  //   showConfig: {
-  //     label: 'Extra notes',
-  //   },
-  //   saveConfig: {
-  //     label: 'Extra notes',
-  //     placeholderMessage: 'Some public extra note about this bike...',
-  //   },
-  // },
-  // {
-  //   key: 'privatenote',
-  //   scope: 'private',
-  //   includeForListingTypes: ['daily-booking'],
-  //   schemaType: 'text',
-  //   saveConfig: {
-  //     label: 'Private notes',
-  //     placeholderMessage: 'Some private note about this bike...',
-  //   },
-  // },
+  {
+    key: 'acc-id',
+    includeForListingTypes: ['animal'],
+    scope: 'public',
+    schemaType: 'text',
+    saveConfig: {
+      label: 'ID of ACC',
+      placeholderMessage: 'ID of ACC',
+      isRequired: true,
+    }
+  }
 ];
 
 ///////////////////////////////////////////////////////////////////////
@@ -304,6 +316,11 @@ export const listingTypes = [
   //     price: false,
   //   },
   // },
+  {
+      process: 'acc-rescue-booking',
+      alias: 'acc-rescue-booking/release-1',
+      unitType: 'hour',
+  },
 ];
 
 // SearchPage can enforce listing query to only those listings with valid listingType
