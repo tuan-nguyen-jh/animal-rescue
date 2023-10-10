@@ -53,7 +53,7 @@ export const listingFields = [
   {
     key: 'service',
     scope: 'public',
-    includedForListingTypes: ['acc'],
+    includedForListingTypes: [ACC_LISTING_TYPE],
     schemaType: 'multi-enum',
     enumOptions: [
       { option: 'adoption', label: 'Adoption' },
@@ -63,28 +63,6 @@ export const listingFields = [
       indexForSearch: true,
       label: 'Service',
       group: 'secondary',
-    },
-    showConfig: {
-      label: 'Service',
-      isDetail: true,
-    },
-    saveConfig: {
-      label: 'Service',
-      placeholderMessage: 'Select an option…',
-      isRequired: true,
-      requiredMessage: 'You need to select at least an option',
-    },
-  },
-{
-    key: 'type-of-animal',
-    scope: 'public',
-    includeForListingTypes: [ACC_LISTING_TYPE],
-    schemaType: 'multi-enum',
-    enumOptions: [{ option: 'adoption', label: 'Adoption' }, { option: 'rescue', label: 'Rescue' }],
-    filterConfig: {
-      indexForSearch: true,
-      label: 'Service',
-      group: 'primary',
     },
     showConfig: {
       label: 'Service',

@@ -10,6 +10,7 @@ import { Page, LayoutSingleColumn } from '../../components';
 import FooterContainer from '../../containers/FooterContainer/FooterContainer';
 
 import css from './ListingPage.module.css';
+import { SERVICE_RESCUE } from '../../config/configBookingService';
 
 /**
  * This file contains shared functions from each ListingPage variants.
@@ -153,31 +154,38 @@ export const handleSubmit = parameters => values => {
     bookingEndDate, // not relevant (omit)
     quantity: quantityRaw,
     deliveryMethod,
+    selectService,
+    rescueDescription,
+    typeAnimal,
+    location,
     ...otherOrderData
   } = values;
 
   const bookingMaybe = bookingDates
     ? {
-        bookingDates: {
-          bookingStart: bookingDates.startDate,
-          bookingEnd: bookingDates.endDate,
-        },
-      }
+      bookingDates: {
+        bookingStart: bookingDates.startDate,
+        bookingEnd: bookingDates.endDate,
+      },
+    }
     : bookingStartTime && bookingEndTime
-    ? {
+      ? {
         bookingDates: {
           bookingStart: timestampToDate(bookingStartTime),
           bookingEnd: timestampToDate(bookingEndTime),
         },
       }
-    : {};
+      : {};
   const quantity = Number.parseInt(quantityRaw, 10);
   const quantityMaybe = Number.isInteger(quantity) ? { quantity } : {};
   const deliveryMethodMaybe = deliveryMethod ? { deliveryMethod } : {};
+  const selectServiceInfo = selectService === SERVICE_RESCUE ?
+    { selectService, rescueDescription, typeAnimal, location } : {selectService};
 
   const initialValues = {
     listing,
     orderData: {
+      selectServiceInfo,
       ...bookingMaybe,
       ...quantityMaybe,
       ...deliveryMethodMaybe,
@@ -190,7 +198,6 @@ export const handleSubmit = parameters => values => {
 
   // Customize checkout page state with current listing and selected orderData
   const { setInitialValues } = findRouteByRouteName('CheckoutPage', routes);
-
   callSetInitialValues(setInitialValues, initialValues, saveToSessionStorage);
 
   // Clear previous Stripe errors from store if there is any
