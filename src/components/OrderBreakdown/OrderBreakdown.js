@@ -201,7 +201,7 @@ export const OrderBreakdownComponent = props => {
         </span>
       ) : null}
 
-      {isProvider &&
+      {isProvider && selectService === SERVICE_RESCUE &&
         <LineItemFormMaybe.component
           {...LineItemFormMaybe.props}
           setNewQuantity={setNewQuantity}

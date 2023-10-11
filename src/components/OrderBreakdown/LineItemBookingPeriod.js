@@ -8,7 +8,7 @@ import css from './OrderBreakdown.module.css';
 import { SERVICE_RESCUE } from '../../config/configBookingService';
 
 const BookingPeriod = props => {
-  const { startDate, endDate, dateType, timeZone, isProvider } = props;
+  const { startDate, endDate, dateType, timeZone, isProvider, service } = props;
   const timeZoneMaybe = timeZone ? { timeZone } : null;
 
   const timeFormatOptions =
@@ -47,12 +47,12 @@ const BookingPeriod = props => {
             <FormattedMessage id="OrderBreakdown.bookingEnd" />
           </div>
           <div className={css.dayInfo}>
-            {isProvider ?
+            {(isProvider || service !== SERVICE_RESCUE) ?
               <FormattedDate value={endDate} {...timeFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.dayTimePlaceholder" />}
           </div>
           <div className={css.itemLabel}>
-            {isProvider ?
+            {(isProvider || service !== SERVICE_RESCUE) ?
               <FormattedDate value={endDate} {...dateFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.monthYearPlaceholder" />}
           </div>
@@ -72,7 +72,7 @@ const LineItemBookingPeriod = props => {
   // from actual start and end times used for availability reservation. It can help in situations
   // where there are preparation time needed between bookings.
   // Read more: https://www.sharetribe.com/api-reference/marketplace.html#bookings
-  const { start, end, displayStart, displayEnd } = booking.attributes;
+  const { start, displayStart } = booking.attributes;
   const localStartDate = displayStart || start;
 
   const isNightly = code === LINE_ITEM_NIGHT;
@@ -89,6 +89,7 @@ const LineItemBookingPeriod = props => {
           endDate={endDay}
           dateType={dateType}
           timeZone={timeZone}
+          service={service}
           isProvider={isProvider}
         />
       </div>
