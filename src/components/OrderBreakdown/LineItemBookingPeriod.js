@@ -1,13 +1,14 @@
 import React from 'react';
+import { bool } from 'prop-types';
 import { FormattedMessage, FormattedDate } from '../../util/reactIntl';
 import { LINE_ITEM_NIGHT, DATE_TYPE_DATE, LINE_ITEM_HOUR, propTypes } from '../../util/types';
-import { subtractTime } from '../../util/dates';
+import { addTime, subtractTime } from '../../util/dates';
 
 import css from './OrderBreakdown.module.css';
 import { SERVICE_RESCUE } from '../../config/configBookingService';
 
 const BookingPeriod = props => {
-  const { startDate, endDate, dateType, timeZone, service } = props;
+  const { startDate, endDate, dateType, timeZone, isProvider } = props;
   const timeZoneMaybe = timeZone ? { timeZone } : null;
 
   const timeFormatOptions =
@@ -46,13 +47,13 @@ const BookingPeriod = props => {
             <FormattedMessage id="OrderBreakdown.bookingEnd" />
           </div>
           <div className={css.dayInfo}>
-            {service !== SERVICE_RESCUE ?
-              <FormattedDate value={endDate} {...timeFormatOptions} {...timeZoneMaybe} /> 
+            {isProvider ?
+              <FormattedDate value={endDate} {...timeFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.dayTimePlaceholder" />}
           </div>
           <div className={css.itemLabel}>
-            {service !== SERVICE_RESCUE ?
-              <FormattedDate value={endDate} {...timeFormatOptions} {...timeZoneMaybe} /> 
+            {isProvider ?
+              <FormattedDate value={endDate} {...dateFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.monthYearPlaceholder" />}
           </div>
         </div>
@@ -62,7 +63,7 @@ const BookingPeriod = props => {
 };
 
 const LineItemBookingPeriod = props => {
-  const { booking, code, dateType, timeZone, service } = props;
+  const { booking, code, dateType, timeZone, service, isProvider, quantity } = props;
 
   if (!booking) {
     return null;
@@ -73,11 +74,12 @@ const LineItemBookingPeriod = props => {
   // Read more: https://www.sharetribe.com/api-reference/marketplace.html#bookings
   const { start, end, displayStart, displayEnd } = booking.attributes;
   const localStartDate = displayStart || start;
-  const localEndDateRaw = displayEnd || end;
 
   const isNightly = code === LINE_ITEM_NIGHT;
   const isHour = code === LINE_ITEM_HOUR;
-  const endDay = isNightly || isHour ? localEndDateRaw : subtractTime(localEndDateRaw, 1, 'days');
+  const localEstimatedEndTime = addTime(localStartDate, quantity, 'hours');
+  const endDay = isNightly || isHour
+    ? localEstimatedEndTime : subtractTime(localEstimatedEndTime, 1, 'days');
 
   return (
     <>
@@ -87,16 +89,19 @@ const LineItemBookingPeriod = props => {
           endDate={endDay}
           dateType={dateType}
           timeZone={timeZone}
-          service={service}
+          isProvider={isProvider}
         />
       </div>
-      {service === SERVICE_RESCUE && <hr className={css.totalDivider} />}
+      {service === SERVICE_RESCUE
+        && isProvider
+        && <hr className={css.totalDivider} />}
     </>
   );
 };
 LineItemBookingPeriod.defaultProps = { booking: null, dateType: null };
 
 LineItemBookingPeriod.propTypes = {
+  isProvider: bool.isRequired,
   booking: propTypes.booking,
   dateType: propTypes.dateType,
 };

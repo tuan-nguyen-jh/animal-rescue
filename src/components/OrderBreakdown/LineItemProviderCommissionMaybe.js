@@ -16,7 +16,7 @@ const isValidCommission = commissionLineItem => {
 };
 
 const LineItemProviderCommissionMaybe = props => {
-  const { lineItems, isProvider, marketplaceName, intl } = props;
+  const { lineItems, isProvider, marketplaceName, intl, commission, currency } = props;
 
   const providerCommissionLineItem = lineItems.find(
     item => item.code === LINE_ITEM_PROVIDER_COMMISSION && !item.reversal
@@ -35,8 +35,8 @@ const LineItemProviderCommissionMaybe = props => {
       throw new Error('Commission should be present and the value should be zero or negative');
     }
 
-    const commission = providerCommissionLineItem.lineTotal;
-    const formattedCommission = commission ? formatMoney(intl, commission) : null;
+    // const commission = providerCommissionLineItem.lineTotal;
+    const formattedCommission = commission ? formatMoney(intl, new Money(commission, currency)) : null;
 
     commissionItem = (
       <div className={css.lineItem}>

@@ -2,7 +2,7 @@
  * This component will show the booking info and calculated total price.
  * I.e. dates and other details related to payment decision in receipt format.
  */
-import React from 'react';
+import React, { useState } from 'react';
 import { oneOf, string } from 'prop-types';
 import classNames from 'classnames';
 
@@ -28,6 +28,7 @@ import LineItemRefundMaybe from './LineItemRefundMaybe';
 import LineItemTotalPrice from './LineItemTotalPrice';
 import LineItemUnknownItemsMaybe from './LineItemUnknownItemsMaybe';
 import LineItemService from './LineItemService';
+import LineItemFormMaybe from './LineItemFormMaybe';
 
 import css from './OrderBreakdown.module.css';
 
@@ -63,6 +64,17 @@ export const OrderBreakdownComponent = props => {
   });
 
   const classes = classNames(rootClassName || css.root, className);
+
+  const index = lineItems.findIndex(item => item.code === lineItemUnitType && !item.reversal);
+  const unitPurchase = index !== -1 ? lineItems[index] : null;
+  const quantity = unitPurchase ? unitPurchase.quantity.toString() : null;
+
+  const [newQuantity, setNewQuantity] = useState(quantity);
+
+  lineItems[index].lineTotal.amount = unitPurchase ? unitPurchase.unitPrice.amount * newQuantity : null;
+  const commission = lineItems[index].lineTotal.amount * lineItems[1].percentage.d / 100;
+  const payin = lineItems[index].lineTotal.amount;
+  const payout = payin - commission;
 
   /**
    * OrderBreakdown contains different line items:
@@ -113,10 +125,14 @@ export const OrderBreakdownComponent = props => {
         dateType={dateType}
         timeZone={timeZone}
         service={selectService}
+        isProvider={isProvider}
+        quantity={newQuantity}
       />
 
-      {selectService === SERVICE_RESCUE &&
-        <LineItemBasePriceMaybe
+      {selectService === SERVICE_RESCUE
+        && isProvider
+        && <LineItemBasePriceMaybe
+          quantity={newQuantity}
           lineItems={lineItems}
           code={lineItemUnitType}
           intl={intl}
@@ -136,12 +152,13 @@ export const OrderBreakdownComponent = props => {
 
       <LineItemRefundMaybe lineItems={lineItems} intl={intl} marketplaceCurrency={currency} />
 
-      {selectService === SERVICE_RESCUE && <LineItemCustomerCommissionMaybe
-        lineItems={lineItems}
-        isCustomer={isCustomer}
-        marketplaceName={marketplaceName}
-        intl={intl}
-      />}
+      {selectService === SERVICE_RESCUE
+        && <LineItemCustomerCommissionMaybe
+          lineItems={lineItems}
+          isCustomer={isCustomer}
+          marketplaceName={marketplaceName}
+          intl={intl}
+        />}
 
       <LineItemCustomerCommissionRefundMaybe
         lineItems={lineItems}
@@ -155,6 +172,8 @@ export const OrderBreakdownComponent = props => {
         isProvider={isProvider}
         marketplaceName={marketplaceName}
         intl={intl}
+        currency={currency}
+        commission={commission}
       />}
 
       <LineItemProviderCommissionRefundMaybe
@@ -164,11 +183,16 @@ export const OrderBreakdownComponent = props => {
         intl={intl}
       />
 
-      {selectService === SERVICE_RESCUE &&
-        <LineItemTotalPrice
+      {selectService === SERVICE_RESCUE
+        && isProvider
+        && <LineItemTotalPrice
           transaction={transaction}
           isProvider={isProvider}
+          quantity={newQuantity}
           intl={intl}
+          payin={payin}
+          payout={payout}
+          currency={currency}
         />}
 
       {hasCommissionLineItem && selectService === SERVICE_RESCUE ? (
@@ -176,6 +200,14 @@ export const OrderBreakdownComponent = props => {
           <FormattedMessage id="OrderBreakdown.commissionFeeNote" />
         </span>
       ) : null}
+
+      {isProvider &&
+        <LineItemFormMaybe.component
+          {...LineItemFormMaybe.props}
+          setNewQuantity={setNewQuantity}
+          quantity={quantity}
+        />
+      }
     </div>
   );
 };
