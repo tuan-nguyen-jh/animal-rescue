@@ -53,31 +53,6 @@ export const listingFields = [
   {
     key: 'service',
     scope: 'public',
-    includedForListingTypes: ['acc'],
-    schemaType: 'multi-enum',
-    enumOptions: [
-      { option: 'adoption', label: 'Adoption' },
-      { option: 'rescue', label: 'Rescue' },
-    ],
-    filterConfig: {
-      indexForSearch: true,
-      label: 'Service',
-      group: 'secondary',
-    },
-    showConfig: {
-      label: 'Service',
-      isDetail: true,
-    },
-    saveConfig: {
-      label: 'Service',
-      placeholderMessage: 'Select an option…',
-      isRequired: true,
-      requiredMessage: 'You need to select at least an option',
-    },
-  },
-{
-    key: 'type-of-animal',
-    scope: 'public',
     includeForListingTypes: [ACC_LISTING_TYPE],
     schemaType: 'multi-enum',
     enumOptions: [{ option: 'adoption', label: 'Adoption' }, { option: 'rescue', label: 'Rescue' }],
@@ -220,8 +195,8 @@ export const listingFields = [
       label: 'ID of ACC',
       placeholderMessage: 'ID of ACC',
       isRequired: true,
-    }
-  }
+    },
+  },
 ];
 
 ///////////////////////////////////////////////////////////////////////
@@ -264,13 +239,26 @@ export const listingFields = [
  *                        If defaultListingFields.price is not explicitly set to _false_, price will be shown.
  */
 
+export const txTypes = {
+  adoption: {
+    process: 'adoption-booking',
+    alias: 'adoption-booking/release-1',
+    unitType: 'hour',
+  },
+  rescue: {
+    process: 'acc-rescue-booking',
+    alias: 'acc-rescue-booking/release-1',
+    unitType: 'hour',
+  },
+};
+
 export const listingTypes = [
   {
     listingType: 'acc',
     label: 'Animal Control Center',
     transactionType: {
-      process: 'adoption-booking',
-      alias: 'adoption-booking/release-1',
+      process: 'acc-rescue-booking',
+      alias: 'acc-rescue-booking/release-1',
       unitType: 'hour',
     },
   },
@@ -316,11 +304,6 @@ export const listingTypes = [
   //     price: false,
   //   },
   // },
-  {
-      process: 'acc-rescue-booking',
-      alias: 'acc-rescue-booking/release-1',
-      unitType: 'hour',
-  },
 ];
 
 // SearchPage can enforce listing query to only those listings with valid listingType

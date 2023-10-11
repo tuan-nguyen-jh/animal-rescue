@@ -37,6 +37,7 @@ import CheckoutPageWithPayment, {
   loadInitialDataForStripePayments,
 } from './CheckoutPageWithPayment';
 import CheckoutPageWithInquiryProcess from './CheckoutPageWithInquiryProcess';
+import { txTypes } from '../../config/configListing';
 
 const STORAGE_KEY = 'CheckoutPage';
 
@@ -45,12 +46,14 @@ const onSubmitCallback = () => {
 };
 
 const getProcessName = pageData => {
-  const { transaction, listing } = pageData || {};
+  const { transaction, listing, orderData } = pageData || {};
+
+  const selectProcessName = orderData && txTypes[orderData.selectService].process;
+
   const processName = transaction?.id
-    ? transaction?.attributes?.processName
-    : listing?.id
-    ? listing?.attributes?.publicData?.transactionProcessAlias?.split('/')[0]
-    : null;
+    ? transaction?.attributes?.processName 
+    : selectProcessName
+  
   return resolveLatestProcessName(processName);
 };
 

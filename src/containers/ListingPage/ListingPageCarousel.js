@@ -52,6 +52,7 @@ import {
   setInitialValues,
   fetchTimeSlots,
   fetchTransactionLineItems,
+  sendTxDetails,
 } from './ListingPage.duck';
 
 import {
@@ -112,6 +113,7 @@ export const ListingPageComponent = props => {
     onInitializeCardPaymentData,
     config,
     routeConfiguration,
+    onSendTxDetails,
   } = props;
 
   // prop override makes testing a bit easier
@@ -220,7 +222,7 @@ export const ListingPageComponent = props => {
     currentUser,
     callSetInitialValues,
     getListing,
-    onInitializeCardPaymentData,
+    onSendTxDetails,
   });
 
   const handleOrderSubmit = values => {
@@ -506,6 +508,8 @@ const mapStateToProps = state => {
     fetchLineItemsInProgress,
     fetchLineItemsError,
     inquiryModalOpenForListingId,
+    sendTxDetailsInProgress,
+    sendTxDetailsError,
   } = state.ListingPage;
   const { currentUser } = state.user;
 
@@ -537,6 +541,8 @@ const mapStateToProps = state => {
     fetchLineItemsError,
     sendInquiryInProgress,
     sendInquiryError,
+    sendTxDetailsInProgress,
+    sendTxDetailsError,
   };
 };
 
@@ -550,6 +556,7 @@ const mapDispatchToProps = dispatch => ({
   onInitializeCardPaymentData: () => dispatch(initializeCardPaymentData()),
   onFetchTimeSlots: (listingId, start, end, timeZone) =>
     dispatch(fetchTimeSlots(listingId, start, end, timeZone)),
+  onSendTxDetails: (listing, message) => dispatch(sendTxDetails(listing, message)),
 });
 
 // Note: it is important that the withRouter HOC is **outside** the

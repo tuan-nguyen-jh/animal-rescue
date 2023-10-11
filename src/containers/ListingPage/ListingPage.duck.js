@@ -3,7 +3,7 @@ import pick from 'lodash/pick';
 import { types as sdkTypes, createImageVariantConfig } from '../../util/sdkLoader';
 import { storableError } from '../../util/errors';
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
-import { transactionLineItems } from '../../util/api';
+import { initiatePrivileged, transactionLineItems } from '../../util/api';
 import * as log from '../../util/log';
 import { denormalisedResponseEntities } from '../../util/data';
 import { findNextBoundary, getStartOf, monthIdString } from '../../util/dates';
@@ -39,6 +39,10 @@ export const SEND_INQUIRY_REQUEST = 'app/ListingPage/SEND_INQUIRY_REQUEST';
 export const SEND_INQUIRY_SUCCESS = 'app/ListingPage/SEND_INQUIRY_SUCCESS';
 export const SEND_INQUIRY_ERROR = 'app/ListingPage/SEND_INQUIRY_ERROR';
 
+export const SEND_TX_DETAILS_REQUEST = 'app/ListingPage/SEND_TX_DETAILS_REQUEST';
+export const SEND_TX_DETAILS_SUCCESS = 'app/ListingPage/SEND_TX_DETAILS_SUCCESS';
+export const SEND_TX_DETAILS_ERROR = 'app/ListingPage/SEND_TX_DETAILS_ERROR';
+
 // ================ Reducer ================ //
 
 const initialState = {
@@ -59,6 +63,8 @@ const initialState = {
   sendInquiryInProgress: false,
   sendInquiryError: null,
   inquiryModalOpenForListingId: null,
+  sendTxDetailsInProgress: false,
+  sendTxDetailsError: null,
 };
 
 const listingPageReducer = (state = initialState, action = {}) => {
@@ -129,6 +135,13 @@ const listingPageReducer = (state = initialState, action = {}) => {
     case SEND_INQUIRY_ERROR:
       return { ...state, sendInquiryInProgress: false, sendInquiryError: payload };
 
+    case SEND_TX_DETAILS_REQUEST:
+      return { ...state, sendTxDetailsInProgress: true, sendTxDetailsError: null };
+    case SEND_TX_DETAILS_SUCCESS:
+      return { ...state, sendTxDetailsInProgress: false };
+    case SEND_TX_DETAILS_ERROR:
+      return { ...state, sendTxDetailsInProgress: false, sendTxDetailsError: payload };
+
     default:
       return state;
   }
@@ -190,6 +203,10 @@ export const fetchLineItemsError = error => ({
 export const sendInquiryRequest = () => ({ type: SEND_INQUIRY_REQUEST });
 export const sendInquirySuccess = () => ({ type: SEND_INQUIRY_SUCCESS });
 export const sendInquiryError = e => ({ type: SEND_INQUIRY_ERROR, error: true, payload: e });
+
+export const sendTxDetailsRequest = () => ({ type: SEND_TX_DETAILS_REQUEST });
+export const sendTxDetailsSuccess = () => ({ type: SEND_TX_DETAILS_SUCCESS });
+export const sendTxDetailsError = () => ({ type: SEND_TX_DETAILS_ERROR, error: true, payload: e });
 
 // ================ Thunks ================ //
 
@@ -328,6 +345,66 @@ export const sendInquiry = (listing, message) => (dispatch, getState, sdk) => {
       dispatch(sendInquiryError(storableError(e)));
       throw e;
     });
+};
+
+export const sendTxDetails = (listing, orderData) => async (dispatch, getState, sdk) => {
+  const { bookingDates , selectService: selectedService, location, typeAnimal, rescueDescription } = orderData;
+  const { bookingStart, bookingEnd } = bookingDates;
+  const protectedData = {
+    selectedService,
+    location,
+    typeAnimal,
+    rescueDescription
+  };
+  const order = {};
+
+  dispatch(sendTxDetailsRequest());
+
+  const processAlias = selectedService === 'adoption' ? 'adoption-booking/release-1' : 'acc-rescue-booking/release-1';
+  const TRANSITION_REQUEST_PARAM = selectedService === 'adoption' ? 'REQUEST' : 'REQUEST_BOOKING';
+
+  if (!processAlias) {
+    const error = new Error('No transaction process attached to listing');
+    log.error(error, 'listing-process-missing', {
+      listingId: listing?.id?.uuid,
+    });
+    dispatch(sendTxDetailsError(storableError(error)));
+    return Promise.reject(error);
+  }
+
+  const listingId = listing?.id?.uuid;
+  const [processName, alias] = processAlias.split('/');
+  const transitions = getProcess(processName)?.transitions;
+
+  const bodyParams = {
+    transition: transitions[TRANSITION_REQUEST_PARAM],
+    processAlias,
+    params: { listingId, bookingStart, bookingEnd, protectedData },
+  };
+  const queryParams = {
+    include: ['booking', 'provider'],
+    expand: true,
+  };
+  
+  try {
+    const response = await initiatePrivileged({
+      isSpeculative: false,
+      order,
+      bodyParams,
+      queryParams,
+    });
+
+    const tx = denormalisedResponseEntities(response);
+    const returnedOrder = tx[0]
+
+    dispatch(sendTxDetailsSuccess());
+    dispatch(fetchCurrentUserHasOrdersSuccess(true));
+
+    return returnedOrder;
+  } catch (error) {
+    dispatch(sendTxDetailsError(storableError(error)));
+    console.error(error);
+  }
 };
 
 // Helper function for loadData call.

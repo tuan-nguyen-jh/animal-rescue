@@ -197,7 +197,9 @@ export const processCheckoutWithPayment = (orderParams, extraPaymentParams) => {
   const storedTx = ensureTransaction(pageData.transaction);
 
   const ensuredStripeCustomer = ensureStripeCustomer(stripeCustomer);
-  const processAlias = pageData?.listing?.attributes?.publicData?.transactionProcessAlias;
+
+  const processAlias = pageData?.orderData?.selectService === 'rescue' ? 'acc-rescue-booking/release-1' : 'adoption-booking/release-1';
+
 
   let createdPaymentIntent = null;
 
@@ -207,12 +209,17 @@ export const processCheckoutWithPayment = (orderParams, extraPaymentParams) => {
   ////////////////////////////////////////////////
   const fnRequestPayment = fnParams => {
     // fnParams should be { listingId, deliveryMethod, quantity?, bookingDates?, paymentMethod?.setupPaymentMethodForSaving?, protectedData }
-    const hasPaymentIntents = storedTx.attributes.protectedData?.stripePaymentIntents;
 
+    console.log("fnParams", fnParams)
+
+    const hasPaymentIntents = storedTx.attributes.protectedData?.stripePaymentIntents;
     const requestTransition =
       storedTx?.attributes?.lastTransition === process.transitions.INQUIRE
         ? process.transitions.REQUEST_AFTER_INQUIRY
+        : process.graph.id === 'acc-rescue-booking/release-1' 
+        ? process.transitions.REQUEST_BOOKING
         : process.transitions.REQUEST;
+    console.log('requestTransition', requestTransition);
     const isPrivileged = process.isPrivileged(requestTransition);
 
     // If paymentIntent exists, order has been initiated previously.
