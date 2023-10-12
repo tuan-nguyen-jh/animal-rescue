@@ -71,13 +71,11 @@ const getOrderParams = (pageData, shippingDetails, optionalPaymentParams, config
   const quantityMaybe = quantity ? { quantity } : {};
   const deliveryMethod = pageData.orderData?.deliveryMethod;
   const deliveryMethodMaybe = deliveryMethod ? { deliveryMethod } : {};
-  const processName = txTypes[pageData.orderData?.selectService].process;
 
   const { listingType, unitType } = pageData?.listing?.attributes?.publicData || {};
   const protectedDataMaybe = {
     protectedData: {
       ...getTransactionTypeData(listingType, unitType, config),
-      processName,
       ...deliveryMethodMaybe,
       ...shippingDetails,
     },
@@ -99,7 +97,9 @@ const getOrderParams = (pageData, shippingDetails, optionalPaymentParams, config
 const fetchSpeculatedTransactionIfNeeded = (orderParams, pageData, fetchSpeculatedTransaction) => {
   const tx = pageData ? pageData.transaction : null;
   const pageDataListing = pageData.listing;
-  const processName = tx?.attributes?.processName 
+  const processName =
+    tx?.attributes?.processName ||
+    pageDataListing?.attributes?.publicData?.transactionProcessAlias?.split('/')[0];
   const process = processName ? getProcess(processName) : null;
 
   // If transaction has passed payment-pending state, speculated tx is not needed.
@@ -116,10 +116,8 @@ const fetchSpeculatedTransactionIfNeeded = (orderParams, pageData, fetchSpeculat
       tx?.attributes?.lastTransition === process.transitions.INQUIRE;
 
     const requestTransition = isInquiryInPaymentProcess
-    ? process.transitions.REQUEST_AFTER_INQUIRY
-    : process.graph.id === 'acc-rescue-booking/release-1' 
-    ? process.transitions.REQUEST_BOOKING
-    : process.transitions.REQUEST;
+      ? process.transitions.REQUEST_AFTER_INQUIRY
+      : process.transitions.REQUEST;
     const isPrivileged = process.isPrivileged(requestTransition);
 
     fetchSpeculatedTransaction(

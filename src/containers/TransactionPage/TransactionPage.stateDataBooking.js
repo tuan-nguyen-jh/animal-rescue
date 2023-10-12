@@ -56,6 +56,68 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
         secondaryButtonProps: secondary,
       };
     })
+    .cond([states.REQUEST_ACCEPTED, PROVIDER], () => {
+      const primary = isCustomerBanned ? null : actionButtonProps(transitions.COMPLETE, PROVIDER)
+      const secondary = isCustomerBanned ? null : actionButtonProps(transitions.PROVIDER_CANCEL, PROVIDER);
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showActionButtons: true,
+        primaryButtonProps: primary,
+        secondaryButtonProps: secondary,
+      }
+    })
+    .cond([states.REQUEST_ACCEPTED, CUSTOMER], () => {
+      const secondary =  actionButtonProps(transitions.CUSTOMER_CANCEL, CUSTOMER);
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showActionButtons: true,
+        secondaryButtonProps: secondary,
+      }
+    })
+    .cond([states.TOUR_COMPLETED, PROVIDER], () => {
+      const primary = isCustomerBanned ? null : actionButtonProps(transitions.ADOPT, PROVIDER);
+      const secondary = isCustomerBanned ? null : actionButtonProps(transitions.PROVIDER_NOT_ADOPT, PROVIDER);
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showActionButtons: true,
+        primaryButtonProps: primary,
+        secondaryButtonProps: secondary
+      }
+    })
+    .cond([states.TOUR_COMPLETED, CUSTOMER], () => {
+      const secondary =  actionButtonProps(transitions.CUSTOMER_NOT_ADOPT, CUSTOMER);
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showActionButtons: true,
+        secondaryButtonProps: secondary
+      }
+    })
+    .cond([states.NOT_ALLOW_ADOPT, _], () => {
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showReviewAsFirstLink: true,
+        showActionButtons: true,
+      };
+    })
+    .cond([states.ALLOW_ADOPT, _], () => {
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showReviewAsFirstLink: true,
+        showActionButtons: true,
+      };
+    })
     .cond([states.COMPLETED, _], () => {
       return {
         processName,

@@ -51,6 +51,8 @@ export const OrderBreakdownComponent = props => {
   );
   // Line-item code that matches with base unit: day, night, hour, item
   const lineItemUnitType = unitLineItem?.code;
+  const processName = transaction.attributes.processName;
+  const service = transaction.attributes.protectedData.selectedService;
 
   const hasCommissionLineItem = lineItems.find(item => {
     const hasCustomerCommission = isCustomer && item.code === LINE_ITEM_CUSTOMER_COMMISSION;
@@ -144,8 +146,10 @@ export const OrderBreakdownComponent = props => {
         marketplaceName={marketplaceName}
         intl={intl}
       />
-
-      <LineItemTotalPrice transaction={transaction} isProvider={isProvider} intl={intl} />
+      <span className={css.feeInfo}>
+      <FormattedMessage id="OrderBreakdown.service" />: {service}
+      </span>
+      {processName !== 'adoption-booking' && <LineItemTotalPrice transaction={transaction} isProvider={isProvider} intl={intl} />}
 
       {hasCommissionLineItem ? (
         <span className={css.feeInfo}>

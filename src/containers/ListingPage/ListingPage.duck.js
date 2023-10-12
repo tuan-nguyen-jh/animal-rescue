@@ -13,6 +13,7 @@ import {
 } from '../../util/urlHelpers';
 import { getProcess, isBookingProcessAlias } from '../../transactions/transaction';
 import { fetchCurrentUser, fetchCurrentUserHasOrdersSuccess } from '../../ducks/user.duck';
+import { ACC_SERVICES, txTypes } from '../../config/configListing';
 
 const { UUID } = sdkTypes;
 
@@ -359,25 +360,14 @@ export const sendTxDetails = (listing, orderData) => async (dispatch, getState, 
   const order = {};
 
   dispatch(sendTxDetailsRequest());
-
-  const processAlias = selectedService === 'adoption' ? 'adoption-booking/release-1' : 'acc-rescue-booking/release-1';
-  const TRANSITION_REQUEST_PARAM = selectedService === 'adoption' ? 'REQUEST' : 'REQUEST_BOOKING';
-
-  if (!processAlias) {
-    const error = new Error('No transaction process attached to listing');
-    log.error(error, 'listing-process-missing', {
-      listingId: listing?.id?.uuid,
-    });
-    dispatch(sendTxDetailsError(storableError(error)));
-    return Promise.reject(error);
-  }
-
+  const processAlias = selectedService === ACC_SERVICES.adoption ? txTypes.adoption.alias : txTypes.rescue.alias;
+  
   const listingId = listing?.id?.uuid;
   const [processName, alias] = processAlias.split('/');
   const transitions = getProcess(processName)?.transitions;
 
   const bodyParams = {
-    transition: transitions[TRANSITION_REQUEST_PARAM],
+    transition: selectedService === ACC_SERVICES.adoption ? transitions.REQUEST : transitions.REQUEST_BOOKING,
     processAlias,
     params: { listingId, bookingStart, bookingEnd, protectedData },
   };

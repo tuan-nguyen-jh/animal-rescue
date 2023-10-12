@@ -39,6 +39,12 @@
    :from :state/booking-request-sent,
    :to :state/request-declined}
 
+  {:name :transition/customer-decline,
+   :actor :actor.role/customer,
+   :actions [{:name :action/decline-booking}],
+   :from :state/booking-request-sent,
+   :to :state/request-declined}
+
   {:name :transition/accept,
    :actor :actor.role/provider,
    :actions [{:name :action/accept-booking}],
@@ -78,10 +84,15 @@
    :from :state/tour-completed,
    :to :state/not-allow-adopt}
 
+  {:name :transition/provider-complete-not-adopt,
+   :actor :actor.role/provider,
+   :from :state/not-allow-adopt,
+   :to :state/completed}
+
   {:name :transition/complete-not-adopt,
    :at
    {:fn/plus
-    [{:fn/timepoint [:time/booking-end]} {:fn/period ["P1D"]}]},
+    [{:fn/timepoint [:time/booking-end]} {:fn/period ["PT30M"]}]},
    :from :state/not-allow-adopt,
    :to :state/completed} 
 
@@ -91,10 +102,15 @@
    :from :state/tour-completed,
    :to :state/allow-adopt}
 
-  {:name :transition/complete-adopt
+  {:name :transition/complete-adopt,
    :at
    {:fn/plus
-    [{:fn/timepoint [:time/booking-end]} {:fn/period ["P1D"]}]},
+    [{:fn/timepoint [:time/booking-end]} {:fn/period ["PT30M"]}]},
+   :from :state/allow-adopt,
+   :to :state/completed}
+
+  {:name :transition/provider-complete-adopt,
+   :actor :actor.role/provider,
    :from :state/allow-adopt,
    :to :state/completed}
 

@@ -48,6 +48,10 @@
  */
 export const ANIMAL_LISTING_TYPE = 'animal';
 export const ACC_LISTING_TYPE = 'acc';
+export const ACC_SERVICES = {
+  adoption: 'adoption',
+  rescue: 'rescue'
+}
 
 export const listingFields = [
   {
