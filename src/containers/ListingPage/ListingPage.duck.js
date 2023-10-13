@@ -349,13 +349,10 @@ export const sendInquiry = (listing, message) => (dispatch, getState, sdk) => {
 };
 
 export const sendTxDetails = (listing, orderData) => async (dispatch, getState, sdk) => {
-  const { bookingDates , selectService: selectedService, location, typeAnimal, rescueDescription } = orderData;
+  const { bookingDates , selectServiceInfo } = orderData;
   const { bookingStart, bookingEnd } = bookingDates;
   const protectedData = {
-    selectedService,
-    location,
-    typeAnimal,
-    rescueDescription
+    ...selectServiceInfo
   };
   const order = {};
 
@@ -375,7 +372,7 @@ export const sendTxDetails = (listing, orderData) => async (dispatch, getState, 
     include: ['booking', 'provider'],
     expand: true,
   };
-  
+
   try {
     const response = await initiatePrivileged({
       isSpeculative: false,
@@ -386,6 +383,7 @@ export const sendTxDetails = (listing, orderData) => async (dispatch, getState, 
 
     const tx = denormalisedResponseEntities(response);
     const returnedOrder = tx[0]
+    console.log(tx)
 
     dispatch(sendTxDetailsSuccess());
     dispatch(fetchCurrentUserHasOrdersSuccess(true));

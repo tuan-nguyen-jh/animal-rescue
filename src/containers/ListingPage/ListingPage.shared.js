@@ -152,7 +152,7 @@ export const handleSubmit = parameters =>async values => {
     bookingEndDate, // not relevant (omit)
     quantity: quantityRaw,
     deliveryMethod,
-    selectService,
+    selectedService,
     rescueDescription,
     typeAnimal,
     location,
@@ -177,20 +177,24 @@ export const handleSubmit = parameters =>async values => {
   const quantity = Number.parseInt(quantityRaw, 10);
   const quantityMaybe = Number.isInteger(quantity) ? { quantity } : {};
   const deliveryMethodMaybe = deliveryMethod ? { deliveryMethod } : {};
-  const selectServiceInfo = selectService === SERVICE_RESCUE ?
-    { selectService, rescueDescription, typeAnimal, location } : {selectService};
+  const selectServiceInfo = selectedService === SERVICE_RESCUE ?
+    { selectedService, rescueDescription, typeAnimal, location } : {selectedService};
 
   const orderData = {
+    selectServiceInfo,
       ...bookingMaybe,
       ...quantityMaybe,
       ...deliveryMethodMaybe,
       ...otherOrderData,
     };
+    console.log(orderData)
 
   try {
     const txId = await onSendTxDetails(listing, orderData);
+    console.log(txId)
     history.push(createResourceLocatorString('OrderDetailsPage', routes, { id: txId.id.uuid }, {}));
   } catch (error) {
+    console.log(error)
     // Ignore, error handling in sendTxDetails function in ListingPage.duck.js file, line 398
   }
 };

@@ -14,8 +14,11 @@
   {:name :transition/request-booking,
    :actor :actor.role/customer,
    :actions
-   [{:name :action/create-proposed-booking, :config {:type :time}}],
-   :to :state/booking-request-sent}
+   [{:name :action/create-proposed-booking, :config {:type :time}},
+    {:name :action/update-protected-data},
+    {:name :action/privileged-set-line-items}],
+   :to :state/booking-request-sent,
+   :privileged? true}
   {:name :transition/sent-request-expire,
    :at
    {:fn/plus

@@ -46,8 +46,7 @@ export const OrderBreakdownComponent = props => {
     marketplaceName,
   } = props;
 
-  const { selectService } =
-    (transaction?.attributes?.protectedData?.selectServiceInfo) || {};
+  const { selectedService } = (transaction?.attributes?.protectedData) || {};
   const isCustomer = userRole === 'customer';
   const isProvider = userRole === 'provider';
   const lineItems = transaction.attributes.lineItems;
@@ -117,7 +116,7 @@ export const OrderBreakdownComponent = props => {
   return (
     <div className={classes}>
       <LineItemService
-        service={selectService}
+        service={selectedService}
         intl={intl}
       />
 
@@ -126,12 +125,12 @@ export const OrderBreakdownComponent = props => {
         code={lineItemUnitType}
         dateType={dateType}
         timeZone={timeZone}
-        service={selectService}
+        service={selectedService}
         isProvider={isProvider}
         quantity={newQuantity}
       />
 
-      {selectService === SERVICE_RESCUE
+      {selectedService === SERVICE_RESCUE
         && isProvider
         && <LineItemBasePriceMaybe
           quantity={newQuantity}
@@ -144,7 +143,7 @@ export const OrderBreakdownComponent = props => {
       <LineItemPickupFeeMaybe lineItems={lineItems} intl={intl} />
       <LineItemUnknownItemsMaybe lineItems={lineItems} isProvider={isProvider} intl={intl} />
 
-      {selectService === SERVICE_RESCUE && <LineItemSubTotalMaybe
+      {selectedService === SERVICE_RESCUE && <LineItemSubTotalMaybe
         lineItems={lineItems}
         code={lineItemUnitType}
         userRole={userRole}
@@ -154,7 +153,7 @@ export const OrderBreakdownComponent = props => {
 
       <LineItemRefundMaybe lineItems={lineItems} intl={intl} marketplaceCurrency={currency} />
 
-      {selectService === SERVICE_RESCUE
+      {selectedService === SERVICE_RESCUE
         && <LineItemCustomerCommissionMaybe
           lineItems={lineItems}
           isCustomer={isCustomer}
@@ -169,7 +168,7 @@ export const OrderBreakdownComponent = props => {
         intl={intl}
       />
 
-      {selectService === SERVICE_RESCUE && <LineItemProviderCommissionMaybe
+      {selectedService === SERVICE_RESCUE && <LineItemProviderCommissionMaybe
         lineItems={lineItems}
         isProvider={isProvider}
         marketplaceName={marketplaceName}
@@ -185,25 +184,24 @@ export const OrderBreakdownComponent = props => {
         intl={intl}
       />
 
-      {selectService === SERVICE_RESCUE
+      {selectedService === SERVICE_RESCUE
         && isProvider
         && <LineItemTotalPrice
           transaction={transaction}
           isProvider={isProvider}
-          quantity={newQuantity}
           intl={intl}
           payin={payin}
           payout={payout}
           currency={currency}
         />}
 
-      {hasCommissionLineItem && selectService === SERVICE_RESCUE ? (
+      {hasCommissionLineItem && selectedService === SERVICE_RESCUE ? (
         <span className={css.feeInfo}>
           <FormattedMessage id="OrderBreakdown.commissionFeeNote" />
         </span>
       ) : null}
 
-      {isProvider && selectService === SERVICE_RESCUE &&
+      {isProvider && selectedService === SERVICE_RESCUE &&
         <LineItemFormMaybe.component
           {...LineItemFormMaybe.props}
           setNewQuantity={setNewQuantity}

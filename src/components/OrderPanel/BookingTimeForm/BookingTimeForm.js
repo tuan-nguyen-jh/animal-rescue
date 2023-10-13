@@ -145,8 +145,8 @@ export class BookingTimeFormComponent extends Component {
               <hr className={css.totalDivider} />
 
               <FieldSelect
-                id="selectService"
-                name="selectService"
+                id="selectedService"
+                name="selectedService"
                 label={intl.formatMessage({ id: "BookingTimeForm.serviceLabel" })}
                 validate={required(intl.formatMessage({ id: "BookingTimeForm.serviceRequired" }))}
               >
@@ -159,7 +159,7 @@ export class BookingTimeFormComponent extends Component {
               <FormSpy
                 subscription={{ values: true }}>
                 {(props) => {
-                  if (props.values.selectService === SERVICE_RESCUE) {
+                  if (props.values.selectedService === SERVICE_RESCUE) {
                     return (
                       <div>
                         <hr className={css.totalDivider} />

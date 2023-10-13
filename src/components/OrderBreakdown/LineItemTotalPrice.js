@@ -7,6 +7,7 @@ import { types as sdkTypes } from '../../util/sdkLoader';
 import { resolveLatestProcessName, getProcess } from '../../transactions/transaction';
 
 import css from './OrderBreakdown.module.css';
+import { number } from 'prop-types';
 
 const { Money } = sdkTypes;
 
@@ -53,6 +54,8 @@ LineItemTotalPrice.propTypes = {
   transaction: propTypes.transaction.isRequired,
   isProvider: bool.isRequired,
   intl: intlShape.isRequired,
+  payin: number.isRequired,
+  payout: number.isRequired,
 };
 
 export default LineItemTotalPrice;
