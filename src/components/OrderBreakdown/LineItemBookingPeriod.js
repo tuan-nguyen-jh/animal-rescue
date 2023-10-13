@@ -8,7 +8,14 @@ import css from './OrderBreakdown.module.css';
 import { SERVICE_RESCUE } from '../../config/configBookingService';
 
 const BookingPeriod = props => {
-  const { startDate, endDate, dateType, timeZone, isProvider, service } = props;
+  const { startDate,
+    endDate,
+    dateType,
+    timeZone,
+    isProvider,
+    service,
+    showPriceBreakdown
+  } = props;
   const timeZoneMaybe = timeZone ? { timeZone } : null;
 
   const timeFormatOptions =
@@ -47,12 +54,12 @@ const BookingPeriod = props => {
             <FormattedMessage id="OrderBreakdown.bookingEnd" />
           </div>
           <div className={css.dayInfo}>
-            {(isProvider || service !== SERVICE_RESCUE) ?
+            {(isProvider || service !== SERVICE_RESCUE) && showPriceBreakdown ?
               <FormattedDate value={endDate} {...timeFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.dayTimePlaceholder" />}
           </div>
           <div className={css.itemLabel}>
-            {(isProvider || service !== SERVICE_RESCUE) ?
+            {(isProvider || service !== SERVICE_RESCUE) && showPriceBreakdown ?
               <FormattedDate value={endDate} {...dateFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.monthYearPlaceholder" />}
           </div>
@@ -63,7 +70,7 @@ const BookingPeriod = props => {
 };
 
 const LineItemBookingPeriod = props => {
-  const { booking, code, dateType, timeZone, service, isProvider, quantity } = props;
+  const { booking, code, dateType, timeZone, service, isProvider, quantity, showPriceBreakdown } = props;
 
   if (!booking) {
     return null;
@@ -91,10 +98,12 @@ const LineItemBookingPeriod = props => {
           timeZone={timeZone}
           service={service}
           isProvider={isProvider}
+          showPriceBreakdown={showPriceBreakdown}
         />
       </div>
       {service === SERVICE_RESCUE
         && isProvider
+        && showPriceBreakdown
         && <hr className={css.totalDivider} />}
     </>
   );

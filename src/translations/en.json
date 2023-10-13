@@ -1088,6 +1088,7 @@
   "TransactionPage.acc-rescue-booking.provider.booking-request-sent.title": "You received a booking request from {customerName}.",
   "TransactionPage.adoption-booking.provider.booking-request-sent.title": "You received a booking request from {customerName}.",
 
+  "TransactionPage.acc-rescue-booking.customer.transition-customer-decline.actionButton": "Cancel request",
   "TransactionPage.acc-rescue-booking.customer.booking-request-sent.extraInfo": "You'll be notified when {providerName} accepts your request.",
   "TransactionPage.acc-rescue-booking.customer.booking-request-sent.title": "Your booking request was completed.",
   "TransactionPage.acc-rescue-booking.customer.request-accepted.title": "{providerName} has accepted your booking request.",

@@ -402,6 +402,8 @@ export const TransactionPageComponent = props => {
             {...txBookingMaybe}
             currency={config.currency}
             marketplaceName={config.marketplaceName}
+            showLineItemForm={stateData.showLineItemForm}
+            showPriceBreakdown={stateData.showPriceBreakdown}
           />
         ),
       }

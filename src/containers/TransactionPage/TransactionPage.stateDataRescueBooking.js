@@ -42,7 +42,15 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
       return { processName, processState, showDetailCardHeadings: true };
     })
     .cond([states.BOOKING_REQUEST_SENT, CUSTOMER], () => {
-      return { processName, processState, showDetailCardHeadings: true, showExtraInfo: true };
+      const secondary = actionButtonProps(transitions.CUSTOMER_DECLINE, CUSTOMER);
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showExtraInfo: true,
+        secondaryButtonProps: secondary,
+        showActionButtons: true,
+      };
     })
     .cond([states.BOOKING_REQUEST_SENT, PROVIDER], () => {
       const primary = isCustomerBanned ? null : actionButtonProps(transitions.ACCEPT, PROVIDER);
@@ -54,7 +62,15 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showActionButtons: true,
         primaryButtonProps: primary,
         secondaryButtonProps: secondary,
+        showLineItemForm: true
       };
+    })
+    .cond([states.REQUEST_DECLINED, _], () => {
+      return {
+        processName,
+        processState,
+        showPriceBreakDown: false
+      }
     })
     .cond([states.COMPLETED, _], () => {
       return {

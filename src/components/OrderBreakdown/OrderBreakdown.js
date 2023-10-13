@@ -3,7 +3,7 @@
  * I.e. dates and other details related to payment decision in receipt format.
  */
 import React, { useState } from 'react';
-import { oneOf, string } from 'prop-types';
+import { oneOf, string, bool } from 'prop-types';
 import classNames from 'classnames';
 
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
@@ -44,9 +44,10 @@ export const OrderBreakdownComponent = props => {
     timeZone,
     currency,
     marketplaceName,
+    showLineItemForm,
+    showPriceBreakdown
   } = props;
 
-  const { selectedService } = (transaction?.attributes?.protectedData) || {};
   const isCustomer = userRole === 'customer';
   const isProvider = userRole === 'provider';
   const lineItems = transaction.attributes.lineItems;
@@ -116,7 +117,7 @@ export const OrderBreakdownComponent = props => {
   return (
     <div className={classes}>
       <LineItemService
-        service={selectedService}
+        service={service}
         intl={intl}
       />
 
@@ -125,41 +126,49 @@ export const OrderBreakdownComponent = props => {
         code={lineItemUnitType}
         dateType={dateType}
         timeZone={timeZone}
-        service={selectedService}
+        service={service}
         isProvider={isProvider}
+        showPriceBreakdown={showPriceBreakdown}
         quantity={newQuantity}
       />
 
-      {selectedService === SERVICE_RESCUE
+      {service === SERVICE_RESCUE
         && isProvider
+        && showPriceBreakdown
         && <LineItemBasePriceMaybe
           quantity={newQuantity}
           lineItems={lineItems}
           code={lineItemUnitType}
           intl={intl}
-        />}
+        />
+      }
 
       <LineItemShippingFeeMaybe lineItems={lineItems} intl={intl} />
       <LineItemPickupFeeMaybe lineItems={lineItems} intl={intl} />
       <LineItemUnknownItemsMaybe lineItems={lineItems} isProvider={isProvider} intl={intl} />
 
-      {selectedService === SERVICE_RESCUE && <LineItemSubTotalMaybe
-        lineItems={lineItems}
-        code={lineItemUnitType}
-        userRole={userRole}
-        intl={intl}
-        marketplaceCurrency={currency}
-      />}
+      {service === SERVICE_RESCUE
+        && showPriceBreakdown
+        && <LineItemSubTotalMaybe
+          lineItems={lineItems}
+          code={lineItemUnitType}
+          userRole={userRole}
+          intl={intl}
+          marketplaceCurrency={currency}
+        />
+      }
 
       <LineItemRefundMaybe lineItems={lineItems} intl={intl} marketplaceCurrency={currency} />
 
-      {selectedService === SERVICE_RESCUE
+      {service === SERVICE_RESCUE
+        && showPriceBreakdown
         && <LineItemCustomerCommissionMaybe
           lineItems={lineItems}
           isCustomer={isCustomer}
           marketplaceName={marketplaceName}
           intl={intl}
-        />}
+        />
+      }
 
       <LineItemCustomerCommissionRefundMaybe
         lineItems={lineItems}
@@ -168,14 +177,17 @@ export const OrderBreakdownComponent = props => {
         intl={intl}
       />
 
-      {selectedService === SERVICE_RESCUE && <LineItemProviderCommissionMaybe
-        lineItems={lineItems}
-        isProvider={isProvider}
-        marketplaceName={marketplaceName}
-        intl={intl}
-        currency={currency}
-        commission={commission}
-      />}
+      {service === SERVICE_RESCUE
+        && showPriceBreakdown
+        && <LineItemProviderCommissionMaybe
+          lineItems={lineItems}
+          isProvider={isProvider}
+          marketplaceName={marketplaceName}
+          intl={intl}
+          currency={currency}
+          commission={commission}
+        />
+      }
 
       <LineItemProviderCommissionRefundMaybe
         lineItems={lineItems}
@@ -184,8 +196,9 @@ export const OrderBreakdownComponent = props => {
         intl={intl}
       />
 
-      {selectedService === SERVICE_RESCUE
+      {service === SERVICE_RESCUE
         && isProvider
+        && showPriceBreakdown
         && <LineItemTotalPrice
           transaction={transaction}
           isProvider={isProvider}
@@ -193,17 +206,21 @@ export const OrderBreakdownComponent = props => {
           payin={payin}
           payout={payout}
           currency={currency}
-        />}
+        />
+      }
 
-      {hasCommissionLineItem && selectedService === SERVICE_RESCUE ? (
+      {hasCommissionLineItem
+        && service === SERVICE_RESCUE
+        && showPriceBreakdown ? (
         <span className={css.feeInfo}>
           <FormattedMessage id="OrderBreakdown.commissionFeeNote" />
         </span>
       ) : null}
 
-      {isProvider && selectedService === SERVICE_RESCUE &&
+      {isProvider && service === SERVICE_RESCUE && showLineItemForm &&
         <LineItemFormMaybe.component
           {...LineItemFormMaybe.props}
+          showLineItemForm
           setNewQuantity={setNewQuantity}
           quantity={quantity}
         />
@@ -231,6 +248,7 @@ OrderBreakdownComponent.propTypes = {
 
   // from injectIntl
   intl: intlShape.isRequired,
+  showLineItemForm: bool.isRequired,
 };
 
 const OrderBreakdown = injectIntl(OrderBreakdownComponent);
