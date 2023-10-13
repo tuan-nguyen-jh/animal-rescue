@@ -12,7 +12,7 @@ import {
  * @param {*} txInfo detials about transaction
  * @param {*} processInfo  details about process
  */
-export const getStateDataForBookingProcess = (txInfo, processInfo) => {
+export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
   const { transaction, transactionRole, nextTransitions } = txInfo;
   const isProviderBanned = transaction?.provider?.attributes?.banned;
   const isCustomerBanned = transaction?.provider?.attributes?.banned;
@@ -46,7 +46,7 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
     })
     .cond([states.BOOKING_REQUEST_SENT, PROVIDER], () => {
       const primary = isCustomerBanned ? null : actionButtonProps(transitions.ACCEPT, PROVIDER);
-      const secondary = isCustomerBanned ? null : actionButtonProps(transitions.DECLINE, PROVIDER);
+      const secondary = isCustomerBanned ? null : actionButtonProps(transitions.PROVIDER_DECLINE, PROVIDER);
       return {
         processName,
         processState,
@@ -54,68 +54,6 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
         showActionButtons: true,
         primaryButtonProps: primary,
         secondaryButtonProps: secondary,
-      };
-    })
-    .cond([states.REQUEST_ACCEPTED, PROVIDER], () => {
-      const primary = isCustomerBanned ? null : actionButtonProps(transitions.COMPLETE, PROVIDER)
-      const secondary = isCustomerBanned ? null : actionButtonProps(transitions.PROVIDER_CANCEL, PROVIDER);
-      return {
-        processName,
-        processState,
-        showDetailCardHeadings: true,
-        showActionButtons: true,
-        primaryButtonProps: primary,
-        secondaryButtonProps: secondary,
-      }
-    })
-    .cond([states.REQUEST_ACCEPTED, CUSTOMER], () => {
-      const secondary =  actionButtonProps(transitions.CUSTOMER_CANCEL, CUSTOMER);
-      return {
-        processName,
-        processState,
-        showDetailCardHeadings: true,
-        showActionButtons: true,
-        secondaryButtonProps: secondary,
-      }
-    })
-    .cond([states.TOUR_COMPLETED, PROVIDER], () => {
-      const primary = isCustomerBanned ? null : actionButtonProps(transitions.ADOPT, PROVIDER);
-      const secondary = isCustomerBanned ? null : actionButtonProps(transitions.PROVIDER_NOT_ADOPT, PROVIDER);
-      return {
-        processName,
-        processState,
-        showDetailCardHeadings: true,
-        showActionButtons: true,
-        primaryButtonProps: primary,
-        secondaryButtonProps: secondary
-      }
-    })
-    .cond([states.TOUR_COMPLETED, CUSTOMER], () => {
-      const secondary =  actionButtonProps(transitions.CUSTOMER_NOT_ADOPT, CUSTOMER);
-      return {
-        processName,
-        processState,
-        showDetailCardHeadings: true,
-        showActionButtons: true,
-        secondaryButtonProps: secondary
-      }
-    })
-    .cond([states.NOT_ALLOW_ADOPT, _], () => {
-      return {
-        processName,
-        processState,
-        showDetailCardHeadings: true,
-        showReviewAsFirstLink: true,
-        showActionButtons: true,
-      };
-    })
-    .cond([states.ALLOW_ADOPT, _], () => {
-      return {
-        processName,
-        processState,
-        showDetailCardHeadings: true,
-        showReviewAsFirstLink: true,
-        showActionButtons: true,
       };
     })
     .cond([states.COMPLETED, _], () => {

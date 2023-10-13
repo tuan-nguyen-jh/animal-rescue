@@ -46,11 +46,13 @@ const onSubmitCallback = () => {
 
 const getProcessName = pageData => {
   const { transaction, listing } = pageData || {};
+
   const processName = transaction?.id
     ? transaction?.attributes?.processName
     : listing?.id
     ? listing?.attributes?.publicData?.transactionProcessAlias?.split('/')[0]
     : null;
+  
   return resolveLatestProcessName(processName);
 };
 

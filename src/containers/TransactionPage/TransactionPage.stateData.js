@@ -3,11 +3,13 @@ import {
   BOOKING_PROCESS_NAME,
   INQUIRY_PROCESS_NAME,
   PURCHASE_PROCESS_NAME,
+  RESCUE_BOOKING_PROCESS_NAME,
   resolveLatestProcessName,
 } from '../../transactions/transaction';
 import { getStateDataForBookingProcess } from './TransactionPage.stateDataBooking.js';
 import { getStateDataForInquiryProcess } from './TransactionPage.stateDataInquiry.js';
 import { getStateDataForPurchaseProcess } from './TransactionPage.stateDataPurchase.js';
+import { getStateDataForRescueBookingProcess } from './TransactionPage.stateDataRescueBooking';
 
 const errorShape = shape({
   type: oneOf(['error']).isRequired,
@@ -40,6 +42,9 @@ export const stateDataShape = shape({
 // Transitions are following process.edn format: "transition/my-transtion-name"
 // This extracts the 'my-transtion-name' string if namespace exists
 const getTransitionKey = transitionName => {
+  if (!transitionName) {
+    return;
+  }
   const [nameSpace, transitionKey] = transitionName.split('/');
   return transitionKey || transitionName;
 };
@@ -139,6 +144,8 @@ export const getStateData = (params, process) => {
     return getStateDataForBookingProcess(params, processInfo());
   } else if (processName === INQUIRY_PROCESS_NAME) {
     return getStateDataForInquiryProcess(params, processInfo());
+  } else if (processName === RESCUE_BOOKING_PROCESS_NAME) {
+    return getStateDataForRescueBookingProcess(params, processInfo());
   } else {
     return {};
   }

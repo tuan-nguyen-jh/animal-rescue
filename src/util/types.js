@@ -264,7 +264,9 @@ export const BOOKING_STATE_PENDING = 'pending';
 export const BOOKING_STATE_ACCEPTED = 'accepted';
 export const BOOKING_STATE_DECLINED = 'declined';
 export const BOOKING_STATE_CANCELLED = 'cancelled';
+export const BOOKING_STATE_PROPOSED = 'proposed';
 export const BOOKING_STATES = [
+  BOOKING_STATE_PROPOSED,
   BOOKING_STATE_PENDING,
   BOOKING_STATE_ACCEPTED,
   BOOKING_STATE_DECLINED,

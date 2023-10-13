@@ -405,7 +405,17 @@ export const TransactionPageComponent = props => {
           />
         ),
       }
-    : {};
+    : {
+      orderBreakdown: (
+        <OrderBreakdown
+          className={css.breakdown}
+          userRole={transactionRole}
+          transaction={transaction}
+          {...txBookingMaybe}
+          marketplaceName={config.marketplaceName}
+        />
+      )
+    };
 
   // The location of the booking can be shown if fuzzy location
   const showBookingLocation =

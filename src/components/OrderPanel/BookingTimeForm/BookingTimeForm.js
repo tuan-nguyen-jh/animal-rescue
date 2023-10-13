@@ -247,6 +247,7 @@ BookingTimeFormComponent.defaultProps = {
   monthlyTimeSlots: null,
   lineItems: null,
   fetchLineItemsError: null,
+  service: [],
 };
 
 BookingTimeFormComponent.propTypes = {

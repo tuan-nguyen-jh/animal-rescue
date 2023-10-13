@@ -39,7 +39,7 @@ const LineItemBasePriceMaybe = props => {
 LineItemBasePriceMaybe.propTypes = {
   quantity: string.isRequired,
   lineItems: propTypes.lineItems.isRequired,
-  code: propTypes.lineItemUnitType.isRequired,
+  code: propTypes.lineItemUnitType,
   intl: intlShape.isRequired,
 };
 

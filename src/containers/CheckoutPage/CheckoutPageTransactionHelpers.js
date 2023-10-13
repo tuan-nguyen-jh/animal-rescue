@@ -211,8 +211,8 @@ export const processCheckoutWithPayment = (orderParams, extraPaymentParams) => {
 
     const requestTransition =
       storedTx?.attributes?.lastTransition === process.transitions.INQUIRE
-        ? process.transitions.REQUEST_PAYMENT_AFTER_INQUIRY
-        : process.transitions.REQUEST_PAYMENT;
+        ? process.transitions.REQUEST_AFTER_INQUIRY
+        : process.transitions.REQUEST;
     const isPrivileged = process.isPrivileged(requestTransition);
 
     // If paymentIntent exists, order has been initiated previously.

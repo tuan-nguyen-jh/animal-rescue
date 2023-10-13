@@ -72,6 +72,10 @@
   "CheckoutPage.chargeDisabledMessage": "This listing is currently unavailable because the listing author's payout information is incomplete. Please contact support.",
   "CheckoutPage.correctQuantityInformationMissing": "The order data is missing correct quantity information",
   "CheckoutPage.default-booking.orderBreakdown": "Booking breakdown",
+  "CheckoutPage.adoption-booking.title": "Complete booking request",
+  "CheckoutPage.acc-rescue-booking.title": "Complete booking request",
+  "CheckoutPage.acc-rescue-booking.orderBreakdown": "Booking breakdown",
+  "CheckoutPage.adoption-booking.orderBreakdown": "Booking breakdown",
   "CheckoutPage.default-booking.title": "Complete booking request",
   "CheckoutPage.default-inquiry.orderBreakdown": "Order breakdown",
   "CheckoutPage.default-inquiry.title": "Send an inquiry to {authorDisplayName}",
@@ -296,10 +300,22 @@
   "EditListingPricingPanel.createListingTitle": "Pricing",
   "EditListingPricingPanel.listingPriceCurrencyInvalid": "The listing currency is different from the marketplace currency. You cannot edit the price.",
   "EditListingPricingPanel.title": "Edit the pricing of {listingTitle}",
+  "EditListingWizard.adoption-booking.new.saveDetails": "Next: Location",
+  "EditListingWizard.adoption-booking.new.saveLocation": "Next: Pricing",
+  "EditListingWizard.adoption-booking.new.savePricing": "Next: Availability",
+  "EditListingWizard.adoption-booking.new.saveAvailability": "Next: Photos",
+  "EditListingWizard.adoption-booking.new.savePhotos": "Publish listing",
   "EditListingStaffsPanel.createListingTitle": "Staffs",
   "EditListingStaffPanel.title": "Edit the staffs list of {listingTitle}",
   "EditListingContactsPanel.createListingTitle": "Contacts",
   "EditListingContactsPanel.title": "Edit the contacts list of {listingTitle}",
+  "EditListingWizard.acc-rescue-booking.new.saveAvailability": "Next: Contacts",
+  "EditListingWizard.acc-rescue-booking.new.saveContacts": "Next: Staffs",
+  "EditListingWizard.acc-rescue-booking.new.saveStaffs": "Next: Photos",
+  "EditListingWizard.acc-rescue-booking.new.saveDetails": "Next: Location",
+  "EditListingWizard.acc-rescue-booking.new.savePhotos": "Publish listing",
+  "EditListingWizard.acc-rescue-booking.new.saveLocation": "Next: Pricing",
+  "EditListingWizard.acc-rescue-booking.new.savePricing": "Next: Contacts",
   "EditListingWizard.default-booking.new.saveAvailability": "Next: Contacts",
   "EditListingWizard.default-booking.new.saveContacts": "Next: Staffs",
   "EditListingWizard.default-booking.new.saveStaffs": "Next: Photos",
@@ -378,7 +394,20 @@
   "FilterPlain.clear": "Clear",
   "ImageCarousel.imageAltText": "listing photo {index}/{count}",
   "ImageFromFile.couldNotReadFile": "Couldn't read file",
-  "InboxPage.default-booking.accepted.status": "Accepted",
+
+  "InboxPage.adoption-booking.request-accepted.status": "Accepted",
+  "InboxPage.adoption-booking.request-declined.status": "Declined",
+  "InboxPage.adoption-booking.booking-request-sent.status": "Requested",
+  "InboxPage.adoption-booking.cancelled.status": "Cancelled",
+  "InboxPage.adoption-booking.tour-completed.status": "Tour completed",
+  "InboxPage.adoption-booking.allow-adopt.status": "Allowed adoption",
+
+
+  "InboxPage.acc-rescue-booking.booking-request-sent.status": "Requested",
+  "InboxPage.acc-rescue-booking.request-accepted.status": "Accepted",
+  "InboxPage.acc-rescue-booking.request-decline.status": "Declined",
+
+  "InboxPage.default-booking.request-accepted.status": "Accepted",
   "InboxPage.default-booking.canceled.status": "Canceled",
   "InboxPage.default-booking.declined.status": "Declined",
   "InboxPage.default-booking.delivered.status": "Waiting for review",
@@ -994,7 +1023,7 @@
   "TopbarMobileMenu.unauthorizedGreeting": "Hello there,{lineBreak}would you like to {signupOrLogin}?",
   "TopbarMobileMenu.yourListingsLink": "Your listings",
   "TopbarSearchForm.placeholder": "Search listings…",
-  "TransactionPage.ActivityFeed.default-booking.accepted": "{actor, select, you {You accepted the booking request.} operator {The booking request was accepted.} other {{otherUsersName} accepted the booking request.}}",
+  "TransactionPage.ActivityFeed.default-booking.request-accepted": "{actor, select, you {You accepted the booking request.} operator {The booking request was accepted.} other {{otherUsersName} accepted the booking request.}}",
   "TransactionPage.ActivityFeed.default-booking.canceled": "The booking was canceled.",
   "TransactionPage.ActivityFeed.default-booking.declined": "{actor, select, you {You declined the booking request.} operator {The booking request was declined.} other {{otherUsersName} declined the booking request.}}",
   "TransactionPage.ActivityFeed.default-booking.delivered": "The booking was completed. {reviewLink}",
@@ -1019,7 +1048,68 @@
   "TransactionPage.ActivityFeed.reviewLink": "Leave a review for {otherUsersName}.",
   "TransactionPage.ActivityFeed.showOlderMessages": "Show older",
   "TransactionPage.ActivityFeed.today": "Today",
-  "TransactionPage.default-booking.customer.accepted.title": "Your booking request was accepted!",
+  "TransactionPage.ActivityFeed.adoption-booking.request-accepted": "{actor, select, you {You accepted the booking request.} operator {The booking request was accepted.} other {{otherUsersName} accepted the booking request.}}",
+  "TransactionPage.ActivityFeed.acc-rescue-booking.request-decline": "{actor, select, you {You declined the booking request.} operator {The booking request was declined.} other {{otherUsersName} declined the booking request.}}",
+
+  "TransactionPage.ActivityFeed.adoption-booking.request-declined": "{actor, select, you {You declined the booking request.} operator {The booking request was declined.} other {{otherUsersName} declined the booking request.}}",
+
+  "TransactionPage.acc-rescue-booking.provider.transition-accept.actionButton": "Accept request",
+  "TransactionPage.acc-rescue-booking.provider.transition-accept.actionError": "Oops, accepting failed. Please try again.",
+  "TransactionPage.acc-rescue-booking.provider.transition-provider-decline.actionButton": "Decline request",
+  "TransactionPage.acc-rescue-booking.provider.transition-provider-decline.actionError": "Oops, declining failed. Please try again.",
+
+  "TransactionPage.adoption-booking.provider.transition-accept.actionButton": "Accept request",
+  "TransactionPage.adoption-booking.provider.transition-accept.actionError": "Oops, accepting failed. Please try again.",
+  "TransactionPage.adoption-booking.provider.transition-decline.actionButton": "Decline request",
+  "TransactionPage.adoption-booking.provider.transition-decline.actionError": "Oops, declining failed. Please try again.",
+
+  "TransactionPage.adoption-booking.provider.transition-adopt.actionError": "Oops.",
+  "TransactionPage.adoption-booking.provider.transition-adopt.actionButton": "Allow adopt",
+  "TransactionPage.adoption-booking.provider.transition-provider-not-adopt.actionError": "Oops.",
+  "TransactionPage.adoption-booking.provider.transition-provider-not-adopt.actionButton": "Not allow adopt",
+
+  "TransactionPage.adoption-booking.customer.transition-customer-not-adopt.actionButton": "Not adopt",
+  "TransactionPage.adoption-booking.customer.transition-customer-not-adopt.actionError": "Oops.",
+
+  "TransactionPage.adoption-booking.provider.transition-provider-cancel.actionButton": "Cancel booking",
+  "TransactionPage.adoption-booking.provider.transition-provider-cancel.actionError": "Oops, cancel failed. Please try again.",
+  "TransactionPage.adoption-booking.customer.transition-customer-cancel.actionButton": "Cancel booking",
+  "TransactionPage.adoption-booking.customer.transition-customer-cancel.actionError": "Oops, cancel failed. Please try again.",
+  "TransactionPage.adoption-booking.provider.transition-complete.actionButton": "Mark as complete",
+  "TransactionPage.adoption-booking.provider.transition-complete.actionError": "Oops, mark as complete failed. Please try again.",
+
+  "TransactionPage.adoption-booking.provider.tour-completed.title": "The tour has been completed",
+  "TransactionPage.ActivityFeed.adoption-booking.tour-completed": "{actor, select, you {You marked the tour as completed.} other {{ actor } marked to the tour as completed}}",
+  "TransactionPage.adoption-booking.customer.tour-completed.title": "The tour has been completed",
+
+  "TransactionPage.adoption-booking.provider.allow-adopt.title": "{providerName} allowed the adoption.",
+  "TransactionPage.adoption-booking.customer.allow-adopt.title": "{providerName} allowed the adoption.",
+
+  "TransactionPage.acc-rescue-booking.provider.booking-request-sent.title": "You received a booking request from {customerName}.",
+  "TransactionPage.adoption-booking.provider.booking-request-sent.title": "You received a booking request from {customerName}.",
+
+  "TransactionPage.acc-rescue-booking.customer.booking-request-sent.extraInfo": "You'll be notified when {providerName} accepts your request.",
+  "TransactionPage.acc-rescue-booking.customer.booking-request-sent.title": "Your booking request was completed.",
+  "TransactionPage.acc-rescue-booking.customer.request-accepted.title": "{providerName} has accepted your booking request.",
+  "TransactionPage.acc-rescue-booking.provider.request-decline.title": "The request from {customerName} was declined.",
+
+
+  "TransactionPage.adoption-booking.customer.booking-request-sent.title": "Your booking request was completed.",
+  "TransactionPage.adoption-booking.customer.booking-request-sent.extraInfo": "You'll be notified when {providerName} accepts your request.",
+  "TransactionPage.adoption-booking.customer.request-accepted.title": "{providerName} has accepted your booking request.",
+
+
+  "TransactionPage.adoption-booking.provider.request-accepted.title": "You accepted a booking request from {customerName}.",
+  "TransactionPage.adoption-booking.customer.request-declined.title": "Your booking request was declined",
+  "TransactionPage.acc-rescue-booking.customer.request-decline.title": "Your booking request was declined",
+
+  "TransactionPage.adoption-booking.provider.cancelled.title": "The booking from {customerName} was canceled.",
+  "TransactionPage.ActivityFeed.adoption-booking.cancelled": "The booking was cancelled",
+  "TransactionPage.adoption-booking.customer.cancelled.title": "Your booking was cancelled",
+
+
+
+  "TransactionPage.default-booking.customer.request-accepted.title": "Your booking request was accepted!",
   "TransactionPage.default-booking.customer.canceled.title": "Your booking was canceled.",
   "TransactionPage.default-booking.customer.declined.title": "Your booking request was declined.",
   "TransactionPage.default-booking.customer.delivered.title": "Your booking was completed.",
@@ -1102,6 +1192,7 @@
   "TransactionPanel.conversationHeading": "Conversation",
   "TransactionPanel.customerBannedStatus": "The user made the request, but was later banned.",
   "TransactionPanel.default-booking.orderBreakdownTitle": "Booking breakdown",
+  "TransactionPanel.adoption-booking.orderBreakdownTitle": "Booking breakdown",
   "TransactionPanel.default-purchase.orderBreakdownTitle": "Order breakdown",
   "TransactionPanel.deletedListingOrderTitle": "a listing",
   "TransactionPanel.deletedListingTitle": "Deleted listing",

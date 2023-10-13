@@ -17,40 +17,36 @@ export const transitions = {
   // created with the initial request-payment transition.
   // At this transition a PaymentIntent is created by Marketplace API.
   // After this transition, the actual payment must be made on client-side directly to Stripe.
-  REQUEST_PAYMENT: 'transition/request-payment',
+  REQUEST: 'transition/request',
 
   // A customer can also initiate a transaction with an inquiry, and
   // then transition that with a request.
   INQUIRE: 'transition/inquire',
-  REQUEST_PAYMENT_AFTER_INQUIRY: 'transition/request-payment-after-inquiry',
-
-  // Stripe SDK might need to ask 3D security from customer, in a separate front-end step.
-  // Therefore we need to make another transition to Marketplace API,
-  // to tell that the payment is confirmed.
-  CONFIRM_PAYMENT: 'transition/confirm-payment',
-
-  // If the payment is not confirmed in the time limit set in transaction process (by default 15min)
-  // the transaction will expire automatically.
-  EXPIRE_PAYMENT: 'transition/expire-payment',
+  REQUEST_AFTER_INQUIRY: 'transition/request-after-inquiry',
 
   // When the provider accepts or declines a transaction from the
   // SalePage, it is transitioned with the accept or decline transition.
   ACCEPT: 'transition/accept',
   DECLINE: 'transition/decline',
 
-  // The operator can accept or decline the offer on behalf of the provider
-  OPERATOR_ACCEPT: 'transition/operator-accept',
-  OPERATOR_DECLINE: 'transition/operator-decline',
-
   // The backend automatically expire the transaction.
   EXPIRE: 'transition/expire',
 
   // Admin can also cancel the transition.
-  CANCEL: 'transition/cancel',
+  PROVIDER_CANCEL: 'transition/provider-cancel',
+  CUSTOMER_CANCEL: 'transition/customer-cancel',
+  OPERATOR_CANCEL: 'transition/operator-cancel',
 
   // The backend will mark the transaction completed.
   COMPLETE: 'transition/complete',
-  OPERATOR_COMPLETE: 'transition/operator-complete',
+
+  PROVIDER_NOT_ADOPT: 'transition/provider-not-adopt',
+  CUSTOMER_NOT_ADOPT: 'transition/customer-not-adopt',
+
+  COMPLETE_NOT_ADOPT: 'transition/complete-not-adopt',
+
+  ADOPT: 'transition/adopt',
+  COMPLETE_ADOPT: 'transition/complete-adopt',
 
   // Reviews are given through transaction transitions. Review 1 can be
   // by provider or customer, and review 2 will be the other party of
@@ -76,14 +72,14 @@ export const transitions = {
 export const states = {
   INITIAL: 'initial',
   INQUIRY: 'inquiry',
-  PENDING_PAYMENT: 'pending-payment',
-  PAYMENT_EXPIRED: 'payment-expired',
-  PREAUTHORIZED: 'preauthorized',
-  DECLINED: 'declined',
-  ACCEPTED: 'accepted',
-  EXPIRED: 'expired',
-  CANCELED: 'canceled',
-  DELIVERED: 'delivered',
+  BOOKING_REQUEST_SENT: 'booking-request-sent',
+  REQUEST_DECLINED: 'request-declined',
+  REQUEST_ACCEPTED: 'request-accepted',
+  CANCELLED: 'cancelled',
+  TOUR_COMPLETED: 'tour-completed',
+  NOT_ALLOW_ADOPT: 'not-allow-adopt',
+  ALLOW_ADOPT: 'allow-adopt',
+  COMPLETED: 'completed',
   REVIEWED: 'reviewed',
   REVIEWED_BY_CUSTOMER: 'reviewed-by-customer',
   REVIEWED_BY_PROVIDER: 'reviewed-by-provider',
@@ -112,45 +108,56 @@ export const graph = {
     [states.INITIAL]: {
       on: {
         [transitions.INQUIRE]: states.INQUIRY,
-        [transitions.REQUEST_PAYMENT]: states.PENDING_PAYMENT,
+        [transitions.REQUEST]: states.BOOKING_REQUEST_SENT,
       },
     },
     [states.INQUIRY]: {
       on: {
-        [transitions.REQUEST_PAYMENT_AFTER_INQUIRY]: states.PENDING_PAYMENT,
+        [transitions.REQUEST_AFTER_INQUIRY]: states.BOOKING_REQUEST_SENT,
       },
     },
 
-    [states.PENDING_PAYMENT]: {
+    [states.BOOKING_REQUEST_SENT]: {
       on: {
-        [transitions.EXPIRE_PAYMENT]: states.PAYMENT_EXPIRED,
-        [transitions.CONFIRM_PAYMENT]: states.PREAUTHORIZED,
+        [transitions.EXPIRE]: states.REQUEST_DECLINED,
+        [transitions.DECLINE]: states.REQUEST_DECLINED,
+        [transitions.ACCEPT]: states.REQUEST_ACCEPTED
       },
     },
 
-    [states.PAYMENT_EXPIRED]: {},
-    [states.PREAUTHORIZED]: {
+    [states.REQUEST_DECLINED]: {},
+    [states.REQUEST_ACCEPTED]: {
       on: {
-        [transitions.DECLINE]: states.DECLINED,
-        [transitions.OPERATOR_DECLINE]: states.DECLINED,
-        [transitions.EXPIRE]: states.EXPIRED,
-        [transitions.ACCEPT]: states.ACCEPTED,
-        [transitions.OPERATOR_ACCEPT]: states.ACCEPTED,
+        [transitions.PROVIDER_CANCEL]: states.CANCELLED,
+        [transitions.CUSTOMER_CANCEL]: states.CANCELLED,
+        [transitions.OPERATOR_CANCEL]: states.CANCELLED,
+        [transitions.COMPLETE]: states.TOUR_COMPLETED,
       },
     },
 
-    [states.DECLINED]: {},
-    [states.EXPIRED]: {},
-    [states.ACCEPTED]: {
+    [states.CANCELLED]: {},
+
+    [states.TOUR_COMPLETED]: {
       on: {
-        [transitions.CANCEL]: states.CANCELED,
-        [transitions.COMPLETE]: states.DELIVERED,
-        [transitions.OPERATOR_COMPLETE]: states.DELIVERED,
+        [transitions.PROVIDER_NOT_ADOPT]: states.NOT_ALLOW_ADOPT,
+        [transitions.CUSTOMER_NOT_ADOPT]: states.NOT_ALLOW_ADOPT,
+        [transitions.ADOPT]: states.ALLOW_ADOPT,
       },
     },
 
-    [states.CANCELED]: {},
-    [states.DELIVERED]: {
+    [states.NOT_ALLOW_ADOPT]: {
+      on: {
+        [transitions.COMPLETE_NOT_ADOPT]: states.COMPLETED
+      }
+    },
+
+    [states.ALLOW_ADOPT]: {
+      on: {
+        [transitions.COMPLETE_ADOPT]: states.COMPLETED
+      }
+    },
+
+    [states.COMPLETED]: {
       on: {
         [transitions.EXPIRE_REVIEW_PERIOD]: states.REVIEWED,
         [transitions.REVIEW_1_BY_CUSTOMER]: states.REVIEWED_BY_CUSTOMER,
@@ -180,13 +187,11 @@ export const graph = {
 export const isRelevantPastTransition = transition => {
   return [
     transitions.ACCEPT,
-    transitions.OPERATOR_ACCEPT,
-    transitions.CANCEL,
+    transitions.PROVIDER_CANCEL,
+    transitions.CUSTOMER_CANCEL,
+    transitions.OPERATOR_CANCEL,
     transitions.COMPLETE,
-    transitions.OPERATOR_COMPLETE,
-    transitions.CONFIRM_PAYMENT,
     transitions.DECLINE,
-    transitions.OPERATOR_DECLINE,
     transitions.EXPIRE,
     transitions.REVIEW_1_BY_CUSTOMER,
     transitions.REVIEW_1_BY_PROVIDER,
@@ -214,7 +219,7 @@ export const isProviderReview = transition => {
 // should go through the local API endpoints, or if using JS SDK is
 // enough.
 export const isPrivileged = transition => {
-  return [transitions.REQUEST_PAYMENT, transitions.REQUEST_PAYMENT_AFTER_INQUIRY].includes(
+  return [transitions.REQUEST, transitions.REQUEST_AFTER_INQUIRY].includes(
     transition
   );
 };
@@ -223,7 +228,6 @@ export const isPrivileged = transition => {
 export const isCompleted = transition => {
   const txCompletedTransitions = [
     transitions.COMPLETE,
-    transitions.OPERATOR_COMPLETE,
     transitions.REVIEW_1_BY_CUSTOMER,
     transitions.REVIEW_1_BY_PROVIDER,
     transitions.REVIEW_2_BY_CUSTOMER,
@@ -239,9 +243,10 @@ export const isCompleted = transition => {
 // In these transitions action/stripe-refund-payment is called
 export const isRefunded = transition => {
   const txRefundedTransitions = [
-    transitions.EXPIRE_PAYMENT,
     transitions.EXPIRE,
-    transitions.CANCEL,
+    transitions.PROVIDER_CANCEL,
+    transitions.CUSTOMER_CANCEL,
+    transitions.OPERATOR_CANCEL,
     transitions.DECLINE,
   ];
   return txRefundedTransitions.includes(transition);

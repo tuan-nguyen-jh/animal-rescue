@@ -56,6 +56,8 @@ export const OrderBreakdownComponent = props => {
   );
   // Line-item code that matches with base unit: day, night, hour, item
   const lineItemUnitType = unitLineItem?.code;
+  const processName = transaction.attributes.processName;
+  const service = transaction.attributes.protectedData.selectedService;
 
   const hasCommissionLineItem = lineItems.find(item => {
     const hasCustomerCommission = isCustomer && item.code === LINE_ITEM_CUSTOMER_COMMISSION;
