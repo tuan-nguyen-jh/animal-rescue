@@ -408,6 +408,7 @@
   "InboxPage.acc-rescue-booking.request-decline.status": "Declined",
   "InboxPage.acc-rescue-booking.request-expired.status": "Expired",
   "InboxPage.acc-rescue-booking.request-canceled.status": "Canceled",
+  "InboxPage.acc-rescue-booking.officer-dispatched.status": "Scheduled",
 
   "InboxPage.default-booking.request-accepted.status": "Accepted",
   "InboxPage.default-booking.canceled.status": "Canceled",
@@ -1062,10 +1063,19 @@
   "TransactionPage.acc-rescue-booking.provider.request-expired.title": "Booking request has expired.",
   "TransactionPage.acc-rescue-booking.provider.request-accepted.title": "You accepted the booking request.",
   "TransactionPage.acc-rescue-booking.provider.request-canceled.title": "Booking request has been canceled.",
+  "TransactionPage.acc-rescue-booking.provider.officer-dispatched.title": "Waiting for officer to dispatch.",
+  "TransactionPage.acc-rescue-booking.provider.exact-fee-calculated.title": "Service is finished.",
+  "TransactionPage.acc-rescue-booking.customer.exact-fee-calculated.title": "Service is finished.",
+  "TransactionPage.acc-rescue-booking.customer.officer-dispatched.title": "Officer has been scheduled to dispatch.",
   "TransactionPage.acc-rescue-booking.customer.transition-confirm-request.actionError": "Oops, confirmation failed. Please try again.",
   "TransactionPage.acc-rescue-booking.customer.transition-customer-cancel.actionError": "Oops, cancelation failed. Please try again.",
+  "TransactionPage.acc-rescue-booking.customer.transition-undefined.actionButton": "Request payment",
+  "TransactionPage.acc-rescue-booking.customer.transition-undefined.actionError": "Oops! Request payment unsucceed. Please try again!",
   "TransactionPage.acc-rescue-booking.provider.transition-provider-cancel.actionButton": "Cancel",
   "TransactionPage.acc-rescue-booking.provider.transition-provider-cancel.actionError": "Oops, cancelation failed. Please try again.",
+  "TransactionPage.acc-rescue-booking.provider.transition-finish.actionButton": "Finish",
+  "TransactionPage.acc-rescue-booking.provider.transition-finish.actionError": "Oops, some error happen. Please try again!",
+  
   "TransactionPage.adoption-booking.provider.transition-accept.actionButton": "Accept request",
   "TransactionPage.adoption-booking.provider.transition-accept.actionError": "Oops, accepting failed. Please try again.",
   "TransactionPage.adoption-booking.provider.transition-decline.actionButton": "Decline request",
@@ -1120,6 +1130,8 @@
   "TransactionPage.ActivityFeed.acc-rescue-booking.request-expired": "Booking request has expired.",
   "TransactionPage.ActivityFeed.acc-rescue-booking.request-accepted": "{actor, select, you {You accepted the booking request.} other {{ actor } accepted the booking request.}}",
   "TransactionPage.ActivityFeed.acc-rescue-booking.request-canceled" : "{actor, select, you {You canceled} other {{ actor } canceled}} after the estimated fee was provided.",
+  "TransactionPage.ActivityFeed.acc-rescue-booking.officer-dispatched": "Officer has been scheduled to dispatch.",
+  "TransactionPage.ActivityFeed.acc-rescue-booking.exact-fee-calculated":"Rescue service is finished",
   "TransactionPage.adoption-booking.customer.cancelled.title": "Your booking was cancelled",
 
 

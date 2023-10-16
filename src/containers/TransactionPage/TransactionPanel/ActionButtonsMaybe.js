@@ -1,11 +1,11 @@
 import React from 'react';
 import classNames from 'classnames';
-import { types as sdkTypes } from '../../../util/sdkLoader';
 
 import { PrimaryButton, SecondaryButton } from '../../../components';
 
 import css from './TransactionPanel.module.css';
 import { transitions } from '../../../transactions/transactionProcessRescueBooking';
+import { transitionPrivileged } from '../../../util/api';
 
 // Functional component as a helper to build ActionButtons
 const ActionButtonsMaybe = props => {
@@ -19,7 +19,7 @@ const ActionButtonsMaybe = props => {
     isProvider,
     estimatedLineItem,
     onTransition,
-    transaction
+    transaction,
   } = props;
 
   // In default processes default processes need special handling
@@ -30,16 +30,27 @@ const ActionButtonsMaybe = props => {
   }
 
   const hanldeClick = () => {
+    const params = {};
+
     const txId = transaction.id.uuid;
-    const transitionName = transitions.ACCEPT;
-    
-    const  params = {
-      protectedData: {
-        estimatedLineItem
-      }
-    };
-    console.log(params)
-    onTransition(txId, transitionName, params)
+
+    switch (transaction.attributes.lastTransition) {
+      case transitions.ACCEPT:
+        onTransition(txId, transitions.CONFIRM_REQUEST, params);
+        break;
+      case transitions.CONFIRM_REQUEST:
+        onTransition(txId, transitions.FINISH, params);
+        break;
+      case transitions.FINISH:
+        onTransition(txId, transitions.REQUEST_PAYMENT, params);
+        break;
+      default:
+        params.protectedData = {
+          estimatedLineItem
+        };
+        onTransition(txId, transitions.ACCEPT, params);
+    }
+
   }
 
   const buttonsDisabled = primaryButtonProps?.inProgress || secondaryButtonProps?.inProgress;

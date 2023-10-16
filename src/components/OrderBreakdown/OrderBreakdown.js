@@ -32,6 +32,8 @@ import LineItemFormMaybe from './LineItemFormMaybe';
 
 import css from './OrderBreakdown.module.css';
 
+const Decimal = require('decimal.js');
+
 export const OrderBreakdownComponent = props => {
   const {
     rootClassName,
@@ -77,6 +79,7 @@ export const OrderBreakdownComponent = props => {
 
   if (lineItemIsEstimated){
     lineItems[index].lineTotal.amount = unitPurchase ? unitPurchase.unitPrice.amount * estimatedLineItem : null;
+    lineItems[index].quantity = new Decimal(estimatedLineItem);
   }else{
     lineItems[index].lineTotal.amount = unitPurchase ? unitPurchase.unitPrice.amount * newQuantity : null;
   }
@@ -84,6 +87,8 @@ export const OrderBreakdownComponent = props => {
   const commission = lineItems[index].lineTotal.amount * lineItems[1].percentage.d / 100;
   const payin = lineItems[index].lineTotal.amount;
   const payout = payin - commission;
+  transaction.attributes.payinTotal.amount = payin;
+  transaction.attributes.payoutTotal.amount = payout;
 
   /**
    * OrderBreakdown contains different line items:
