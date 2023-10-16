@@ -383,7 +383,6 @@ export const sendTxDetails = (listing, orderData) => async (dispatch, getState, 
 
     const tx = denormalisedResponseEntities(response);
     const returnedOrder = tx[0]
-    console.log(tx)
 
     dispatch(sendTxDetailsSuccess());
     dispatch(fetchCurrentUserHasOrdersSuccess(true));

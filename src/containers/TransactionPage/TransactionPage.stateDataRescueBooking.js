@@ -76,15 +76,32 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
       }
     })
     .cond([states.REQUEST_ACCEPTED, PROVIDER], () => {
+      const secondary = isCustomerBanned ? null : actionButtonProps(transitions.PROVIDER_CANCEL, PROVIDER);
       return {
         processName,
         processState,
         showLineItemForm: false,
         showPriceBreakdown: true,
         lineItemIsEstimated: true,
+        showActionButtons: true,
+        secondaryButtonProps: secondary,
       }
     })
     .cond([states.REQUEST_ACCEPTED, CUSTOMER], () => {
+      const primary = isCustomerBanned ? null : actionButtonProps(transitions.CONFIRM_REQUEST, CUSTOMER);
+      const secondary = isCustomerBanned ? null : actionButtonProps(transitions.CUSTOMER_CANCEL, CUSTOMER);
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true,
+        primaryButtonProps: primary,
+        secondaryButtonProps: secondary,
+        showActionButtons: true
+      }
+    })
+    .cond([states.REQUEST_CANCELED, _], () => {
       return {
         processName,
         processState,
