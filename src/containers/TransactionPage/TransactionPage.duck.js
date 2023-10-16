@@ -20,11 +20,19 @@ import {
 
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 import { fetchCurrentUserNotifications } from '../../ducks/user.duck';
+import { ADOPTED } from '../../config/configListing';
 
 const { UUID } = sdkTypes;
 
 const MESSAGES_PAGE_SIZE = 100;
 const REVIEW_TX_INCLUDES = ['reviews', 'reviews.author', 'reviews.subject'];
+
+
+const requestAction = actionType => params => ({ type: actionType, payload: { params } });
+
+const successAction = actionType => result => ({ type: actionType, payload: result.data });
+
+const errorAction = actionType => payload => ({ type: actionType, payload, error: true });
 
 // ================ Action types ================ //
 
@@ -62,6 +70,13 @@ export const FETCH_LINE_ITEMS_REQUEST = 'app/TransactionPage/FETCH_LINE_ITEMS_RE
 export const FETCH_LINE_ITEMS_SUCCESS = 'app/TransactionPage/FETCH_LINE_ITEMS_SUCCESS';
 export const FETCH_LINE_ITEMS_ERROR = 'app/TransactionPage/FETCH_LINE_ITEMS_ERROR';
 
+export const FETCH_ANIMAL_LISTINGS = 'app/TransactionPage/FETCH_ANIMAL_LISTINGS';
+export const FETCH_ANIMAL_LISTINGS_ERROR = 'app/TransactionPage/FETCH_ANIMAL_LISTINGS_ERROR';
+
+export const UPDATE_HOST_INFO_REQUEST = 'app/TransactionPage/UPDATE_HOST_INFO_REQUEST';
+export const UPDATE_HOST_INFO_SUCCESS = 'app/TransactionPage/UPDATE_HOST_INFO_SUCCESS';
+export const UPDATE_HOST_INFO_ERROR = 'app/TransactionPage/UPDATE_HOST_INFO_ERROR';
+
 // ================ Reducer ================ //
 
 const initialState = {
@@ -95,6 +110,9 @@ const initialState = {
   lineItems: null,
   fetchLineItemsInProgress: false,
   fetchLineItemsError: null,
+  listingAnimals: [],
+  updateInProgress: false,
+  updateHostInfoError: null,
 };
 
 // Merge entity arrays using ids, so that conflicting items in newer array (b) overwrite old values (a).
@@ -226,6 +244,21 @@ export default function transactionPageReducer(state = initialState, action = {}
     case FETCH_LINE_ITEMS_ERROR:
       return { ...state, fetchLineItemsInProgress: false, fetchLineItemsError: payload };
 
+    case FETCH_ANIMAL_LISTINGS:
+      return { ...state, listingAnimals: payload };
+    case FETCH_ANIMAL_LISTINGS_ERROR:
+      return { ...state, listingAnimals: [] };
+
+    case UPDATE_HOST_INFO_REQUEST:
+      return { ...state, updateInProgress: true, updateListingError: null };
+    case UPDATE_HOST_INFO_SUCCESS:
+      return {
+        ...state,
+        updateInProgress: false,
+      };
+    case UPDATE_HOST_INFO_ERROR:
+      return { ...state, updateInProgress: false, updateListingError: payload };
+
     default:
       return state;
   }
@@ -300,6 +333,20 @@ export const fetchLineItemsError = error => ({
   error: true,
   payload: error,
 });
+
+export const updateFetchAnimalListings = listingAnimals => ({
+  type: FETCH_ANIMAL_LISTINGS,
+  payload: listingAnimals,
+});
+
+export const updateFetchAnimalListingsError = () => ({
+  type: FETCH_ANIMAL_LISTINGS_ERROR,
+});
+
+// SDK method: ownListings.update
+export const updateHostInfoRequest = requestAction(UPDATE_HOST_INFO_REQUEST);
+export const updateHostInfoSuccess = successAction(UPDATE_HOST_INFO_SUCCESS);
+export const updateHostInfoError = errorAction(UPDATE_HOST_INFO_ERROR);
 
 // ================ Thunks ================ //
 
@@ -668,6 +715,37 @@ export const fetchTransactionLineItems = ({ orderData, listingId, isOwnListing }
       });
     });
 };
+
+export const fetchAnimalListingsByACC = accId => async (dispatch, getState, sdk) => {
+  try {
+    const response = await sdk.listings.query({ pub_accId: accId, pub_isAdopted: ADOPTED.notAdopted });
+    const listingAnimals = denormalisedResponseEntities(response);
+    dispatch(updateFetchAnimalListings(listingAnimals));
+  } catch (err) {
+    dispatch(updateFetchAnimalListingsError());
+    console.err(err);
+  }
+};
+
+export const updateHostInfo = data => async (dispatch, getState, sdk) => {
+  dispatch(updateHostInfoRequest(data))
+  const {animal: id, hostName, hostPhone, date} = data;
+  const publicData = {
+    isAdopted: ADOPTED.adopted,
+    hostName,
+    hostPhone,
+    date
+  }
+  const params = {id, publicData}
+  try {
+    const res = await sdk.ownListings.update(params, {})
+    dispatch(updateHostInfoSuccess(res))
+  } catch(e) {
+    dispatch(updateHostInfoError(storableError(e)))
+    console.err(e)
+  }
+
+}
 
 // loadData is a collection of async calls that need to be made
 // before page has all the info it needs to render itself

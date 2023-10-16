@@ -26,6 +26,7 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
     isCustomer,
     actionButtonProps,
     leaveReviewProps,
+    hostInfoProps,
   } = processInfo;
 
   return new ConditionalResolver([processState, transactionRole])
@@ -42,7 +43,15 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
       return { processName, processState, showDetailCardHeadings: true };
     })
     .cond([states.BOOKING_REQUEST_SENT, CUSTOMER], () => {
-      return { processName, processState, showDetailCardHeadings: true, showExtraInfo: true };
+      const secondary = actionButtonProps(transitions.CUSTOMER_DECLINE, CUSTOMER);
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showExtraInfo: true,
+        showActionButtons: true,
+        secondaryButtonProps: secondary,
+      };
     })
     .cond([states.BOOKING_REQUEST_SENT, PROVIDER], () => {
       const primary = isCustomerBanned ? null : actionButtonProps(transitions.ACCEPT, PROVIDER);
@@ -57,8 +66,10 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
       };
     })
     .cond([states.REQUEST_ACCEPTED, PROVIDER], () => {
-      const primary = isCustomerBanned ? null : actionButtonProps(transitions.COMPLETE, PROVIDER)
-      const secondary = isCustomerBanned ? null : actionButtonProps(transitions.PROVIDER_CANCEL, PROVIDER);
+      const primary = isCustomerBanned ? null : actionButtonProps(transitions.COMPLETE, PROVIDER);
+      const secondary = isCustomerBanned
+        ? null
+        : actionButtonProps(transitions.PROVIDER_CANCEL, PROVIDER);
       return {
         processName,
         processState,
@@ -66,39 +77,72 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
         showActionButtons: true,
         primaryButtonProps: primary,
         secondaryButtonProps: secondary,
-      }
+      };
     })
     .cond([states.REQUEST_ACCEPTED, CUSTOMER], () => {
-      const secondary =  actionButtonProps(transitions.CUSTOMER_CANCEL, CUSTOMER);
+      const secondary = actionButtonProps(transitions.CUSTOMER_CANCEL, CUSTOMER);
       return {
         processName,
         processState,
         showDetailCardHeadings: true,
         showActionButtons: true,
         secondaryButtonProps: secondary,
-      }
+      };
     })
     .cond([states.TOUR_COMPLETED, PROVIDER], () => {
-      const primary = isCustomerBanned ? null : actionButtonProps(transitions.ADOPT, PROVIDER);
-      const secondary = isCustomerBanned ? null : actionButtonProps(transitions.PROVIDER_NOT_ADOPT, PROVIDER);
+      const secondary = isCustomerBanned
+        ? null
+        : actionButtonProps(transitions.PROVIDER_NOT_ADOPT, PROVIDER);
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showActionButtons: true,
+        primaryButtonProps: hostInfoProps,
+        secondaryButtonProps: secondary,
+      };
+    })
+    .cond([states.TOUR_COMPLETED, CUSTOMER], () => {
+      const secondary = actionButtonProps(transitions.CUSTOMER_NOT_ADOPT, CUSTOMER);
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showActionButtons: true,
+        secondaryButtonProps: secondary,
+      };
+    })
+    .cond([states.PENDING_ADOPT, CUSTOMER], () => {
+      const primary = actionButtonProps(transitions.CUSTOMER_ACCEPT_ADOPT, CUSTOMER)
+      const secondary = actionButtonProps(transitions.CUSTOMER_NOT_ACCEPT_ADOPT, CUSTOMER);
       return {
         processName,
         processState,
         showDetailCardHeadings: true,
         showActionButtons: true,
         primaryButtonProps: primary,
-        secondaryButtonProps: secondary
-      }
+        secondaryButtonProps: secondary,
+      };
     })
-    .cond([states.TOUR_COMPLETED, CUSTOMER], () => {
-      const secondary =  actionButtonProps(transitions.CUSTOMER_NOT_ADOPT, CUSTOMER);
+    .cond([states.ALLOW_ADOPT, PROVIDER], () => {
+      const primary = actionButtonProps(transitions.PROVIDER_COMPLETE_ADOPT, PROVIDER)
       return {
         processName,
         processState,
         showDetailCardHeadings: true,
         showActionButtons: true,
-        secondaryButtonProps: secondary
-      }
+        primaryButtonProps: primary,
+      };
+    })
+    .cond([states.NOT_ALLOW_ADOPT, PROVIDER], () => {
+      const primary = actionButtonProps(transitions.PROVIDER_COMPLETE_NOT_ADOPT, PROVIDER)
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showActionButtons: true,
+        primaryButtonProps: primary,
+      };
     })
     .cond([states.NOT_ALLOW_ADOPT, _], () => {
       return {

@@ -156,6 +156,7 @@ const OrderPanel = props => {
     marketplaceName,
     fetchLineItemsInProgress,
     fetchLineItemsError,
+    sendTxDetailsInProgress
   } = props;
 
   const publicData = listing?.attributes?.publicData || {};
@@ -279,6 +280,7 @@ const OrderPanel = props => {
             isOwnListing={isOwnListing}
             monthlyTimeSlots={monthlyTimeSlots}
             onFetchTimeSlots={onFetchTimeSlots}
+            sendTxDetailsInProgress={sendTxDetailsInProgress}
             startDatePlaceholder={intl.formatDate(TODAY, dateFormattingOptions)}
             endDatePlaceholder={intl.formatDate(TODAY, dateFormattingOptions)}
             timeZone={timeZone}

@@ -94,6 +94,7 @@ export class BookingTimeFormComponent extends Component {
             onFetchTimeSlots,
             timeZone,
             fetchLineItemsInProgress,
+            sendTxDetailsInProgress,
             fetchLineItemsError,
             autoFocus
           } = fieldRenderProps;
@@ -214,7 +215,7 @@ export class BookingTimeFormComponent extends Component {
               </FormSpy>
 
               <div className={css.submitButton}>
-                <PrimaryButton type="submit" inProgress={fetchLineItemsInProgress}>
+                <PrimaryButton type="submit" inProgress={fetchLineItemsInProgress || sendTxDetailsInProgress}>
                   <FormattedMessage id="BookingTimeForm.requestToBook" />
                 </PrimaryButton>
               </div>

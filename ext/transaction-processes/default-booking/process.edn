@@ -100,7 +100,17 @@
    :actor :actor.role/provider,
    :actions [{:name :action/update-protected-data}],
    :from :state/tour-completed,
+   :to :state/pending-adopt}
+
+  {:name :transition/customer-accept-adopt,
+   :actor :actor.role/customer,
+   :from :state/pending-adopt,
    :to :state/allow-adopt}
+
+  {:name :transition/customer-not-accept-adopt,
+   :actor :actor.role/customer,
+   :from :state/pending-adopt,
+   :to :state/not-allow-adopt}
 
   {:name :transition/complete-adopt,
    :at
@@ -181,32 +191,57 @@
    :to :actor.role/customer,
    :template :booking-accepted-request}
 
-  {:name :notification/booking-declined-request,
+  {:name :notification/booking-declined-request-customer,
    :on :transition/decline,
    :to :actor.role/customer,
    :template :booking-declined-request}
 
-  {:name :notification/booking-expired-request,
+  {:name :notification/booking-declined-request-provider,
+   :on :transition/customer-decline,
+   :to :actor.role/provider,
+   :template :booking-declined-request}
+
+  {:name :notification/booking-expired-request-customer,
    :on :transition/expire,
    :to :actor.role/customer,
    :template :booking-expired-request}
+
+  {:name :notification/review-period-start-provider-manual,
+   :on :transition/provider-complete-adopt,
+   :to :actor.role/provider,
+   :template :booking-review-by-provider-wanted}
 
   {:name :notification/review-period-start-provider,
    :on :transition/complete-adopt,
    :to :actor.role/provider,
    :template :booking-review-by-provider-wanted}
 
+  {:name :notification/review-period-start-customer-manual,
+   :on :transition/provider-complete-adopt,
+   :to :actor.role/customer,
+   :template :booking-review-by-customer-wanted}
+
   {:name :notification/review-period-start-customer,
    :on :transition/complete-adopt,
    :to :actor.role/customer,
    :template :booking-review-by-customer-wanted}
 
-   {:name :notification/review-period-start-provider-not-adopt,
+  {:name :notification/review-period-start-provider-not-adopt-manual,
+   :on :transition/provider-complete-not-adopt,
+   :to :actor.role/provider,
+   :template :booking-review-by-provider-wanted}
+
+  {:name :notification/review-period-start-provider-not-adopt,
    :on :transition/complete-not-adopt,
    :to :actor.role/provider,
    :template :booking-review-by-provider-wanted}
 
-   {:name :notification/review-period-start-customer-not-adopt,
+  {:name :notification/review-period-start-customer-not-adopt-manual,
+   :on :transition/provider-complete-not-adopt,
+   :to :actor.role/customer,
+   :template :booking-review-by-customer-wanted}
+
+  {:name :notification/review-period-start-customer-not-adopt,
    :on :transition/complete-not-adopt,
    :to :actor.role/customer,
    :template :booking-review-by-customer-wanted}

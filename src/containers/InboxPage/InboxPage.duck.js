@@ -4,6 +4,7 @@ import { storableError } from '../../util/errors';
 import { parse } from '../../util/urlHelpers';
 import { getAllTransitionsForEveryProcess } from '../../transactions/transaction';
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
+import { txTypes } from '../../config/configListing';
 
 const sortedTransactions = txs =>
   reverse(
@@ -93,6 +94,7 @@ export const loadData = (params, search) => (dispatch, getState, sdk) => {
   const apiQueryParams = {
     only: onlyFilter,
     lastTransitions: getAllTransitionsForEveryProcess(),
+    processNames: [ txTypes.adoption.process, txTypes.rescue.process],
     include: [
       'listing',
       'provider',

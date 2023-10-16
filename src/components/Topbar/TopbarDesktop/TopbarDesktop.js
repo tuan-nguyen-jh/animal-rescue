@@ -19,6 +19,7 @@ import {
 import TopbarSearchForm from '../TopbarSearchForm/TopbarSearchForm';
 
 import css from './TopbarDesktop.module.css';
+import { userTypes } from '../../../config/configUsers';
 
 const TopbarDesktop = props => {
   const {
@@ -46,6 +47,7 @@ const TopbarDesktop = props => {
   const isAuthenticatedOrJustHydrated = isAuthenticated || !mounted;
 
   const classes = classNames(rootClassName || css.root, className);
+  const isOfficer = currentUser?.attributes?.profile?.protectedData?.userType === userTypes.officer ? true : false;
 
   const search = (
     <TopbarSearchForm
@@ -78,48 +80,88 @@ const TopbarDesktop = props => {
     return currentPage === page || isAccountSettingsPage ? css.currentPage : null;
   };
 
-  const profileMenu = authenticatedOnClientSide ? (
-    <Menu>
-      <MenuLabel className={css.profileMenuLabel} isOpenClassName={css.profileMenuIsOpen}>
-        <Avatar className={css.avatar} user={currentUser} disableProfileLink />
-      </MenuLabel>
-      <MenuContent className={css.profileMenuContent}>
-        <MenuItem key="ManageListingsPage">
-          <NamedLink
-            className={classNames(css.yourListingsLink, currentPageClass('ManageListingsPage'))}
-            name="ManageListingsPage"
-          >
-            <span className={css.menuItemBorder} />
-            <FormattedMessage id="TopbarDesktop.yourListingsLink" />
-          </NamedLink>
-        </MenuItem>
-        <MenuItem key="ProfileSettingsPage">
-          <NamedLink
-            className={classNames(css.profileSettingsLink, currentPageClass('ProfileSettingsPage'))}
-            name="ProfileSettingsPage"
-          >
-            <span className={css.menuItemBorder} />
-            <FormattedMessage id="TopbarDesktop.profileSettingsLink" />
-          </NamedLink>
-        </MenuItem>
-        <MenuItem key="AccountSettingsPage">
-          <NamedLink
-            className={classNames(css.yourListingsLink, currentPageClass('AccountSettingsPage'))}
-            name="AccountSettingsPage"
-          >
-            <span className={css.menuItemBorder} />
-            <FormattedMessage id="TopbarDesktop.accountSettingsLink" />
-          </NamedLink>
-        </MenuItem>
-        <MenuItem key="logout">
-          <InlineTextButton rootClassName={css.logoutButton} onClick={onLogout}>
-            <span className={css.menuItemBorder} />
-            <FormattedMessage id="TopbarDesktop.logout" />
-          </InlineTextButton>
-        </MenuItem>
-      </MenuContent>
-    </Menu>
-  ) : null;
+
+  const profileMenu =
+    authenticatedOnClientSide && isOfficer ? (
+      <Menu>
+        <MenuLabel className={css.profileMenuLabel} isOpenClassName={css.profileMenuIsOpen}>
+          <Avatar className={css.avatar} user={currentUser} disableProfileLink />
+        </MenuLabel>
+        <MenuContent className={css.profileMenuContent}>
+          <MenuItem key="ManageListingsPage">
+            <NamedLink
+              className={classNames(css.yourListingsLink, currentPageClass('ManageListingsPage'))}
+              name="ManageListingsPage"
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.yourListingsLink" />
+            </NamedLink>
+          </MenuItem>
+          <MenuItem key="ProfileSettingsPage">
+            <NamedLink
+              className={classNames(
+                css.profileSettingsLink,
+                currentPageClass('ProfileSettingsPage')
+              )}
+              name="ProfileSettingsPage"
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.profileSettingsLink" />
+            </NamedLink>
+          </MenuItem>
+          <MenuItem key="AccountSettingsPage">
+            <NamedLink
+              className={classNames(css.yourListingsLink, currentPageClass('AccountSettingsPage'))}
+              name="AccountSettingsPage"
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.accountSettingsLink" />
+            </NamedLink>
+          </MenuItem>
+          <MenuItem key="logout">
+            <InlineTextButton rootClassName={css.logoutButton} onClick={onLogout}>
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.logout" />
+            </InlineTextButton>
+          </MenuItem>
+        </MenuContent>
+      </Menu>
+    ) : authenticatedOnClientSide ? (
+      <Menu>
+        <MenuLabel className={css.profileMenuLabel} isOpenClassName={css.profileMenuIsOpen}>
+          <Avatar className={css.avatar} user={currentUser} disableProfileLink />
+        </MenuLabel>
+        <MenuContent className={css.profileMenuContent}>
+          <MenuItem key="ProfileSettingsPage">
+            <NamedLink
+              className={classNames(
+                css.profileSettingsLink,
+                currentPageClass('ProfileSettingsPage')
+              )}
+              name="ProfileSettingsPage"
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.profileSettingsLink" />
+            </NamedLink>
+          </MenuItem>
+          <MenuItem key="AccountSettingsPage">
+            <NamedLink
+              className={classNames(css.yourListingsLink, currentPageClass('AccountSettingsPage'))}
+              name="AccountSettingsPage"
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.accountSettingsLink" />
+            </NamedLink>
+          </MenuItem>
+          <MenuItem key="logout">
+            <InlineTextButton rootClassName={css.logoutButton} onClick={onLogout}>
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.logout" />
+            </InlineTextButton>
+          </MenuItem>
+        </MenuContent>
+      </Menu>
+    ) : null;
 
   const signupLink = isAuthenticatedOrJustHydrated ? null : (
     <NamedLink name="SignupPage" className={css.signupLink}>
@@ -145,11 +187,13 @@ const TopbarDesktop = props => {
         alt={intl.formatMessage({ id: 'TopbarDesktop.logo' }, { marketplaceName })}
       />
       {search}
-      <NamedLink className={css.createListingLink} name="NewListingPage">
-        <span className={css.createListing}>
-          <FormattedMessage id="TopbarDesktop.createListing" />
-        </span>
-      </NamedLink>
+      {isOfficer && (
+        <NamedLink className={css.createListingLink} name="NewListingPage">
+          <span className={css.createListing}>
+            <FormattedMessage id="TopbarDesktop.createListing" />
+          </span>
+        </NamedLink>
+      )}
       {inboxLink}
       {profileMenu}
       {signupLink}

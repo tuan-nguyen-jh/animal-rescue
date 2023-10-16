@@ -53,6 +53,11 @@ export const ACC_SERVICES = {
   rescue: 'rescue'
 }
 
+export const ADOPTED = {
+  adopted: 'yes',
+  notAdopted: 'no'
+}
+
 export const listingFields = [
   {
     key: 'service',
@@ -147,13 +152,17 @@ export const listingFields = [
   {
     key: 'isAdopted',
     includeForListingTypes: [ANIMAL_LISTING_TYPE],
-
     scope: 'public',
-    schemaType: 'boolean',
+    schemaType: 'enum',
+    enumOptions: [
+      { option: 'no', label: 'No' },
+      { option: 'yes', label: 'Yes' },
+    ],
     saveConfig: {
       label: 'Is adopted',
       placeholderMessage: 'Is adopted',
-      isRequired: false,
+      isRequired: true,
+      requiredMessage: 'You need to select an option'
     },
   },
   {
@@ -188,17 +197,6 @@ export const listingFields = [
       label: 'Date of adoption',
       placeholderMessage: 'dd/mm/year',
       isRequired: false,
-    },
-  },
-  {
-    key: 'acc-id',
-    includeForListingTypes: ['animal'],
-    scope: 'public',
-    schemaType: 'text',
-    saveConfig: {
-      label: 'ID of ACC',
-      placeholderMessage: 'ID of ACC',
-      isRequired: true,
     },
   },
 ];

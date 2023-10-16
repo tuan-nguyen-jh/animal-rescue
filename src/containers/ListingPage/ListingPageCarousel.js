@@ -114,6 +114,7 @@ export const ListingPageComponent = props => {
     config,
     routeConfiguration,
     onSendTxDetails,
+    sendTxDetailsInProgress
   } = props;
 
   // prop override makes testing a bit easier
@@ -395,6 +396,7 @@ export const ListingPageComponent = props => {
               onFetchTransactionLineItems={onFetchTransactionLineItems}
               lineItems={lineItems}
               fetchLineItemsInProgress={fetchLineItemsInProgress}
+              sendTxDetailsInProgress={sendTxDetailsInProgress}
               fetchLineItemsError={fetchLineItemsError}
               validListingTypes={config.listing.listingTypes}
               marketplaceCurrency={config.currency}

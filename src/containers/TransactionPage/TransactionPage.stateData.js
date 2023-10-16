@@ -93,6 +93,9 @@ export const getStateData = (params, process) => {
     sendReviewInProgress,
     sendReviewError,
     onOpenReviewModal,
+    onOpenHostInfoModal,
+    sendHostInfoInProgress,
+    sendHostInfoError,
   } = params;
   const isCustomer = transactionRole === 'customer';
   const processName = resolveLatestProcessName(transaction?.attributes?.processName);
@@ -124,6 +127,18 @@ export const getStateData = (params, process) => {
     actionButtonTranslationErrorId: 'TransactionPage.leaveReview.actionError',
   });
 
+  const getHostInfoProps = getActionButtonPropsMaybe({
+    processName,
+    transitionName: 'adopt',
+    transactionRole,
+    intl,
+    inProgress: sendHostInfoInProgress,
+    transitionError: sendHostInfoError,
+    onAction: onOpenHostInfoModal,
+    actionButtonTranslationId: 'TransactionPage.adopt.actionButton',
+    actionButtonTranslationErrorId: 'TransactionPage.adopt.actionError',
+  })
+
   const processInfo = () => {
     const { getState, states, transitions } = process;
     const processState = getState(transaction);
@@ -135,6 +150,7 @@ export const getStateData = (params, process) => {
       isCustomer,
       actionButtonProps: getActionButtonProps,
       leaveReviewProps: getLeaveReviewProps,
+      hostInfoProps: getHostInfoProps,
     };
   };
 
