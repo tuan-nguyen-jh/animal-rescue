@@ -50,6 +50,7 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showExtraInfo: true,
         secondaryButtonProps: secondary,
         showActionButtons: true,
+        showLineItemForm: false,
       };
     })
     .cond([states.BOOKING_REQUEST_SENT, PROVIDER], () => {
@@ -62,14 +63,34 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showActionButtons: true,
         primaryButtonProps: primary,
         secondaryButtonProps: secondary,
-        showLineItemForm: true
+        showLineItemForm: true,
+        showPriceBreakdown: true
       };
     })
     .cond([states.REQUEST_DECLINED, _], () => {
       return {
         processName,
         processState,
-        showPriceBreakDown: false
+        showPriceBreakdown: false,
+        showLineItemForm: false,
+      }
+    })
+    .cond([states.REQUEST_ACCEPTED, PROVIDER], () => {
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true,
+      }
+    })
+    .cond([states.REQUEST_ACCEPTED, CUSTOMER], () => {
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true,
       }
     })
     .cond([states.COMPLETED, _], () => {

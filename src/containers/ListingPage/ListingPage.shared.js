@@ -187,11 +187,9 @@ export const handleSubmit = parameters =>async values => {
       ...deliveryMethodMaybe,
       ...otherOrderData,
     };
-    console.log(orderData)
 
   try {
     const txId = await onSendTxDetails(listing, orderData);
-    console.log(txId)
     history.push(createResourceLocatorString('OrderDetailsPage', routes, { id: txId.id.uuid }, {}));
   } catch (error) {
     console.log(error)

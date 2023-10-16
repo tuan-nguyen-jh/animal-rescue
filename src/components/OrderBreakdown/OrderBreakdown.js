@@ -45,7 +45,10 @@ export const OrderBreakdownComponent = props => {
     currency,
     marketplaceName,
     showLineItemForm,
-    showPriceBreakdown
+    showPriceBreakdown,
+    lineItemIsEstimated,
+    newQuantity,
+    setNewQuantity,
   } = props;
 
   const isCustomer = userRole === 'customer';
@@ -56,8 +59,9 @@ export const OrderBreakdownComponent = props => {
   );
   // Line-item code that matches with base unit: day, night, hour, item
   const lineItemUnitType = unitLineItem?.code;
-  const processName = transaction.attributes.processName;
   const service = transaction.attributes.protectedData.selectedService;
+  const estimatedLineItem = service == SERVICE_RESCUE ?
+    transaction.attributes.protectedData.estimatedLineItem : null;
 
   const hasCommissionLineItem = lineItems.find(item => {
     const hasCustomerCommission = isCustomer && item.code === LINE_ITEM_CUSTOMER_COMMISSION;
@@ -71,9 +75,12 @@ export const OrderBreakdownComponent = props => {
   const unitPurchase = index !== -1 ? lineItems[index] : null;
   const quantity = unitPurchase ? unitPurchase.quantity.toString() : null;
 
-  const [newQuantity, setNewQuantity] = useState(quantity);
+  if (lineItemIsEstimated){
+    lineItems[index].lineTotal.amount = unitPurchase ? unitPurchase.unitPrice.amount * estimatedLineItem : null;
+  }else{
+    lineItems[index].lineTotal.amount = unitPurchase ? unitPurchase.unitPrice.amount * newQuantity : null;
+  }
 
-  lineItems[index].lineTotal.amount = unitPurchase ? unitPurchase.unitPrice.amount * newQuantity : null;
   const commission = lineItems[index].lineTotal.amount * lineItems[1].percentage.d / 100;
   const payin = lineItems[index].lineTotal.amount;
   const payout = payin - commission;
@@ -130,16 +137,19 @@ export const OrderBreakdownComponent = props => {
         isProvider={isProvider}
         showPriceBreakdown={showPriceBreakdown}
         quantity={newQuantity}
+        estimatedLineItem={estimatedLineItem}
+        lineItemIsEstimated={lineItemIsEstimated}
       />
 
       {service === SERVICE_RESCUE
-        && isProvider
+        && (isProvider || lineItemIsEstimated)
         && showPriceBreakdown
         && <LineItemBasePriceMaybe
           quantity={newQuantity}
           lineItems={lineItems}
           code={lineItemUnitType}
           intl={intl}
+          estimatedLineItem={estimatedLineItem}
         />
       }
 
@@ -155,6 +165,7 @@ export const OrderBreakdownComponent = props => {
           userRole={userRole}
           intl={intl}
           marketplaceCurrency={currency}
+          estimatedLineItem={estimatedLineItem}
         />
       }
 
@@ -167,6 +178,7 @@ export const OrderBreakdownComponent = props => {
           isCustomer={isCustomer}
           marketplaceName={marketplaceName}
           intl={intl}
+          estimatedLineItem={estimatedLineItem}
         />
       }
 
@@ -197,7 +209,7 @@ export const OrderBreakdownComponent = props => {
       />
 
       {service === SERVICE_RESCUE
-        && isProvider
+        && (isProvider || lineItemIsEstimated)
         && showPriceBreakdown
         && <LineItemTotalPrice
           transaction={transaction}
@@ -248,7 +260,6 @@ OrderBreakdownComponent.propTypes = {
 
   // from injectIntl
   intl: intlShape.isRequired,
-  showLineItemForm: bool.isRequired,
 };
 
 const OrderBreakdown = injectIntl(OrderBreakdownComponent);

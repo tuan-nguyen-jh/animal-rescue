@@ -1,9 +1,11 @@
 import React from 'react';
 import classNames from 'classnames';
+import { types as sdkTypes } from '../../../util/sdkLoader';
 
 import { PrimaryButton, SecondaryButton } from '../../../components';
 
 import css from './TransactionPanel.module.css';
+import { transitions } from '../../../transactions/transactionProcessRescueBooking';
 
 // Functional component as a helper to build ActionButtons
 const ActionButtonsMaybe = props => {
@@ -15,6 +17,9 @@ const ActionButtonsMaybe = props => {
     secondaryButtonProps,
     isListingDeleted,
     isProvider,
+    estimatedLineItem,
+    onTransition,
+    transaction
   } = props;
 
   // In default processes default processes need special handling
@@ -24,13 +29,26 @@ const ActionButtonsMaybe = props => {
     return null;
   }
 
+  const hanldeClick = () => {
+    const txId = transaction.id.uuid;
+    const transitionName = transitions.ACCEPT;
+    
+    const  params = {
+      protectedData: {
+        estimatedLineItem
+      }
+    };
+    console.log(params)
+    onTransition(txId, transitionName, params)
+  }
+
   const buttonsDisabled = primaryButtonProps?.inProgress || secondaryButtonProps?.inProgress;
 
   const primaryButton = primaryButtonProps ? (
     <PrimaryButton
       inProgress={primaryButtonProps.inProgress}
       disabled={buttonsDisabled}
-      onClick={primaryButtonProps.onAction}
+      onClick={hanldeClick}
     >
       {primaryButtonProps.buttonText}
     </PrimaryButton>

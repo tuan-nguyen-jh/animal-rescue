@@ -14,7 +14,6 @@ import {
   DATE_TYPE_DATETIME,
   LISTING_UNIT_TYPES,
   LINE_ITEM_HOUR,
-  LINE_ITEM_ITEM,
   propTypes,
 } from '../../util/types';
 import { timestampToDate } from '../../util/dates';
@@ -204,19 +203,19 @@ export const TransactionPageComponent = props => {
 
     const bookingMaybe = bookingDates
       ? {
-          bookingDates: {
-            bookingStart: bookingDates.startDate,
-            bookingEnd: bookingDates.endDate,
-          },
-        }
+        bookingDates: {
+          bookingStart: bookingDates.startDate,
+          bookingEnd: bookingDates.endDate,
+        },
+      }
       : bookingStartTime && bookingEndTime
-      ? {
+        ? {
           bookingDates: {
             bookingStart: timestampToDate(bookingStartTime),
             bookingEnd: timestampToDate(bookingEndTime),
           },
         }
-      : {};
+        : {};
 
     const quantity = Number.parseInt(quantityRaw, 10);
     const quantityMaybe = Number.isInteger(quantity) ? { quantity } : {};
@@ -252,19 +251,19 @@ export const TransactionPageComponent = props => {
     const transitionOptions =
       transactionRole === CUSTOMER
         ? {
-            reviewAsFirst: transitions.REVIEW_1_BY_CUSTOMER,
-            reviewAsSecond: transitions.REVIEW_2_BY_CUSTOMER,
-            hasOtherPartyReviewedFirst: process
-              .getTransitionsToStates([states.REVIEWED_BY_PROVIDER])
-              .includes(transaction.attributes.lastTransition),
-          }
+          reviewAsFirst: transitions.REVIEW_1_BY_CUSTOMER,
+          reviewAsSecond: transitions.REVIEW_2_BY_CUSTOMER,
+          hasOtherPartyReviewedFirst: process
+            .getTransitionsToStates([states.REVIEWED_BY_PROVIDER])
+            .includes(transaction.attributes.lastTransition),
+        }
         : {
-            reviewAsFirst: transitions.REVIEW_1_BY_PROVIDER,
-            reviewAsSecond: transitions.REVIEW_2_BY_PROVIDER,
-            hasOtherPartyReviewedFirst: process
-              .getTransitionsToStates([states.REVIEWED_BY_CUSTOMER])
-              .includes(transaction.attributes.lastTransition),
-          };
+          reviewAsFirst: transitions.REVIEW_1_BY_PROVIDER,
+          reviewAsSecond: transitions.REVIEW_2_BY_PROVIDER,
+          hasOtherPartyReviewedFirst: process
+            .getTransitionsToStates([states.REVIEWED_BY_CUSTOMER])
+            .includes(transaction.attributes.lastTransition),
+        };
     const params = { reviewRating: rating, reviewContent };
 
     onSendReview(transaction, transitionOptions, params, config)
@@ -350,27 +349,27 @@ export const TransactionPageComponent = props => {
 
   const stateData = isDataAvailable
     ? getStateData(
-        {
-          transaction,
-          transactionRole,
-          nextTransitions,
-          transitionInProgress,
-          transitionError,
-          sendReviewInProgress,
-          sendReviewError,
-          onTransition,
-          onOpenReviewModal,
-          intl,
-        },
-        process
-      )
+      {
+        transaction,
+        transactionRole,
+        nextTransitions,
+        transitionInProgress,
+        transitionError,
+        sendReviewInProgress,
+        sendReviewError,
+        onTransition,
+        onOpenReviewModal,
+        intl,
+      },
+      process
+    )
     : {};
 
   const hasLineItems = transaction?.attributes?.lineItems?.length > 0;
   const unitLineItem = hasLineItems
     ? transaction.attributes?.lineItems?.find(
-        item => LISTING_UNIT_TYPES.includes(item.code) && !item.reversal
-      )
+      item => LISTING_UNIT_TYPES.includes(item.code) && !item.reversal
+    )
     : null;
 
   const formatLineItemUnitType = (transaction, listing) => {
@@ -385,28 +384,37 @@ export const TransactionPageComponent = props => {
   const lineItemUnitType = unitLineItem
     ? unitLineItem.code
     : isDataAvailable
-    ? formatLineItemUnitType(transaction, listing)
-    : null;
+      ? formatLineItemUnitType(transaction, listing)
+      : null;
 
   const timeZone = listing?.attributes?.availabilityPlan?.timezone;
   const dateType = lineItemUnitType === LINE_ITEM_HOUR ? DATE_TYPE_DATETIME : DATE_TYPE_DATE;
 
   const txBookingMaybe = booking?.id ? { booking, dateType, timeZone } : {};
+
+  const index = lineItems?.findIndex(item => item.code === lineItemUnitType && !item.reversal);
+  const unitPurchase = index !== -1 && lineItems ? lineItems[index] : null;
+  const quantity = unitPurchase ? unitPurchase.quantity.toString() : null;
+  const [newQuantity, setNewQuantity] = useState(quantity);
+
   const orderBreakdownMaybe = hasLineItems
     ? {
-        orderBreakdown: (
-          <OrderBreakdown
-            className={css.breakdown}
-            userRole={transactionRole}
-            transaction={transaction}
-            {...txBookingMaybe}
-            currency={config.currency}
-            marketplaceName={config.marketplaceName}
-            showLineItemForm={stateData.showLineItemForm}
-            showPriceBreakdown={stateData.showPriceBreakdown}
-          />
-        ),
-      }
+      orderBreakdown: (
+        <OrderBreakdown
+          className={css.breakdown}
+          userRole={transactionRole}
+          transaction={transaction}
+          {...txBookingMaybe}
+          currency={config.currency}
+          marketplaceName={config.marketplaceName}
+          showLineItemForm={stateData.showLineItemForm}
+          showPriceBreakdown={stateData.showPriceBreakdown}
+          lineItemIsEstimated={stateData.lineItemIsEstimated}
+          setNewQuantity={setNewQuantity}
+          newQuantity={newQuantity}
+        />
+      ),
+    }
     : {
       orderBreakdown: (
         <OrderBreakdown
@@ -415,6 +423,9 @@ export const TransactionPageComponent = props => {
           transaction={transaction}
           {...txBookingMaybe}
           marketplaceName={config.marketplaceName}
+          setNewQuantity={setNewQuantity}
+          newQuantity={newQuantity}
+          lineItemIsEstimated={stateData.lineItemIsEstimated}
         />
       )
     };
@@ -428,6 +439,9 @@ export const TransactionPageComponent = props => {
   // that currently handles showing everything inside layout's main view area.
   const panel = isDataAvailable ? (
     <TransactionPanel
+      newQuantity={newQuantity}
+      onTransition={onTransition}
+      transaction={transaction}
       className={detailsClassName}
       currentUser={currentUser}
       transactionId={transaction?.id}

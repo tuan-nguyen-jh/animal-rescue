@@ -406,6 +406,7 @@
   "InboxPage.acc-rescue-booking.booking-request-sent.status": "Requested",
   "InboxPage.acc-rescue-booking.request-accepted.status": "Accepted",
   "InboxPage.acc-rescue-booking.request-decline.status": "Declined",
+  "InboxPage.acc-rescue-booking.request-expired.status": "Expired",
 
   "InboxPage.default-booking.request-accepted.status": "Accepted",
   "InboxPage.default-booking.canceled.status": "Canceled",
@@ -1057,7 +1058,8 @@
   "TransactionPage.acc-rescue-booking.provider.transition-accept.actionError": "Oops, accepting failed. Please try again.",
   "TransactionPage.acc-rescue-booking.provider.transition-provider-decline.actionButton": "Decline request",
   "TransactionPage.acc-rescue-booking.provider.transition-provider-decline.actionError": "Oops, declining failed. Please try again.",
-
+  "TransactionPage.acc-rescue-booking.provider.request-expired.title": "Booking request has expired.",
+  "TransactionPage.acc-rescue-booking.provider.request-accepted.title": "You accepted the booking request.",
   "TransactionPage.adoption-booking.provider.transition-accept.actionButton": "Accept request",
   "TransactionPage.adoption-booking.provider.transition-accept.actionError": "Oops, accepting failed. Please try again.",
   "TransactionPage.adoption-booking.provider.transition-decline.actionButton": "Decline request",
@@ -1093,7 +1095,7 @@
   "TransactionPage.acc-rescue-booking.customer.booking-request-sent.title": "Your booking request was completed.",
   "TransactionPage.acc-rescue-booking.customer.request-accepted.title": "{providerName} has accepted your booking request.",
   "TransactionPage.acc-rescue-booking.provider.request-decline.title": "The request from {customerName} was declined.",
-
+  "TransactionPage.acc-rescue-booking.customer.request-expired.title": "Your booking request has expired.",
 
   "TransactionPage.adoption-booking.customer.booking-request-sent.title": "Your booking request was completed.",
   "TransactionPage.adoption-booking.customer.booking-request-sent.extraInfo": "You'll be notified when {providerName} accepts your request.",
@@ -1106,6 +1108,8 @@
 
   "TransactionPage.adoption-booking.provider.cancelled.title": "The booking from {customerName} was canceled.",
   "TransactionPage.ActivityFeed.adoption-booking.cancelled": "The booking was cancelled",
+  "TransactionPage.ActivityFeed.acc-rescue-booking.request-expired": "Booking request has expired.",
+  "TransactionPage.ActivityFeed.acc-rescue-booking.request-accepted": "Booking request has been accepted.",
   "TransactionPage.adoption-booking.customer.cancelled.title": "Your booking was cancelled",
 
 

@@ -1,13 +1,13 @@
 import React from 'react';
 import { FormattedMessage, intlShape } from '../../util/reactIntl';
 import { formatMoney } from '../../util/currency';
-import { string } from 'prop-types';
+
 import { LINE_ITEM_NIGHT, LINE_ITEM_DAY, propTypes, LINE_ITEM_HOUR } from '../../util/types';
 
 import css from './OrderBreakdown.module.css';
 
 const LineItemBasePriceMaybe = props => {
-  const { lineItems, code, intl, quantity } = props;
+  const { lineItems, code, intl, quantity, estimatedLineItem } = props;
   const isNightly = code === LINE_ITEM_NIGHT;
   const isDaily = code === LINE_ITEM_DAY;
   const isHourly = code === LINE_ITEM_HOUR;
@@ -25,11 +25,12 @@ const LineItemBasePriceMaybe = props => {
   const unitPurchase = lineItems.find(item => item.code === code && !item.reversal);
   const unitPrice = unitPurchase ? formatMoney(intl, unitPurchase.unitPrice) : null;
   const total = unitPurchase ? formatMoney(intl, unitPurchase.lineTotal) : null;
-
-  return quantity && total ? (
+  const displayQuantity = quantity ? quantity : estimatedLineItem;
+  
+  return (quantity || estimatedLineItem) && total ? (
     <div className={css.lineItem}>
       <span className={css.itemLabel}>
-        <FormattedMessage id={translationKey} values={{ unitPrice, quantity }} />
+        <FormattedMessage id={translationKey} values={{ unitPrice, quantity:displayQuantity }} />
       </span>
       <span className={css.itemValue}>{total}</span>
     </div>
@@ -37,7 +38,6 @@ const LineItemBasePriceMaybe = props => {
 };
 
 LineItemBasePriceMaybe.propTypes = {
-  quantity: string.isRequired,
   lineItems: propTypes.lineItems.isRequired,
   code: propTypes.lineItemUnitType,
   intl: intlShape.isRequired,

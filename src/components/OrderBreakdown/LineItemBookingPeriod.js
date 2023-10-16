@@ -14,7 +14,8 @@ const BookingPeriod = props => {
     timeZone,
     isProvider,
     service,
-    showPriceBreakdown
+    showPriceBreakdown,
+    lineItemIsEstimated
   } = props;
   const timeZoneMaybe = timeZone ? { timeZone } : null;
 
@@ -54,12 +55,12 @@ const BookingPeriod = props => {
             <FormattedMessage id="OrderBreakdown.bookingEnd" />
           </div>
           <div className={css.dayInfo}>
-            {(isProvider || service !== SERVICE_RESCUE) && showPriceBreakdown ?
+            {(isProvider || lineItemIsEstimated || service !== SERVICE_RESCUE) && showPriceBreakdown ?
               <FormattedDate value={endDate} {...timeFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.dayTimePlaceholder" />}
           </div>
           <div className={css.itemLabel}>
-            {(isProvider || service !== SERVICE_RESCUE) && showPriceBreakdown ?
+            {(isProvider || lineItemIsEstimated || service !== SERVICE_RESCUE) && showPriceBreakdown ?
               <FormattedDate value={endDate} {...dateFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.monthYearPlaceholder" />}
           </div>
@@ -70,7 +71,17 @@ const BookingPeriod = props => {
 };
 
 const LineItemBookingPeriod = props => {
-  const { booking, code, dateType, timeZone, service, isProvider, quantity, showPriceBreakdown } = props;
+  const { booking,
+    code,
+    dateType,
+    timeZone,
+    service,
+    isProvider,
+    quantity,
+    showPriceBreakdown,
+    estimatedLineItem,
+    lineItemIsEstimated
+  } = props;
 
   if (!booking) {
     return null;
@@ -84,7 +95,7 @@ const LineItemBookingPeriod = props => {
 
   const isNightly = code === LINE_ITEM_NIGHT;
   const isHour = code === LINE_ITEM_HOUR;
-  const localEstimatedEndTime = addTime(localStartDate, quantity, 'hours');
+  const localEstimatedEndTime = addTime(localStartDate, lineItemIsEstimated ? estimatedLineItem : quantity, 'hours');
   const endDay = isNightly || isHour
     ? localEstimatedEndTime : subtractTime(localEstimatedEndTime, 1, 'days');
 
@@ -99,10 +110,11 @@ const LineItemBookingPeriod = props => {
           service={service}
           isProvider={isProvider}
           showPriceBreakdown={showPriceBreakdown}
+          lineItemIsEstimated={lineItemIsEstimated}
         />
       </div>
       {service === SERVICE_RESCUE
-        && isProvider
+        && (isProvider || lineItemIsEstimated)
         && showPriceBreakdown
         && <hr className={css.totalDivider} />}
     </>

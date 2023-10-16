@@ -141,6 +141,9 @@ export class TransactionPanelComponent extends Component {
       orderBreakdown,
       orderPanel,
       config,
+      onTransition,
+      transaction,
+      newQuantity
     } = this.props;
 
     const isCustomer = transactionRole === 'customer';
@@ -168,11 +171,14 @@ export class TransactionPanelComponent extends Component {
 
     const actionButtons = (
       <ActionButtonsMaybe
+        onTransition={onTransition}
+        transaction={transaction}
         showButtons={stateData.showActionButtons}
         primaryButtonProps={stateData?.primaryButtonProps}
         secondaryButtonProps={stateData?.secondaryButtonProps}
         isListingDeleted={listingDeleted}
         isProvider={isProvider}
+        estimatedLineItem={newQuantity}
       />
     );
 
