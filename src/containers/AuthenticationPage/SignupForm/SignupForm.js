@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { bool, node } from 'prop-types';
+import { bool, func, node } from 'prop-types';
 import { compose } from 'redux';
 import { Form as FinalForm } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
@@ -78,9 +78,8 @@ const SignupFormComponent = props => (
       );
 
       useEffect(() => {
-        setSelectedRole(values?.userType)
-
-      }, [values?.userType])
+        setSelectedRole(values?.userType);
+      }, [values?.userType]);
 
       const classes = classNames(rootClassName || css.root, className);
       const submitInProgress = inProgress;
@@ -90,29 +89,29 @@ const SignupFormComponent = props => (
         <Form className={classes} onSubmit={handleSubmit}>
           <div>
             <div className={css.userTypes}>
-            <FieldRadioButton
-              id="userTypeNormal"
-              name="userType"
-              label={intl.formatMessage({id: "SignupForm.normLabel"})}
-              value={userTypes.normal}
-              showAsRequired={true}
-              validate={validators.required(
-                intl.formatMessage({
-                  id: 'SignupForm.roleRequired',
-                })
-              )}
+              <FieldRadioButton
+                id="userTypeNormal"
+                name="userType"
+                label={intl.formatMessage({ id: 'SignupForm.normLabel' })}
+                value={userTypes.normal}
+                showAsRequired={true}
+                validate={validators.required(
+                  intl.formatMessage({
+                    id: 'SignupForm.roleRequired',
+                  })
+                )}
               />
-            <FieldRadioButton
-              id="userTypeOfficer"
-              name="userType"
-              label={intl.formatMessage({id: "SignupForm.officerLabel"})}
-              value={userTypes.officer}
-              showAsRequired={true}
-              validate={validators.required(
-                intl.formatMessage({
-                  id: 'SignupForm.roleRequired',
-                })
-              )}
+              <FieldRadioButton
+                id="userTypeOfficer"
+                name="userType"
+                label={intl.formatMessage({ id: 'SignupForm.officerLabel' })}
+                value={userTypes.officer}
+                showAsRequired={true}
+                validate={validators.required(
+                  intl.formatMessage({
+                    id: 'SignupForm.roleRequired',
+                  })
+                )}
               />
             </div>
             <FieldTextInput
@@ -194,11 +193,15 @@ const SignupFormComponent = props => (
   />
 );
 
-SignupFormComponent.defaultProps = { inProgress: false };
+SignupFormComponent.defaultProps = {
+  inProgress: false,
+  setSelectedRole: null,
+};
 
 SignupFormComponent.propTypes = {
   inProgress: bool,
   termsAndConditions: node.isRequired,
+  setSelectedRole: func,
 
   // from injectIntl
   intl: intlShape.isRequired,

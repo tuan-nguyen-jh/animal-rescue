@@ -349,25 +349,34 @@ export const sendInquiry = (listing, message) => (dispatch, getState, sdk) => {
 };
 
 export const sendTxDetails = (listing, orderData) => async (dispatch, getState, sdk) => {
-  const { bookingDates , selectService: selectedService, location, typeAnimal, rescueDescription } = orderData;
+  const {
+    bookingDates,
+    selectService: selectedService,
+    location,
+    typeAnimal,
+    rescueDescription,
+  } = orderData;
   const { bookingStart, bookingEnd } = bookingDates;
   const protectedData = {
     selectedService,
     location,
     typeAnimal,
-    rescueDescription
+    rescueDescription,
   };
   const order = {};
 
   dispatch(sendTxDetailsRequest());
-  const processAlias = selectedService === ACC_SERVICES.adoption ? txTypes.adoption.alias : txTypes.rescue.alias;
-  
+  const processAlias =
+    selectedService === ACC_SERVICES.adoption ? txTypes.adoption.alias : txTypes.rescue.alias;
+  const processName =
+    selectedService === ACC_SERVICES.adoption ? txTypes.adoption.process : txTypes.rescue.process;
+
   const listingId = listing?.id?.uuid;
-  const [processName, alias] = processAlias.split('/');
   const transitions = getProcess(processName)?.transitions;
 
   const bodyParams = {
-    transition: selectedService === ACC_SERVICES.adoption ? transitions.REQUEST : transitions.REQUEST_BOOKING,
+    transition:
+      selectedService === ACC_SERVICES.adoption ? transitions.REQUEST : transitions.REQUEST_BOOKING,
     processAlias,
     params: { listingId, bookingStart, bookingEnd, protectedData },
   };
@@ -375,7 +384,7 @@ export const sendTxDetails = (listing, orderData) => async (dispatch, getState, 
     include: ['booking', 'provider'],
     expand: true,
   };
-  
+
   try {
     const response = await initiatePrivileged({
       isSpeculative: false,
@@ -385,7 +394,7 @@ export const sendTxDetails = (listing, orderData) => async (dispatch, getState, 
     });
 
     const tx = denormalisedResponseEntities(response);
-    const returnedOrder = tx[0]
+    const returnedOrder = tx[0];
 
     dispatch(sendTxDetailsSuccess());
     dispatch(fetchCurrentUserHasOrdersSuccess(true));

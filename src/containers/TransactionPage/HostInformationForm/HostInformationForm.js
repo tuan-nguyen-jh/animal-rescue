@@ -121,7 +121,6 @@ const HostInformationFormComponent = props => (
             type="submit"
             inProgress={submitInProgress}
             disabled={submitDisabled}
-            ready={hostInfoSent}
           >
             {reviewSubmitMessage}
           </PrimaryButton>
@@ -144,7 +143,6 @@ HostInformationFormComponent.propTypes = {
   rootClassName: string,
   intl: intlShape.isRequired,
   onSubmit: func.isRequired,
-  hostInfoSent: bool.isRequired,
   sendHostInfoError: propTypes.error,
   sendHostInfoInProgress: bool.isRequired,
 };

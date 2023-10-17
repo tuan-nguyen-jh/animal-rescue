@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { array, bool, func, number, object, string } from 'prop-types';
+import { arrayOf, bool, func, number, object, string } from 'prop-types';
 import React, { Component } from 'react';
 import { Form as FinalForm, FormSpy } from 'react-final-form';
 import { compose } from 'redux';
@@ -95,6 +95,7 @@ export class BookingTimeFormComponent extends Component {
             timeZone,
             fetchLineItemsInProgress,
             sendTxDetailsInProgress,
+            sendTxDetailsError,
             fetchLineItemsError,
             autoFocus
           } = fieldRenderProps;
@@ -138,6 +139,12 @@ export class BookingTimeFormComponent extends Component {
               ) : null}
 
               {fetchLineItemsError ? (
+                <span className={css.sideBarError}>
+                  <FormattedMessage id="BookingTimeForm.fetchLineItemsError" />
+                </span>
+              ) : null}
+
+              {sendTxDetailsError ? (
                 <span className={css.sideBarError}>
                   <FormattedMessage id="BookingTimeForm.fetchLineItemsError" />
                 </span>
@@ -248,6 +255,7 @@ BookingTimeFormComponent.defaultProps = {
   monthlyTimeSlots: null,
   lineItems: null,
   fetchLineItemsError: null,
+  sendTxDetailsError: null,
   service: [],
 };
 
@@ -266,6 +274,8 @@ BookingTimeFormComponent.propTypes = {
   onFetchTransactionLineItems: func.isRequired,
   fetchLineItemsInProgress: bool.isRequired,
   fetchLineItemsError: propTypes.error,
+  sendTxDetailsError: propTypes.error,
+  sendTxDetailsInProgress: bool.isRequired,
 
   // from injectIntl
   intl: intlShape.isRequired,
@@ -276,7 +286,7 @@ BookingTimeFormComponent.propTypes = {
 
   dayCountAvailableForBooking: number.isRequired,
 
-  service: array,
+  service: arrayOf(string),
 };
 
 const BookingTimeForm = compose(injectIntl)(BookingTimeFormComponent);

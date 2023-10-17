@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect } from 'react';
+import PropTypes, { arrayOf } from 'prop-types';
 import classNames from 'classnames';
 
 import { FormattedMessage, intlShape, injectIntl } from '../../../util/reactIntl';
@@ -20,7 +20,6 @@ const HostInformationModal = props => {
     onCloseModal,
     onManageDisableScrolling,
     onSubmitHostInfo,
-    hostInfoSent,
     sendHostInfoInProgress,
     sendHostInfoError,
     listing,
@@ -32,8 +31,8 @@ const HostInformationModal = props => {
   const closeButtonMessage = intl.formatMessage({ id: 'HostInfoModal.later' });
 
   useEffect(() => {
-    onFetchAnimalListing(listing.id?.uuid)
-  }, [listing.id?.uuid])
+    onFetchAnimalListing(listing?.id?.uuid);
+  }, []);
 
   return (
     <Modal
@@ -47,7 +46,7 @@ const HostInformationModal = props => {
       closeButtonMessage={closeButtonMessage}
     >
       <p className={css.modalTitle}>
-        <FormattedMessage id="HostInformationModal.title"/>
+        <FormattedMessage id="HostInformationModal.title" />
       </p>
       <p className={css.modalMessage}>
         <FormattedMessage id="HostInformationModal.description" values={{ marketplaceName }} />
@@ -56,12 +55,13 @@ const HostInformationModal = props => {
         onSubmit={values => {
           const { animal, hostName, hostPhone, date } = values;
           const updatedValues = {
-            animal, hostName, hostPhone, date
-          }
-          onSubmitHostInfo(updatedValues)
-        }
-        }
-        hostInfoSent={hostInfoSent}
+            animal,
+            hostName,
+            hostPhone,
+            date,
+          };
+          return onSubmitHostInfo(updatedValues);
+        }}
         listingAnimals={listingAnimals}
         sendHostInfoInProgress={sendHostInfoInProgress}
         sendHostInfoError={sendHostInfoError}
@@ -75,20 +75,20 @@ const { bool, string } = PropTypes;
 HostInformationModal.defaultProps = {
   className: null,
   rootClassName: null,
-  hostInfoSent: false,
   sendHostInfoInProgress: false,
   sendHostInfoError: null,
-  listing: []
+  listingAnimals: [],
+  listing: {},
 };
 
 HostInformationModal.propTypes = {
   className: string,
   rootClassName: string,
   intl: intlShape.isRequired,
-  hostInfoSent: bool,
   sendHostInfoInProgress: bool,
   sendHostInfoError: propTypes.error,
   marketplaceName: string.isRequired,
+  listingAnimals: arrayOf(propTypes.listing),
 };
 
 export default injectIntl(HostInformationModal);

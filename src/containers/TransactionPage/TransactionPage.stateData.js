@@ -10,6 +10,7 @@ import { getStateDataForBookingProcess } from './TransactionPage.stateDataBookin
 import { getStateDataForInquiryProcess } from './TransactionPage.stateDataInquiry.js';
 import { getStateDataForPurchaseProcess } from './TransactionPage.stateDataPurchase.js';
 import { getStateDataForRescueBookingProcess } from './TransactionPage.stateDataRescueBooking';
+import { AdoptionBookingTransitions } from '../../config/configTransitions';
 
 const errorShape = shape({
   type: oneOf(['error']).isRequired,
@@ -129,7 +130,7 @@ export const getStateData = (params, process) => {
 
   const getHostInfoProps = getActionButtonPropsMaybe({
     processName,
-    transitionName: 'adopt',
+    transitionName: AdoptionBookingTransitions.adopt,
     transactionRole,
     intl,
     inProgress: sendHostInfoInProgress,
@@ -137,7 +138,7 @@ export const getStateData = (params, process) => {
     onAction: onOpenHostInfoModal,
     actionButtonTranslationId: 'TransactionPage.adopt.actionButton',
     actionButtonTranslationErrorId: 'TransactionPage.adopt.actionError',
-  })
+  });
 
   const processInfo = () => {
     const { getState, states, transitions } = process;

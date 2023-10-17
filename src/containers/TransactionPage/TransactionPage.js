@@ -52,6 +52,7 @@ import ActivityFeed from './ActivityFeed/ActivityFeed';
 import DisputeModal from './DisputeModal/DisputeModal';
 import ReviewModal from './ReviewModal/ReviewModal';
 import TransactionPanel from './TransactionPanel/TransactionPanel';
+import HostInformationModal from './HostInformationModal/HostInformationModal';
 
 import {
   makeTransition,
@@ -61,10 +62,10 @@ import {
   fetchTimeSlots,
   fetchTransactionLineItems,
   fetchAnimalListingsByACC,
-  updateHostInfo,
+  makeTranstionAndUpdate,
 } from './TransactionPage.duck';
+
 import css from './TransactionPage.module.css';
-import HostInformationModal from './HostInformationModal/HostInformationModal';
 
 // Submit dispute and close the review modal
 const onDisputeOrder = (
@@ -88,20 +89,14 @@ const onDisputeOrder = (
 const onSubmitHostInfo = (
   currentTransactionId,
   transitionName,
-  onTransition,
-  onUpdateHostInfo,
-  setHostInfoModalOpen,
-  setHostInfoSubmitted
+  onTransitionAndUpdate,
+  setHostInfoModalOpen
 ) => async values => {
-  onUpdateHostInfo(values);
-
   try {
-    await onTransition(currentTransactionId, transitionName, {});
-    setHostInfoModalOpen(false);
-    return setHostInfoSubmitted(true);
-  } 
-  catch(e) {
-    console.error(e)
+    await onTransitionAndUpdate(currentTransactionId, transitionName, {}, values);
+    return setHostInfoModalOpen(false);
+  } catch (e) {
+    console.error(e);
   }
 };
 
@@ -112,7 +107,6 @@ export const TransactionPageComponent = props => {
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
   const [isHostInfoModalOpen, setHostInfoModalOpen] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
-  const [hostInfoSubmitted, setHostInfoSubmitted] = useState(false);
 
   const config = useConfiguration();
   const routeConfiguration = useRouteConfiguration();
@@ -156,7 +150,7 @@ export const TransactionPageComponent = props => {
     fetchLineItemsError,
     listingAnimals,
     onFetchAnimalListing,
-    onUpdateHostInfo,
+    onTransitionAndUpdate,
   } = props;
 
   const { listing, provider, customer, booking } = transaction || {};
@@ -571,16 +565,12 @@ export const TransactionPageComponent = props => {
           onSubmitHostInfo={onSubmitHostInfo(
             transaction?.id,
             process?.transitions.ADOPT,
-            onTransition,
-            onUpdateHostInfo,
-            setHostInfoModalOpen,
-            setHostInfoSubmitted
-            
+            onTransitionAndUpdate,
+            setHostInfoModalOpen
           )}
           listing={listing}
           listingAnimals={listingAnimals}
           onFetchAnimalListing={onFetchAnimalListing}
-          hostInfoSent={hostInfoSubmitted}
           sendHostInfoInProgress={sendHostInfoInProgress}
           sendHostInfoError={sendHostInfoError}
           marketplaceName={config.marketplaceName}
@@ -690,6 +680,8 @@ const mapStateToProps = state => {
     sendMessageInProgress,
     sendMessageError,
     sendReviewInProgress,
+    sendHostInfoInProgress,
+    sendHostInfoError,
     sendReviewError,
     monthlyTimeSlots,
     processTransitions,
@@ -727,6 +719,8 @@ const mapStateToProps = state => {
     fetchLineItemsInProgress,
     fetchLineItemsError,
     listingAnimals,
+    sendHostInfoInProgress,
+    sendHostInfoError,
   };
 };
 
@@ -747,7 +741,8 @@ const mapDispatchToProps = dispatch => {
     onFetchTimeSlots: (listingId, start, end, timeZone) =>
       dispatch(fetchTimeSlots(listingId, start, end, timeZone)),
     onFetchAnimalListing: listingId => dispatch(fetchAnimalListingsByACC(listingId)),
-    onUpdateHostInfo: data => dispatch(updateHostInfo(data)),
+    onTransitionAndUpdate: (txId, transitionName, params, data) =>
+      dispatch(makeTranstionAndUpdate(txId, transitionName, params, data)),
   };
 };
 

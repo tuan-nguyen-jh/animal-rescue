@@ -15,7 +15,7 @@ import {
 export const getStateDataForBookingProcess = (txInfo, processInfo) => {
   const { transaction, transactionRole, nextTransitions } = txInfo;
   const isProviderBanned = transaction?.provider?.attributes?.banned;
-  const isCustomerBanned = transaction?.provider?.attributes?.banned;
+  const isCustomerBanned = transaction?.customer?.attributes?.banned;
   const _ = CONDITIONAL_RESOLVER_WILDCARD;
 
   const {
@@ -113,7 +113,7 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
       };
     })
     .cond([states.PENDING_ADOPT, CUSTOMER], () => {
-      const primary = actionButtonProps(transitions.CUSTOMER_ACCEPT_ADOPT, CUSTOMER)
+      const primary = actionButtonProps(transitions.CUSTOMER_ACCEPT_ADOPT, CUSTOMER);
       const secondary = actionButtonProps(transitions.CUSTOMER_NOT_ACCEPT_ADOPT, CUSTOMER);
       return {
         processName,
@@ -125,7 +125,7 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
       };
     })
     .cond([states.ALLOW_ADOPT, PROVIDER], () => {
-      const primary = actionButtonProps(transitions.PROVIDER_COMPLETE_ADOPT, PROVIDER)
+      const primary = actionButtonProps(transitions.PROVIDER_COMPLETE_ADOPT, PROVIDER);
       return {
         processName,
         processState,
@@ -135,7 +135,7 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
       };
     })
     .cond([states.NOT_ALLOW_ADOPT, PROVIDER], () => {
-      const primary = actionButtonProps(transitions.PROVIDER_COMPLETE_NOT_ADOPT, PROVIDER)
+      const primary = actionButtonProps(transitions.PROVIDER_COMPLETE_NOT_ADOPT, PROVIDER);
       return {
         processName,
         processState,

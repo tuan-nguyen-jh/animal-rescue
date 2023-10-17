@@ -27,7 +27,6 @@ const { UUID } = sdkTypes;
 const MESSAGES_PAGE_SIZE = 100;
 const REVIEW_TX_INCLUDES = ['reviews', 'reviews.author', 'reviews.subject'];
 
-
 const requestAction = actionType => params => ({ type: actionType, payload: { params } });
 
 const successAction = actionType => result => ({ type: actionType, payload: result.data });
@@ -111,8 +110,8 @@ const initialState = {
   fetchLineItemsInProgress: false,
   fetchLineItemsError: null,
   listingAnimals: [],
-  updateInProgress: false,
-  updateHostInfoError: null,
+  sendHostInfoInProgress: false,
+  sendHostInfoError: null,
 };
 
 // Merge entity arrays using ids, so that conflicting items in newer array (b) overwrite old values (a).
@@ -250,14 +249,14 @@ export default function transactionPageReducer(state = initialState, action = {}
       return { ...state, listingAnimals: [] };
 
     case UPDATE_HOST_INFO_REQUEST:
-      return { ...state, updateInProgress: true, updateListingError: null };
+      return { ...state, sendHostInfoInProgress: true, sendHostInfoError: null };
     case UPDATE_HOST_INFO_SUCCESS:
       return {
         ...state,
-        updateInProgress: false,
+        sendHostInfoInProgress: false,
       };
     case UPDATE_HOST_INFO_ERROR:
-      return { ...state, updateInProgress: false, updateListingError: payload };
+      return { ...state, sendHostInfoInProgress: false, sendHostInfoError: payload };
 
     default:
       return state;
@@ -718,7 +717,10 @@ export const fetchTransactionLineItems = ({ orderData, listingId, isOwnListing }
 
 export const fetchAnimalListingsByACC = accId => async (dispatch, getState, sdk) => {
   try {
-    const response = await sdk.listings.query({ pub_accId: accId, pub_isAdopted: ADOPTED.notAdopted });
+    const response = await sdk.listings.query({
+      pub_accId: accId,
+      pub_isAdopted: ADOPTED.notAdopted,
+    });
     const listingAnimals = denormalisedResponseEntities(response);
     dispatch(updateFetchAnimalListings(listingAnimals));
   } catch (err) {
@@ -728,24 +730,32 @@ export const fetchAnimalListingsByACC = accId => async (dispatch, getState, sdk)
 };
 
 export const updateHostInfo = data => async (dispatch, getState, sdk) => {
-  dispatch(updateHostInfoRequest(data))
-  const {animal: id, hostName, hostPhone, date} = data;
+  dispatch(updateHostInfoRequest(data));
+  const { animal: id, hostName, hostPhone, date } = data;
   const publicData = {
     isAdopted: ADOPTED.adopted,
     hostName,
     hostPhone,
-    date
-  }
-  const params = {id, publicData}
+    date,
+  };
+  const params = { id, publicData };
   try {
-    const res = await sdk.ownListings.update(params, {})
-    dispatch(updateHostInfoSuccess(res))
-  } catch(e) {
-    dispatch(updateHostInfoError(storableError(e)))
-    console.err(e)
+    const res = await sdk.ownListings.update(params, {});
+    dispatch(updateHostInfoSuccess(res));
+  } catch (e) {
+    dispatch(updateHostInfoError(storableError(e)));
+    console.err(e);
   }
+};
 
-}
+export const makeTranstionAndUpdate = (txId, transitionName, params, data) => (
+  dispatch,
+  getState,
+  sdk
+) => {
+  dispatch(makeTransition(txId, transitionName, params));
+  dispatch(updateHostInfo(data));
+};
 
 // loadData is a collection of async calls that need to be made
 // before page has all the info it needs to render itself

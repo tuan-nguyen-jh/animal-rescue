@@ -132,14 +132,8 @@ export const handleSubmitInquiry = parameters => values => {
  *
  * @param {Object} parameters all the info needed to redirect user to CheckoutPage.
  */
-export const handleSubmit = parameters =>async values => {
-  const {
-    history,
-    params,
-    getListing,
-    onSendTxDetails,
-    routes,
-  } = parameters;
+export const handleSubmit = parameters => async values => {
+  const { history, params, getListing, onSendTxDetails, routes } = parameters;
   const listingId = new UUID(params.id);
   const listing = getListing(listingId);
 
@@ -174,11 +168,11 @@ export const handleSubmit = parameters =>async values => {
   const deliveryMethodMaybe = deliveryMethod ? { deliveryMethod } : {};
 
   const orderData = {
-      ...bookingMaybe,
-      ...quantityMaybe,
-      ...deliveryMethodMaybe,
-      ...otherOrderData,
-    };
+    ...bookingMaybe,
+    ...quantityMaybe,
+    ...deliveryMethodMaybe,
+    ...otherOrderData,
+  };
 
   try {
     const txId = await onSendTxDetails(listing, orderData);

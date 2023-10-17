@@ -18,8 +18,9 @@ import {
 
 import TopbarSearchForm from '../TopbarSearchForm/TopbarSearchForm';
 
-import css from './TopbarDesktop.module.css';
 import { userTypes } from '../../../config/configUsers';
+
+import css from './TopbarDesktop.module.css';
 
 const TopbarDesktop = props => {
   const {

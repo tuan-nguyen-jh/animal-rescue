@@ -28,7 +28,7 @@ const TopbarMobileMenu = props => {
 
   const user = ensureCurrentUser(currentUser);
 
-  const isOfficer = currentUser?.attributes?.profile?.protectedData?.userType === userTypes.officer ? true : false;
+  const isOfficer = user?.attributes?.profile?.protectedData?.userType === userTypes.officer ? true : false;
 
 
   if (!isAuthenticated) {

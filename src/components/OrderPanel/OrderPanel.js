@@ -156,7 +156,8 @@ const OrderPanel = props => {
     marketplaceName,
     fetchLineItemsInProgress,
     fetchLineItemsError,
-    sendTxDetailsInProgress
+    sendTxDetailsError,
+    sendTxDetailsInProgress,
   } = props;
 
   const publicData = listing?.attributes?.publicData || {};
@@ -281,6 +282,7 @@ const OrderPanel = props => {
             monthlyTimeSlots={monthlyTimeSlots}
             onFetchTimeSlots={onFetchTimeSlots}
             sendTxDetailsInProgress={sendTxDetailsInProgress}
+            sendTxDetailsError={sendTxDetailsError}
             startDatePlaceholder={intl.formatDate(TODAY, dateFormattingOptions)}
             endDatePlaceholder={intl.formatDate(TODAY, dateFormattingOptions)}
             timeZone={timeZone}
@@ -388,6 +390,7 @@ OrderPanel.defaultProps = {
   monthlyTimeSlots: null,
   lineItems: null,
   fetchLineItemsError: null,
+  sendTxDetailsError: null,
 };
 
 OrderPanel.propTypes = {
@@ -424,6 +427,8 @@ OrderPanel.propTypes = {
   marketplaceCurrency: string.isRequired,
   dayCountAvailableForBooking: number.isRequired,
   marketplaceName: string.isRequired,
+  sendTxDetailsInProgress: bool.isRequired,
+  sendTxDetailsError: propTypes.error,
 
   // from withRouter
   history: shape({
