@@ -185,7 +185,6 @@ export const handleSubmit = parameters => async values => {
     const txId = await onSendTxDetails(listing, orderData);
     history.push(createResourceLocatorString('OrderDetailsPage', routes, { id: txId.id.uuid }, {}));
   } catch (error) {
-    console.log(error)
     // Ignore, error handling in sendTxDetails function in ListingPage.duck.js file, line 398
   }
 };

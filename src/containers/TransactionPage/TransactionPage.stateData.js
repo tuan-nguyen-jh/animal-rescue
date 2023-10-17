@@ -74,12 +74,12 @@ const getActionButtonPropsMaybe = (params, onlyForRole = 'both') => {
 
   return onlyForRole === 'both' || onlyForRole === transactionRole
     ? {
-      inProgress,
-      error: transitionError,
-      onAction,
-      buttonText: intl.formatMessage({ id: actionButtonTrId }),
-      errorText: intl.formatMessage({ id: actionButtonTrErrorId }),
-    }
+        inProgress,
+        error: transitionError,
+        onAction,
+        buttonText: intl.formatMessage({ id: actionButtonTrId }),
+        errorText: intl.formatMessage({ id: actionButtonTrErrorId }),
+      }
     : {};
 };
 
