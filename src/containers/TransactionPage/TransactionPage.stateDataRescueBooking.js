@@ -132,7 +132,7 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
       }
     })
     .cond([states.EXACT_FEE_CALCULATED, CUSTOMER], () => {
-      const primary = isCustomerBanned ? null : actionButtonProps(transitions.REQUEST_ACCEPTED, CUSTOMER);
+      const primary = isCustomerBanned ? null : actionButtonProps(transitions.REQUEST_PAYMENT, CUSTOMER);
       return {
         processName,
         processState,

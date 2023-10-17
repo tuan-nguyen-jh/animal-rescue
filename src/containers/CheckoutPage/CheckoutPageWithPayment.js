@@ -22,6 +22,7 @@ import {
   hasDefaultPaymentMethod,
   hasPaymentExpired,
   hasTransactionPassedPendingPayment,
+  hasTransactionPassedRequestAccepted,
   processCheckoutWithPayment,
   setOrderPageInitialValues,
 } from './CheckoutPageTransactionHelpers.js';
@@ -71,12 +72,10 @@ const getOrderParams = (pageData, shippingDetails, optionalPaymentParams, config
   const quantityMaybe = quantity ? { quantity } : {};
   const deliveryMethod = pageData.orderData?.deliveryMethod;
   const deliveryMethodMaybe = deliveryMethod ? { deliveryMethod } : {};
-  const selectServiceInfo = pageData.orderData?.selectServiceInfo;
 
   const { listingType, unitType } = pageData?.listing?.attributes?.publicData || {};
   const protectedDataMaybe = {
     protectedData: {
-      selectServiceInfo,
       ...getTransactionTypeData(listingType, unitType, config),
       ...deliveryMethodMaybe,
       ...shippingDetails,
@@ -109,7 +108,7 @@ const fetchSpeculatedTransactionIfNeeded = (orderParams, pageData, fetchSpeculat
     !!pageData?.listing?.id &&
     !!pageData.orderData &&
     !!process &&
-    !hasTransactionPassedPendingPayment(tx, process);
+    !hasTransactionPassedRequestAccepted(tx, process);
 
   if (shouldFetchSpeculatedTransaction) {
     const processAlias = pageData.listing.attributes.publicData?.transactionProcessAlias;
@@ -119,7 +118,7 @@ const fetchSpeculatedTransactionIfNeeded = (orderParams, pageData, fetchSpeculat
 
     const requestTransition = isInquiryInPaymentProcess
       ? process.transitions.REQUEST_AFTER_INQUIRY
-      : process.transitions.REQUEST;
+      : process.transitions.REQUEST_PAYMENT;
     const isPrivileged = process.isPrivileged(requestTransition);
 
     fetchSpeculatedTransaction(

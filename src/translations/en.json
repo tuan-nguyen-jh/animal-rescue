@@ -409,6 +409,7 @@
   "InboxPage.acc-rescue-booking.request-expired.status": "Expired",
   "InboxPage.acc-rescue-booking.request-canceled.status": "Canceled",
   "InboxPage.acc-rescue-booking.officer-dispatched.status": "Scheduled",
+  "InboxPage.acc-rescue-booking.exact-fee-calculated.status": "Required payment",
 
   "InboxPage.default-booking.request-accepted.status": "Accepted",
   "InboxPage.default-booking.canceled.status": "Canceled",
@@ -1069,8 +1070,8 @@
   "TransactionPage.acc-rescue-booking.customer.officer-dispatched.title": "Officer has been scheduled to dispatch.",
   "TransactionPage.acc-rescue-booking.customer.transition-confirm-request.actionError": "Oops, confirmation failed. Please try again.",
   "TransactionPage.acc-rescue-booking.customer.transition-customer-cancel.actionError": "Oops, cancelation failed. Please try again.",
-  "TransactionPage.acc-rescue-booking.customer.transition-undefined.actionButton": "Request payment",
-  "TransactionPage.acc-rescue-booking.customer.transition-undefined.actionError": "Oops! Request payment unsucceed. Please try again!",
+  "TransactionPage.acc-rescue-booking.customer.transition-request-payment.actionButton": "Request payment",
+  "TransactionPage.acc-rescue-booking.customer.transition-request-payment.actionError": "Oops! Request payment unsucceed. Please try again!",
   "TransactionPage.acc-rescue-booking.provider.transition-provider-cancel.actionButton": "Cancel",
   "TransactionPage.acc-rescue-booking.provider.transition-provider-cancel.actionError": "Oops, cancelation failed. Please try again.",
   "TransactionPage.acc-rescue-booking.provider.transition-finish.actionButton": "Finish",

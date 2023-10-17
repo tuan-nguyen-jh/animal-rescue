@@ -143,7 +143,8 @@ export class TransactionPanelComponent extends Component {
       config,
       onTransition,
       transaction,
-      newQuantity
+      newQuantity,
+      redirectToCheckoutPageWithInitialValues
     } = this.props;
 
     const isCustomer = transactionRole === 'customer';
@@ -179,6 +180,7 @@ export class TransactionPanelComponent extends Component {
         isListingDeleted={listingDeleted}
         isProvider={isProvider}
         estimatedLineItem={newQuantity}
+        redirectToCheckoutPageWithInitialValues={redirectToCheckoutPageWithInitialValues}
       />
     );
 

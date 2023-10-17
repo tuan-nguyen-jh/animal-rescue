@@ -31,8 +31,11 @@ import LineItemService from './LineItemService';
 import LineItemFormMaybe from './LineItemFormMaybe';
 
 import css from './OrderBreakdown.module.css';
+import { transitions } from '../../transactions/transactionProcessRescueBooking';
 
 const Decimal = require('decimal.js');
+const { types } = require('sharetribe-flex-sdk');
+const { Money } = types;
 
 export const OrderBreakdownComponent = props => {
   const {
@@ -77,18 +80,21 @@ export const OrderBreakdownComponent = props => {
   const unitPurchase = index !== -1 ? lineItems[index] : null;
   const quantity = unitPurchase ? unitPurchase.quantity.toString() : null;
 
-  if (lineItemIsEstimated){
-    lineItems[index].lineTotal.amount = unitPurchase ? unitPurchase.unitPrice.amount * estimatedLineItem : null;
+  if (lineItemIsEstimated) {
+    lineItems[index].lineTotal = unitPurchase ?
+      new Money(unitPurchase.unitPrice.amount * estimatedLineItem, currency) : null;
     lineItems[index].quantity = new Decimal(estimatedLineItem);
-  }else{
-    lineItems[index].lineTotal.amount = unitPurchase ? unitPurchase.unitPrice.amount * newQuantity : null;
+  } else if (transaction.attributes.lastTransition in [transitions.REQUEST_BOOKING, transitions.REQUEST_AFTER_INQUIRY]) {
+    lineItems[index].lineTotal = unitPurchase ?
+      new Money(unitPurchase.unitPrice.amount * newQuantity, currency) : null;
+    lineItems[index].quantity = new Decimal(newQuantity ? newQuantity : quantity);
   }
 
   const commission = lineItems[index].lineTotal.amount * lineItems[1].percentage.d / 100;
   const payin = lineItems[index].lineTotal.amount;
   const payout = payin - commission;
-  transaction.attributes.payinTotal.amount = payin;
-  transaction.attributes.payoutTotal.amount = payout;
+  transaction.attributes.payinTotal = new Money(payin, currency);
+  transaction.attributes.payoutTotal = new Money(payout, currency);
 
   /**
    * OrderBreakdown contains different line items:

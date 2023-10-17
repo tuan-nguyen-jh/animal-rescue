@@ -439,6 +439,7 @@ export const TransactionPageComponent = props => {
   // that currently handles showing everything inside layout's main view area.
   const panel = isDataAvailable ? (
     <TransactionPanel
+      redirectToCheckoutPageWithInitialValues={redirectToCheckoutPageWithInitialValues}
       newQuantity={newQuantity}
       onTransition={onTransition}
       transaction={transaction}

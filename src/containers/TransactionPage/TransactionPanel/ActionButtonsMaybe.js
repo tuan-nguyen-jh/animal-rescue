@@ -5,7 +5,9 @@ import { PrimaryButton, SecondaryButton } from '../../../components';
 
 import css from './TransactionPanel.module.css';
 import { transitions } from '../../../transactions/transactionProcessRescueBooking';
-import { transitionPrivileged } from '../../../util/api';
+import { createResourceLocatorString, findRouteByRouteName } from '../../../util/routes';
+import routeConfiguration from '../../../routing/routeConfiguration';
+import { createSlug } from '../../../util/urlHelpers';
 
 // Functional component as a helper to build ActionButtons
 const ActionButtonsMaybe = props => {
@@ -20,6 +22,7 @@ const ActionButtonsMaybe = props => {
     estimatedLineItem,
     onTransition,
     transaction,
+    redirectToCheckoutPageWithInitialValues
   } = props;
 
   // In default processes default processes need special handling
@@ -32,7 +35,19 @@ const ActionButtonsMaybe = props => {
   const hanldeClick = () => {
     const params = {};
 
+    const { listing } = transaction;
+
     const txId = transaction.id.uuid;
+
+    const initialValues = {
+      listing,
+      // Transaction with payment pending should be passed to CheckoutPage
+      transaction,
+      // Original orderData content is not available,
+      // but it is already saved since tx is in state: payment-pending.
+      orderData: {quantity: transaction.attributes.lineItems[0].quantity.toNumber()},
+    };
+
 
     switch (transaction.attributes.lastTransition) {
       case transitions.ACCEPT:
@@ -42,7 +57,7 @@ const ActionButtonsMaybe = props => {
         onTransition(txId, transitions.FINISH, params);
         break;
       case transitions.FINISH:
-        onTransition(txId, transitions.REQUEST_PAYMENT, params);
+        redirectToCheckoutPageWithInitialValues(initialValues, listing)
         break;
       default:
         params.protectedData = {
@@ -50,7 +65,6 @@ const ActionButtonsMaybe = props => {
         };
         onTransition(txId, transitions.ACCEPT, params);
     }
-
   }
 
   const buttonsDisabled = primaryButtonProps?.inProgress || secondaryButtonProps?.inProgress;
