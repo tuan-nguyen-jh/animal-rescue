@@ -179,6 +179,7 @@ export const handleSubmit = parameters => async values => {
     ...quantityMaybe,
     ...deliveryMethodMaybe,
     ...otherOrderData,
+    ...selectServiceInfo,
   };
 
   try {

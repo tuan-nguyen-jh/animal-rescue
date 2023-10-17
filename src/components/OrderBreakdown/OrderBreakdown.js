@@ -81,22 +81,35 @@ export const OrderBreakdownComponent = props => {
   const index = lineItems.findIndex(item => item.code === lineItemUnitType && !item.reversal);
   const unitPurchase = index !== -1 ? lineItems[index] : null;
   const quantity = unitPurchase ? unitPurchase.quantity.toString() : null;
+  const lastTransition = transaction.attributes.lastTransition;
 
-  if (lineItemIsEstimated) {
+  if (lineItemIsEstimated
+    && (
+      lastTransition !== transitions.CONFIRM_REQUEST
+      || !isProvider
+    )) {
     lineItems[index].lineTotal = unitPurchase ?
       new Money(unitPurchase.unitPrice.amount * estimatedLineItem, currency) : null;
     lineItems[index].quantity = new Decimal(estimatedLineItem);
-  } else if (transaction.attributes.lastTransition in [transitions.REQUEST_BOOKING, transitions.REQUEST_AFTER_INQUIRY]) {
+  } else if ([
+    transitions.REQUEST_BOOKING,
+    transitions.REQUEST_AFTER_INQUIRY,
+    transitions.CONFIRM_REQUEST
+  ].includes(lastTransition)) {
     lineItems[index].lineTotal = unitPurchase ?
       new Money(unitPurchase.unitPrice.amount * newQuantity, currency) : null;
     lineItems[index].quantity = new Decimal(newQuantity ? newQuantity : quantity);
   }
 
-  const commission = lineItems[index].lineTotal.amount * lineItems[1].percentage.d / 100;
-  const payin = lineItems[index].lineTotal.amount;
-  const payout = payin - commission;
-  transaction.attributes.payinTotal = new Money(payin, currency);
-  transaction.attributes.payoutTotal = new Money(payout, currency);
+  const commission = service === SERVICE_RESCUE ?
+    lineItems[index].lineTotal.amount * lineItems[1].percentage.d / 100 : null;
+  const payin =  service === SERVICE_RESCUE ? lineItems[index].lineTotal.amount : null;
+  const payout = payin? payin - commission : null;
+  if (service === SERVICE_RESCUE){
+    transaction.attributes.payinTotal = new Money(payin, currency);
+    transaction.attributes.payoutTotal = new Money(payout, currency);
+  }
+  
 
   /**
    * OrderBreakdown contains different line items:
@@ -247,7 +260,7 @@ export const OrderBreakdownComponent = props => {
           {...LineItemFormMaybe.props}
           showLineItemForm
           setNewQuantity={setNewQuantity}
-          quantity={quantity}
+          quantity={lineItemIsEstimated ? estimatedLineItem : quantity}
         />
       }
     </div>

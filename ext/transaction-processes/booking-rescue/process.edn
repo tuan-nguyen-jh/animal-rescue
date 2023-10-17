@@ -83,7 +83,7 @@
   {:name :transition/finish
    :actor :actor.role/provider,
    :actions
-   [],
+   [{:name :action/update-protected-data}],
    :from :state/officer-dispatched,
    :to :state/exact-fee-calculated}
   {:name :transition/request-payment,

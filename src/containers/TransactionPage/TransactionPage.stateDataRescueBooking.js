@@ -110,7 +110,8 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showPriceBreakdown: true,
         lineItemIsEstimated: true,
         primaryButtonProps: primary,
-        showActionButtons: true
+        showActionButtons: true,
+        showLineItemForm: true
       }
     })
     .cond([states.OFFICER_DISPATCHED, CUSTOMER], () => {

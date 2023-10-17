@@ -8,6 +8,7 @@ import { transitions } from '../../../transactions/transactionProcessRescueBooki
 import { createResourceLocatorString, findRouteByRouteName } from '../../../util/routes';
 import routeConfiguration from '../../../routing/routeConfiguration';
 import { createSlug } from '../../../util/urlHelpers';
+import { SERVICE_RESCUE } from '../../../config/configBookingService';
 
 // Functional component as a helper to build ActionButtons
 const ActionButtonsMaybe = props => {
@@ -54,6 +55,9 @@ const ActionButtonsMaybe = props => {
         onTransition(txId, transitions.CONFIRM_REQUEST, params);
         break;
       case transitions.CONFIRM_REQUEST:
+        params.protectedData = {
+          estimatedLineItem
+        };
         onTransition(txId, transitions.FINISH, params);
         break;
       case transitions.FINISH:
@@ -68,12 +72,13 @@ const ActionButtonsMaybe = props => {
   }
 
   const buttonsDisabled = primaryButtonProps?.inProgress || secondaryButtonProps?.inProgress;
+  const service =  transaction.attributes?.protectedData?.selecctedServcie;
 
   const primaryButton = primaryButtonProps ? (
     <PrimaryButton
       inProgress={primaryButtonProps.inProgress}
       disabled={buttonsDisabled}
-      onClick={hanldeClick}
+      onClick={service === SERVICE_RESCUE? hanldeClick : primaryButtonProps.onAction}
     >
       {primaryButtonProps.buttonText}
     </PrimaryButton>

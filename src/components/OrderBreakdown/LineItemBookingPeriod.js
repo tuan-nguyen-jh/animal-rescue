@@ -55,12 +55,12 @@ const BookingPeriod = props => {
             <FormattedMessage id="OrderBreakdown.bookingEnd" />
           </div>
           <div className={css.dayInfo}>
-            {(isProvider || lineItemIsEstimated || service !== SERVICE_RESCUE) && showPriceBreakdown ?
+            {((isProvider || lineItemIsEstimated) && showPriceBreakdown ) || service !== SERVICE_RESCUE ?
               <FormattedDate value={endDate} {...timeFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.dayTimePlaceholder" />}
           </div>
           <div className={css.itemLabel}>
-            {(isProvider || lineItemIsEstimated || service !== SERVICE_RESCUE) && showPriceBreakdown ?
+            {((isProvider || lineItemIsEstimated) && showPriceBreakdown ) || service !== SERVICE_RESCUE ?
               <FormattedDate value={endDate} {...dateFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.monthYearPlaceholder" />}
           </div>
