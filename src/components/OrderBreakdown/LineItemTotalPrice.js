@@ -54,8 +54,6 @@ LineItemTotalPrice.propTypes = {
   transaction: propTypes.transaction.isRequired,
   isProvider: bool.isRequired,
   intl: intlShape.isRequired,
-  payin: number.isRequired,
-  payout: number.isRequired,
 };
 
 export default LineItemTotalPrice;

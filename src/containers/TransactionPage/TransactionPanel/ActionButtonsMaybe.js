@@ -56,7 +56,7 @@ const ActionButtonsMaybe = props => {
         break;
       case transitions.CONFIRM_REQUEST:
         params.protectedData = {
-          estimatedLineItem
+          estimatedLineItem,
         };
         onTransition(txId, transitions.FINISH, params);
         break;
@@ -65,14 +65,14 @@ const ActionButtonsMaybe = props => {
         break;
       default:
         params.protectedData = {
-          estimatedLineItem
+          estimatedLineItem,
         };
         onTransition(txId, transitions.ACCEPT, params);
     }
   }
 
   const buttonsDisabled = primaryButtonProps?.inProgress || secondaryButtonProps?.inProgress;
-  const service =  transaction.attributes?.protectedData?.selecctedServcie;
+  const service =  transaction.attributes?.protectedData?.selectedService;
 
   const primaryButton = primaryButtonProps ? (
     <PrimaryButton

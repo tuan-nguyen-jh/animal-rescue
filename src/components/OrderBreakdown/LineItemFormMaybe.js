@@ -7,6 +7,8 @@ import { FieldTextInput } from '..';
 import { required, numberAtLeast, composeValidators } from '../../util/validators';
 import { formatNumber, parse } from '../FieldPhoneNumberInput/fiFormatter';
 
+import { MINIMUN_QUANTITY } from '../../config/configBookingService';
+
 import css from './LineItemFormMaybe.module.css';
 
 const FormComponent = props =>
@@ -19,13 +21,13 @@ const FormComponent = props =>
     } = fieldRenderProps;
 
     const { quantity,  setNewQuantity } = props;
-  
+
     const requiredLineItem = required(intl.formatMessage({
       id: 'OrderBreakdown.lineItemFormRequired'
     }));
     const requiredAtLeastOne = numberAtLeast(`${intl.formatMessage({
       id: 'OrderBreakdown.lineItemFormAtLeast'
-    })} ${quantity}`, quantity);
+    })} ${MINIMUN_QUANTITY}`, MINIMUN_QUANTITY);
 
     const inputProps = {
       type: 'text',
@@ -38,7 +40,7 @@ const FormComponent = props =>
         setNewQuantity(formState.values.lineItem)
       }
     }
-    
+
     return (
       <form
         onSubmit={e => {

@@ -94,7 +94,7 @@ export const OrderBreakdownComponent = props => {
   } else if ([
     transitions.REQUEST_BOOKING,
     transitions.REQUEST_AFTER_INQUIRY,
-    transitions.CONFIRM_REQUEST
+    transitions.CONFIRM_REQUEST,
   ].includes(lastTransition)) {
     lineItems[index].lineTotal = unitPurchase ?
       new Money(unitPurchase.unitPrice.amount * newQuantity, currency) : null;
@@ -104,7 +104,8 @@ export const OrderBreakdownComponent = props => {
   const commission = service === SERVICE_RESCUE ?
     lineItems[index].lineTotal.amount * lineItems[1].percentage.d / 100 : null;
   const payin =  service === SERVICE_RESCUE ? lineItems[index].lineTotal.amount : null;
-  const payout = payin? payin - commission : null;
+  const payout = service === SERVICE_RESCUE ? payin - commission : null;
+
   if (service === SERVICE_RESCUE){
     transaction.attributes.payinTotal = new Money(payin, currency);
     transaction.attributes.payoutTotal = new Money(payout, currency);
