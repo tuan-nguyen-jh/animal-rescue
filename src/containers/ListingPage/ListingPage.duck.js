@@ -349,22 +349,36 @@ export const sendInquiry = (listing, message) => (dispatch, getState, sdk) => {
 };
 
 export const sendTxDetails = (listing, orderData) => async (dispatch, getState, sdk) => {
-  const { bookingDates , selectServiceInfo } = orderData;
+  const {
+    bookingDates,
+    selectService: selectedService,
+    location,
+    typeAnimal,
+    rescueDescription,
+  } = orderData;
+
+  if (!listing) return;
+
   const { bookingStart, bookingEnd } = bookingDates;
   const protectedData = {
-    ...selectServiceInfo
+    selectedService,
+    location,
+    typeAnimal,
+    rescueDescription,
   };
   const order = {};
 
   dispatch(sendTxDetailsRequest());
-  const processAlias = selectedService === ACC_SERVICES.adoption ? txTypes.adoption.alias : txTypes.rescue.alias;
-  
-  const listingId = listing?.id?.uuid;
-  const [processName, alias] = processAlias.split('/');
+
+  const { alias: processAlias, process: processName } =
+    selectedService === ACC_SERVICES.adoption ? txTypes.adoption : txTypes.rescue;
+
+  const listingId = listing.id.uuid;
   const transitions = getProcess(processName)?.transitions;
 
   const bodyParams = {
-    transition: selectedService === ACC_SERVICES.adoption ? transitions.REQUEST : transitions.REQUEST_BOOKING,
+    transition:
+      selectedService === ACC_SERVICES.adoption ? transitions.REQUEST : transitions.REQUEST_BOOKING,
     processAlias,
     params: { listingId, bookingStart, bookingEnd, protectedData },
   };
@@ -382,7 +396,7 @@ export const sendTxDetails = (listing, orderData) => async (dispatch, getState, 
     });
 
     const tx = denormalisedResponseEntities(response);
-    const returnedOrder = tx[0]
+    const returnedOrder = tx[0];
 
     dispatch(sendTxDetailsSuccess());
     dispatch(fetchCurrentUserHasOrdersSuccess(true));
@@ -390,7 +404,6 @@ export const sendTxDetails = (listing, orderData) => async (dispatch, getState, 
     return returnedOrder;
   } catch (error) {
     dispatch(sendTxDetailsError(storableError(error)));
-    console.error(error);
   }
 };
 

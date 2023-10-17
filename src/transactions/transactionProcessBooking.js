@@ -28,6 +28,7 @@ export const transitions = {
   // SalePage, it is transitioned with the accept or decline transition.
   ACCEPT: 'transition/accept',
   DECLINE: 'transition/decline',
+  CUSTOMER_DECLINE: 'transition/customer-decline',
 
   // The backend automatically expire the transaction.
   EXPIRE: 'transition/expire',
@@ -40,13 +41,18 @@ export const transitions = {
   // The backend will mark the transaction completed.
   COMPLETE: 'transition/complete',
 
+  CUSTOMER_ACCEPT_ADOPT: 'transition/customer-accept-adopt',
+  CUSTOMER_NOT_ACCEPT_ADOPT: 'transition/customer-not-accept-adopt',
+
   PROVIDER_NOT_ADOPT: 'transition/provider-not-adopt',
   CUSTOMER_NOT_ADOPT: 'transition/customer-not-adopt',
 
   COMPLETE_NOT_ADOPT: 'transition/complete-not-adopt',
+  PROVIDER_COMPLETE_NOT_ADOPT: 'transition/provider-complete-not-adopt',
 
   ADOPT: 'transition/adopt',
   COMPLETE_ADOPT: 'transition/complete-adopt',
+  PROVIDER_COMPLETE_ADOPT: 'transition/provider-complete-adopt',
 
   // Reviews are given through transaction transitions. Review 1 can be
   // by provider or customer, and review 2 will be the other party of
@@ -77,6 +83,7 @@ export const states = {
   REQUEST_ACCEPTED: 'request-accepted',
   CANCELLED: 'cancelled',
   TOUR_COMPLETED: 'tour-completed',
+  PENDING_ADOPT: 'pending-adopt',
   NOT_ALLOW_ADOPT: 'not-allow-adopt',
   ALLOW_ADOPT: 'allow-adopt',
   COMPLETED: 'completed',
@@ -121,6 +128,7 @@ export const graph = {
       on: {
         [transitions.EXPIRE]: states.REQUEST_DECLINED,
         [transitions.DECLINE]: states.REQUEST_DECLINED,
+        [transitions.CUSTOMER_DECLINE]: states.REQUEST_DECLINED,
         [transitions.ACCEPT]: states.REQUEST_ACCEPTED
       },
     },
@@ -141,19 +149,28 @@ export const graph = {
       on: {
         [transitions.PROVIDER_NOT_ADOPT]: states.NOT_ALLOW_ADOPT,
         [transitions.CUSTOMER_NOT_ADOPT]: states.NOT_ALLOW_ADOPT,
-        [transitions.ADOPT]: states.ALLOW_ADOPT,
+        [transitions.ADOPT]: states.PENDING_ADOPT,
       },
+    },
+
+    [states.PENDING_ADOPT]: {
+      on: {
+        [transitions.CUSTOMER_ACCEPT_ADOPT]: states.ALLOW_ADOPT,
+        [transitions.CUSTOMER_NOT_ACCEPT_ADOPT]: states.NOT_ALLOW_ADOPT
+      }
     },
 
     [states.NOT_ALLOW_ADOPT]: {
       on: {
-        [transitions.COMPLETE_NOT_ADOPT]: states.COMPLETED
+        [transitions.COMPLETE_NOT_ADOPT]: states.COMPLETED,
+        [transitions.PROVIDER_COMPLETE_NOT_ADOPT]: states.COMPLETED,
       }
     },
 
     [states.ALLOW_ADOPT]: {
       on: {
-        [transitions.COMPLETE_ADOPT]: states.COMPLETED
+        [transitions.COMPLETE_ADOPT]: states.COMPLETED,
+        [transitions.PROVIDER_COMPLETE_ADOPT]: states.COMPLETED,
       }
     },
 
@@ -192,6 +209,17 @@ export const isRelevantPastTransition = transition => {
     transitions.OPERATOR_CANCEL,
     transitions.COMPLETE,
     transitions.DECLINE,
+    transitions.CUSTOMER_DECLINE,
+    transitions.CUSTOMER_DECLINE,
+    transitions.ADOPT,
+    transitions.PROVIDER_NOT_ADOPT,
+    transitions.CUSTOMER_NOT_ADOPT,
+    transitions.PROVIDER_COMPLETE_ADOPT,
+    transitions.PROVIDER_COMPLETE_NOT_ADOPT,
+    transitions.CUSTOMER_ACCEPT_ADOPT,
+    transitions.CUSTOMER_NOT_ACCEPT_ADOPT,
+    transitions.COMPLETE_ADOPT,
+    transitions.COMPLETE_NOT_ADOPT,
     transitions.EXPIRE,
     transitions.REVIEW_1_BY_CUSTOMER,
     transitions.REVIEW_1_BY_PROVIDER,
@@ -227,7 +255,10 @@ export const isPrivileged = transition => {
 // Check when transaction is completed (booking over)
 export const isCompleted = transition => {
   const txCompletedTransitions = [
-    transitions.COMPLETE,
+    transitions.PROVIDER_COMPLETE_ADOPT,
+    transitions.PROVIDER_COMPLETE_NOT_ADOPT,
+    transitions.COMPLETE_ADOPT,
+    transitions.COMPLETE_NOT_ADOPT,
     transitions.REVIEW_1_BY_CUSTOMER,
     transitions.REVIEW_1_BY_PROVIDER,
     transitions.REVIEW_2_BY_CUSTOMER,
@@ -248,6 +279,7 @@ export const isRefunded = transition => {
     transitions.CUSTOMER_CANCEL,
     transitions.OPERATOR_CANCEL,
     transitions.DECLINE,
+    transitions.CUSTOMER_DECLINE,
   ];
   return txRefundedTransitions.includes(transition);
 };

@@ -118,7 +118,7 @@ const FieldSelectACCName = props => {
   return (
     <FieldSelect
       id={name}
-      name={name}
+      name="accId"
       className={css.listingTypeSelect}
       label={intl.formatMessage({ id: 'EditListingDetailsForm.ACCNameLabel' })}
       validate={required(
@@ -132,7 +132,7 @@ const FieldSelectACCName = props => {
       </option>
       {listingACCs.map(acc => {
         return acc ? (
-          <option key={acc.id.uuid} value={acc.attributes.title}>
+          <option key={acc.id.uuid} value={acc.id.uuid}>
             {acc.attributes.title}
           </option>
         ) : null;
@@ -270,13 +270,12 @@ const EditListingDetailsFormComponent = props => (
           <AddListingFields
             listingType={listingType}
             listingFieldsConfig={listingFieldsConfig}
-            pub_isAdopted={pub_isAdopted}
             intl={intl}
           />
 
           {listingType === ANIMAL_LISTING_TYPE && (
             <FieldSelectACCName
-              id="accname"
+              id="accName"
               name={intl.formatMessage({ id: 'EditListingDetailsForm.ACCNameLabel' })}
               intl={intl}
               formApi={formApi}

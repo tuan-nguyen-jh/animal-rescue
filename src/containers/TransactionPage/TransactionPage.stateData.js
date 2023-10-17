@@ -10,6 +10,7 @@ import { getStateDataForBookingProcess } from './TransactionPage.stateDataBookin
 import { getStateDataForInquiryProcess } from './TransactionPage.stateDataInquiry.js';
 import { getStateDataForPurchaseProcess } from './TransactionPage.stateDataPurchase.js';
 import { getStateDataForRescueBookingProcess } from './TransactionPage.stateDataRescueBooking';
+import { AdoptionBookingTransitions } from '../../config/configTransitions';
 
 const errorShape = shape({
   type: oneOf(['error']).isRequired,
@@ -93,6 +94,9 @@ export const getStateData = (params, process) => {
     sendReviewInProgress,
     sendReviewError,
     onOpenReviewModal,
+    onOpenHostInfoModal,
+    sendHostInfoInProgress,
+    sendHostInfoError,
   } = params;
   const isCustomer = transactionRole === 'customer';
   const processName = resolveLatestProcessName(transaction?.attributes?.processName);
@@ -124,6 +128,18 @@ export const getStateData = (params, process) => {
     actionButtonTranslationErrorId: 'TransactionPage.leaveReview.actionError',
   });
 
+  const getHostInfoProps = getActionButtonPropsMaybe({
+    processName,
+    transitionName: AdoptionBookingTransitions.adopt,
+    transactionRole,
+    intl,
+    inProgress: sendHostInfoInProgress,
+    transitionError: sendHostInfoError,
+    onAction: onOpenHostInfoModal,
+    actionButtonTranslationId: 'TransactionPage.adopt.actionButton',
+    actionButtonTranslationErrorId: 'TransactionPage.adopt.actionError',
+  });
+
   const processInfo = () => {
     const { getState, states, transitions } = process;
     const processState = getState(transaction);
@@ -135,6 +151,7 @@ export const getStateData = (params, process) => {
       isCustomer,
       actionButtonProps: getActionButtonProps,
       leaveReviewProps: getLeaveReviewProps,
+      hostInfoProps: getHostInfoProps,
     };
   };
 
