@@ -35,7 +35,6 @@ const LineItemProviderCommissionMaybe = props => {
       throw new Error('Commission should be present and the value should be zero or negative');
     }
 
-    // const commission = providerCommissionLineItem.lineTotal;
     const formattedCommission = commission ? formatMoney(intl, new Money(commission, currency)) : null;
 
     commissionItem = (

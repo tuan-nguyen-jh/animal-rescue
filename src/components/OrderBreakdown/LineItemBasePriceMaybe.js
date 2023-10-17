@@ -14,10 +14,10 @@ const LineItemBasePriceMaybe = props => {
   const translationKey = isNightly
     ? 'OrderBreakdown.baseUnitNight'
     : isDaily
-      ? 'OrderBreakdown.baseUnitDay'
-      : isHourly
-        ? 'OrderBreakdown.baseUnitHour'
-        : 'OrderBreakdown.baseUnitQuantity';
+    ? 'OrderBreakdown.baseUnitDay'
+    : isHourly
+    ? 'OrderBreakdown.baseUnitHour'
+    : 'OrderBreakdown.baseUnitQuantity';
 
   // Find correct line-item for given code prop.
   // It should be one of the following: 'line-item/night, 'line-item/day', 'line-item/hour', or 'line-item/item'

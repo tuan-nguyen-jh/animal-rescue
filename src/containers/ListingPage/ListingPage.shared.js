@@ -155,19 +155,19 @@ export const handleSubmit = parameters => async values => {
 
   const bookingMaybe = bookingDates
     ? {
-      bookingDates: {
-        bookingStart: bookingDates.startDate,
-        bookingEnd: bookingDates.endDate,
-      },
-    }
+        bookingDates: {
+          bookingStart: bookingDates.startDate,
+          bookingEnd: bookingDates.endDate,
+        },
+      }
     : bookingStartTime && bookingEndTime
-      ? {
+    ? {
         bookingDates: {
           bookingStart: timestampToDate(bookingStartTime),
           bookingEnd: timestampToDate(bookingEndTime),
         },
       }
-      : {};
+    : {};
   const quantity = Number.parseInt(quantityRaw, 10);
   const quantityMaybe = Number.isInteger(quantity) ? { quantity } : {};
   const deliveryMethodMaybe = deliveryMethod ? { deliveryMethod } : {};
