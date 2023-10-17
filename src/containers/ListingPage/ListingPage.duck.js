@@ -356,6 +356,9 @@ export const sendTxDetails = (listing, orderData) => async (dispatch, getState, 
     typeAnimal,
     rescueDescription,
   } = orderData;
+
+  if (!listing) return;
+
   const { bookingStart, bookingEnd } = bookingDates;
   const protectedData = {
     selectedService,
@@ -366,12 +369,11 @@ export const sendTxDetails = (listing, orderData) => async (dispatch, getState, 
   const order = {};
 
   dispatch(sendTxDetailsRequest());
-  const processAlias =
-    selectedService === ACC_SERVICES.adoption ? txTypes.adoption.alias : txTypes.rescue.alias;
-  const processName =
-    selectedService === ACC_SERVICES.adoption ? txTypes.adoption.process : txTypes.rescue.process;
 
-  const listingId = listing?.id?.uuid;
+  const { alias: processAlias, process: processName } =
+    selectedService === ACC_SERVICES.adoption ? txTypes.adoption : txTypes.rescue;
+
+  const listingId = listing.id.uuid;
   const transitions = getProcess(processName)?.transitions;
 
   const bodyParams = {
@@ -402,7 +404,6 @@ export const sendTxDetails = (listing, orderData) => async (dispatch, getState, 
     return returnedOrder;
   } catch (error) {
     dispatch(sendTxDetailsError(storableError(error)));
-    console.error(error);
   }
 };
 
