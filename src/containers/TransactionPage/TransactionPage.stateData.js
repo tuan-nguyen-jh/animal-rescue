@@ -3,11 +3,14 @@ import {
   BOOKING_PROCESS_NAME,
   INQUIRY_PROCESS_NAME,
   PURCHASE_PROCESS_NAME,
+  RESCUE_BOOKING_PROCESS_NAME,
   resolveLatestProcessName,
 } from '../../transactions/transaction';
 import { getStateDataForBookingProcess } from './TransactionPage.stateDataBooking.js';
 import { getStateDataForInquiryProcess } from './TransactionPage.stateDataInquiry.js';
 import { getStateDataForPurchaseProcess } from './TransactionPage.stateDataPurchase.js';
+import { getStateDataForRescueBookingProcess } from './TransactionPage.stateDataRescueBooking';
+import { AdoptionBookingTransitions } from '../../config/configTransitions';
 
 const errorShape = shape({
   type: oneOf(['error']).isRequired,
@@ -40,6 +43,9 @@ export const stateDataShape = shape({
 // Transitions are following process.edn format: "transition/my-transtion-name"
 // This extracts the 'my-transtion-name' string if namespace exists
 const getTransitionKey = transitionName => {
+  if (!transitionName) {
+    return;
+  }
   const [nameSpace, transitionKey] = transitionName.split('/');
   return transitionKey || transitionName;
 };
@@ -88,6 +94,9 @@ export const getStateData = (params, process) => {
     sendReviewInProgress,
     sendReviewError,
     onOpenReviewModal,
+    onOpenHostInfoModal,
+    sendHostInfoInProgress,
+    sendHostInfoError,
   } = params;
   const isCustomer = transactionRole === 'customer';
   const processName = resolveLatestProcessName(transaction?.attributes?.processName);
@@ -119,6 +128,18 @@ export const getStateData = (params, process) => {
     actionButtonTranslationErrorId: 'TransactionPage.leaveReview.actionError',
   });
 
+  const getHostInfoProps = getActionButtonPropsMaybe({
+    processName,
+    transitionName: AdoptionBookingTransitions.adopt,
+    transactionRole,
+    intl,
+    inProgress: sendHostInfoInProgress,
+    transitionError: sendHostInfoError,
+    onAction: onOpenHostInfoModal,
+    actionButtonTranslationId: 'TransactionPage.adopt.actionButton',
+    actionButtonTranslationErrorId: 'TransactionPage.adopt.actionError',
+  });
+
   const processInfo = () => {
     const { getState, states, transitions } = process;
     const processState = getState(transaction);
@@ -130,6 +151,7 @@ export const getStateData = (params, process) => {
       isCustomer,
       actionButtonProps: getActionButtonProps,
       leaveReviewProps: getLeaveReviewProps,
+      hostInfoProps: getHostInfoProps,
     };
   };
 
@@ -139,6 +161,8 @@ export const getStateData = (params, process) => {
     return getStateDataForBookingProcess(params, processInfo());
   } else if (processName === INQUIRY_PROCESS_NAME) {
     return getStateDataForInquiryProcess(params, processInfo());
+  } else if (processName === RESCUE_BOOKING_PROCESS_NAME) {
+    return getStateDataForRescueBookingProcess(params, processInfo());
   } else {
     return {};
   }

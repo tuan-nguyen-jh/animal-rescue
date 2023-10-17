@@ -52,6 +52,7 @@ import ActivityFeed from './ActivityFeed/ActivityFeed';
 import DisputeModal from './DisputeModal/DisputeModal';
 import ReviewModal from './ReviewModal/ReviewModal';
 import TransactionPanel from './TransactionPanel/TransactionPanel';
+import HostInformationModal from './HostInformationModal/HostInformationModal';
 
 import {
   makeTransition,
@@ -60,7 +61,10 @@ import {
   fetchMoreMessages,
   fetchTimeSlots,
   fetchTransactionLineItems,
+  fetchAnimalListingsByACC,
+  makeTranstionAndUpdate,
 } from './TransactionPage.duck';
+
 import css from './TransactionPage.module.css';
 
 // Submit dispute and close the review modal
@@ -81,11 +85,27 @@ const onDisputeOrder = (
     });
 };
 
+// Submit host info and close the host infor modal
+const onSubmitHostInfo = (
+  currentTransactionId,
+  transitionName,
+  onTransitionAndUpdate,
+  setHostInfoModalOpen
+) => async values => {
+  try {
+    await onTransitionAndUpdate(currentTransactionId, transitionName, {}, values);
+    return setHostInfoModalOpen(false);
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 // TransactionPage handles data loading for Sale and Order views to transaction pages in Inbox.
 export const TransactionPageComponent = props => {
   const [isDisputeModalOpen, setDisputeModalOpen] = useState(false);
   const [disputeSubmitted, setDisputeSubmitted] = useState(false);
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
+  const [isHostInfoModalOpen, setHostInfoModalOpen] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   const config = useConfiguration();
@@ -112,6 +132,8 @@ export const TransactionPageComponent = props => {
     sendMessageInProgress,
     sendReviewError,
     sendReviewInProgress,
+    sendHostInfoInProgress,
+    sendHostInfoError,
     transaction,
     transactionRole,
     transitionInProgress,
@@ -126,6 +148,9 @@ export const TransactionPageComponent = props => {
     lineItems,
     fetchLineItemsInProgress,
     fetchLineItemsError,
+    listingAnimals,
+    onFetchAnimalListing,
+    onTransitionAndUpdate,
   } = props;
 
   const { listing, provider, customer, booking } = transaction || {};
@@ -244,6 +269,11 @@ export const TransactionPageComponent = props => {
     setReviewModalOpen(true);
   };
 
+  // Open host info modal
+  const onOpenHostInfoModal = () => {
+    setHostInfoModalOpen(true);
+  };
+
   // Submit review and close the review modal
   const onSubmitReview = values => {
     const { reviewRating, reviewContent } = values;
@@ -360,6 +390,9 @@ export const TransactionPageComponent = props => {
           sendReviewError,
           onTransition,
           onOpenReviewModal,
+          onOpenHostInfoModal,
+          sendHostInfoInProgress,
+          sendHostInfoError,
           intl,
         },
         process
@@ -405,7 +438,17 @@ export const TransactionPageComponent = props => {
           />
         ),
       }
-    : {};
+    : {
+        orderBreakdown: (
+          <OrderBreakdown
+            className={css.breakdown}
+            userRole={transactionRole}
+            transaction={transaction}
+            {...txBookingMaybe}
+            marketplaceName={config.marketplaceName}
+          />
+        ),
+      };
 
   // The location of the booking can be shown if fuzzy location
   const showBookingLocation =
@@ -514,6 +557,24 @@ export const TransactionPageComponent = props => {
           sendReviewError={sendReviewError}
           marketplaceName={config.marketplaceName}
         />
+        <HostInformationModal
+          id="HostInfoModal"
+          isOpen={isHostInfoModalOpen}
+          onCloseModal={() => setHostInfoModalOpen(false)}
+          onManageDisableScrolling={onManageDisableScrolling}
+          onSubmitHostInfo={onSubmitHostInfo(
+            transaction?.id,
+            process?.transitions.ADOPT,
+            onTransitionAndUpdate,
+            setHostInfoModalOpen
+          )}
+          listing={listing}
+          listingAnimals={listingAnimals}
+          onFetchAnimalListing={onFetchAnimalListing}
+          sendHostInfoInProgress={sendHostInfoInProgress}
+          sendHostInfoError={sendHostInfoError}
+          marketplaceName={config.marketplaceName}
+        />
         {process?.transitions?.DISPUTE ? (
           <DisputeModal
             id="DisputeOrderModal"
@@ -619,12 +680,15 @@ const mapStateToProps = state => {
     sendMessageInProgress,
     sendMessageError,
     sendReviewInProgress,
+    sendHostInfoInProgress,
+    sendHostInfoError,
     sendReviewError,
     monthlyTimeSlots,
     processTransitions,
     lineItems,
     fetchLineItemsInProgress,
     fetchLineItemsError,
+    listingAnimals,
   } = state.TransactionPage;
   const { currentUser } = state.user;
 
@@ -654,6 +718,9 @@ const mapStateToProps = state => {
     lineItems,
     fetchLineItemsInProgress,
     fetchLineItemsError,
+    listingAnimals,
+    sendHostInfoInProgress,
+    sendHostInfoError,
   };
 };
 
@@ -673,6 +740,9 @@ const mapDispatchToProps = dispatch => {
       dispatch(fetchTransactionLineItems(orderData, listingId, isOwnListing)),
     onFetchTimeSlots: (listingId, start, end, timeZone) =>
       dispatch(fetchTimeSlots(listingId, start, end, timeZone)),
+    onFetchAnimalListing: listingId => dispatch(fetchAnimalListingsByACC(listingId)),
+    onTransitionAndUpdate: (txId, transitionName, params, data) =>
+      dispatch(makeTranstionAndUpdate(txId, transitionName, params, data)),
   };
 };
 

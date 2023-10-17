@@ -48,35 +48,19 @@
  */
 export const ANIMAL_LISTING_TYPE = 'animal';
 export const ACC_LISTING_TYPE = 'acc';
+export const ACC_SERVICES = {
+  adoption: 'adoption',
+  rescue: 'rescue'
+}
+
+export const ADOPTED = {
+  adopted: 'yes',
+  notAdopted: 'no'
+}
 
 export const listingFields = [
   {
     key: 'service',
-    scope: 'public',
-    includedForListingTypes: ['acc'],
-    schemaType: 'multi-enum',
-    enumOptions: [
-      { option: 'adoption', label: 'Adoption' },
-      { option: 'rescue', label: 'Rescue' },
-    ],
-    filterConfig: {
-      indexForSearch: true,
-      label: 'Service',
-      group: 'secondary',
-    },
-    showConfig: {
-      label: 'Service',
-      isDetail: true,
-    },
-    saveConfig: {
-      label: 'Service',
-      placeholderMessage: 'Select an option…',
-      isRequired: true,
-      requiredMessage: 'You need to select at least an option',
-    },
-  },
-{
-    key: 'type-of-animal',
     scope: 'public',
     includeForListingTypes: [ACC_LISTING_TYPE],
     schemaType: 'multi-enum',
@@ -168,13 +152,17 @@ export const listingFields = [
   {
     key: 'isAdopted',
     includeForListingTypes: [ANIMAL_LISTING_TYPE],
-
     scope: 'public',
-    schemaType: 'boolean',
+    schemaType: 'enum',
+    enumOptions: [
+      { option: 'no', label: 'No' },
+      { option: 'yes', label: 'Yes' },
+    ],
     saveConfig: {
       label: 'Is adopted',
       placeholderMessage: 'Is adopted',
-      isRequired: false,
+      isRequired: true,
+      requiredMessage: 'You need to select an option'
     },
   },
   {
@@ -211,17 +199,6 @@ export const listingFields = [
       isRequired: false,
     },
   },
-  {
-    key: 'acc-id',
-    includeForListingTypes: ['animal'],
-    scope: 'public',
-    schemaType: 'text',
-    saveConfig: {
-      label: 'ID of ACC',
-      placeholderMessage: 'ID of ACC',
-      isRequired: true,
-    }
-  }
 ];
 
 ///////////////////////////////////////////////////////////////////////
@@ -264,6 +241,19 @@ export const listingFields = [
  *                        If defaultListingFields.price is not explicitly set to _false_, price will be shown.
  */
 
+export const txTypes = {
+  adoption: {
+    process: 'adoption-booking',
+    alias: 'adoption-booking/release-1',
+    unitType: 'hour',
+  },
+  rescue: {
+    process: 'acc-rescue-booking',
+    alias: 'acc-rescue-booking/release-1',
+    unitType: 'hour',
+  },
+};
+
 export const listingTypes = [
   {
     listingType: 'acc',
@@ -274,6 +264,48 @@ export const listingTypes = [
       unitType: 'hour',
     },
   },
+  // // Here are some examples for other listingTypes
+  // // TODO: SearchPage does not work well if both booking and product selling are used at the same time
+  // {
+  //   listingType: 'nightly-booking',
+  //   label: 'Nightly booking',
+  //   transactionType: {
+  //     process: 'default-booking',
+  //     alias: 'default-booking/release-1',
+  //     unitType: 'night',
+  //   },
+  // },
+  // {
+  //   listingType: 'hourly-booking',
+  //   label: 'Hourly booking',
+  //   transactionType: {
+  //     process: 'default-booking',
+  //     alias: 'default-booking/release-1',
+  //     unitType: 'hour',
+  //   },
+  // },
+  // {
+  //   listingType: 'product-selling',
+  //   label: 'Sell bicycles',
+  //   transactionType: {
+  //     process: 'default-purchase',
+  //     alias: 'default-purchase/release-1',
+  //     unitType: 'item',
+  //   },
+  //   stockType: 'multipleItems',
+  // },
+  // {
+  //   listingType: 'inquiry',
+  //   label: 'Inquiry',
+  //   transactionType: {
+  //     process: 'default-inquiry',
+  //     alias: 'default-inquiry/release-1',
+  //     unitType: 'inquiry',
+  //   },
+  //   defaultListingFields: {
+  //     price: false,
+  //   },
+  // },
 ];
 
 // SearchPage can enforce listing query to only those listings with valid listingType

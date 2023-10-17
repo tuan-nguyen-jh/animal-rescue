@@ -6,9 +6,11 @@
 export const transitions = {
   REQUEST_BOOKING: 'transition/request-booking',
   CUSTOMER_DECLINE: 'transition/customer-decline',
+  INQUIRE: 'transition/inquire',
   PROVIDER_DECLINE: 'transition/provider-decline',
   ACCEPT: 'transition/accept',
   SENT_REQUEST_EXPIRE: 'transition/sent-request-expire',
+  REQUEST_AFTER_INQUIRY: 'transition/request-after-inquiry',
   PROVIDER_CANCEL: 'transition/provider-cancel',
   CUSTOMER_CANCEL: 'transition/customer-cancel',
   OPERATOR_CANCEL: 'transition/operator-cancel',
@@ -30,6 +32,7 @@ export const transitions = {
 
 export const states = {
   INITIAL: 'initial',
+  INQUIRY: 'inquiry',
   BOOKING_REQUEST_SENT: 'booking-request-sent',
   REQUEST_DECLINED: 'request-decline',
   REQUEST_ACCEPTED: 'request-accepted',
@@ -68,7 +71,13 @@ export const graph = {
   states: {
     [states.INITIAL]: {
       on: {
+        [transitions.INQUIRE]: states.INQUIRY,
         [transitions.REQUEST_BOOKING]: states.BOOKING_REQUEST_SENT,
+      },
+    },
+    [states.INQUIRY]: {
+      on: {
+        [transitions.REQUEST_AFTER_INQUIRY]: states.BOOKING_REQUEST_SENT,
       },
     },
     [states.BOOKING_REQUEST_SENT]: {
@@ -188,7 +197,7 @@ export const isProviderReview = transition => {
 // should go through the local API endpoints, or if using JS SDK is
 // enough.
 export const isPrivileged = transition => {
-  return [transitions.REQUEST_PAYMENT, transitions.FINISH, transitions.ACCEPT].includes(
+  return [transitions.REQUEST_AFTER_INQUIRY, transitions.REQUEST_PAYMENT, transitions.FINISH, transitions.ACCEPT].includes(
     transition
   );
 };

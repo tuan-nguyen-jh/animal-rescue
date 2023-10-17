@@ -132,16 +132,8 @@ export const handleSubmitInquiry = parameters => values => {
  *
  * @param {Object} parameters all the info needed to redirect user to CheckoutPage.
  */
-export const handleSubmit = parameters => values => {
-  const {
-    history,
-    params,
-    currentUser,
-    getListing,
-    callSetInitialValues,
-    onInitializeCardPaymentData,
-    routes,
-  } = parameters;
+export const handleSubmit = parameters => async values => {
+  const { history, params, getListing, onSendTxDetails, routes } = parameters;
   const listingId = new UUID(params.id);
   const listing = getListing(listingId);
 
@@ -175,36 +167,19 @@ export const handleSubmit = parameters => values => {
   const quantityMaybe = Number.isInteger(quantity) ? { quantity } : {};
   const deliveryMethodMaybe = deliveryMethod ? { deliveryMethod } : {};
 
-  const initialValues = {
-    listing,
-    orderData: {
-      ...bookingMaybe,
-      ...quantityMaybe,
-      ...deliveryMethodMaybe,
-      ...otherOrderData,
-    },
-    confirmPaymentError: null,
+  const orderData = {
+    ...bookingMaybe,
+    ...quantityMaybe,
+    ...deliveryMethodMaybe,
+    ...otherOrderData,
   };
 
-  const saveToSessionStorage = !currentUser;
-
-  // Customize checkout page state with current listing and selected orderData
-  const { setInitialValues } = findRouteByRouteName('CheckoutPage', routes);
-
-  callSetInitialValues(setInitialValues, initialValues, saveToSessionStorage);
-
-  // Clear previous Stripe errors from store if there is any
-  onInitializeCardPaymentData();
-
-  // Redirect to CheckoutPage
-  history.push(
-    createResourceLocatorString(
-      'CheckoutPage',
-      routes,
-      { id: listing.id.uuid, slug: createSlug(listing.attributes.title) },
-      {}
-    )
-  );
+  try {
+    const txId = await onSendTxDetails(listing, orderData);
+    history.push(createResourceLocatorString('OrderDetailsPage', routes, { id: txId.id.uuid }, {}));
+  } catch (error) {
+    // Ignore, error handling in sendTxDetails function in ListingPage.duck.js file, line 398
+  }
 };
 
 /**

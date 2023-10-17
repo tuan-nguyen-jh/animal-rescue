@@ -52,6 +52,7 @@ import {
   setInitialValues,
   fetchTimeSlots,
   fetchTransactionLineItems,
+  sendTxDetails,
 } from './ListingPage.duck';
 
 import {
@@ -72,8 +73,9 @@ import SectionAuthorMaybe from './SectionAuthorMaybe';
 import SectionMapMaybe from './SectionMapMaybe';
 import SectionGallery from './SectionGallery';
 
-import css from './ListingPage.module.css';
 import SectionContactsMaybe from './SectionContactsMaybe';
+
+import css from './ListingPage.module.css';
 
 const MIN_LENGTH_FOR_LONG_WORDS_IN_TITLE = 16;
 
@@ -112,6 +114,9 @@ export const ListingPageComponent = props => {
     onInitializeCardPaymentData,
     config,
     routeConfiguration,
+    onSendTxDetails,
+    sendTxDetailsInProgress,
+    sendTxDetailsError,
   } = props;
 
   // prop override makes testing a bit easier
@@ -220,7 +225,7 @@ export const ListingPageComponent = props => {
     currentUser,
     callSetInitialValues,
     getListing,
-    onInitializeCardPaymentData,
+    onSendTxDetails,
   });
 
   const handleOrderSubmit = values => {
@@ -249,12 +254,12 @@ export const ListingPageComponent = props => {
   const productURL = `${config.marketplaceRootURL}${location.pathname}${location.search}${location.hash}`;
   const schemaPriceMaybe = price
     ? {
-      price: intl.formatNumber(convertMoneyToNumber(price), {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-      priceCurrency: price.currency,
-    }
+        price: intl.formatNumber(convertMoneyToNumber(price), {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }),
+        priceCurrency: price.currency,
+      }
     : {};
   const currentStock = currentListing.currentStock?.attributes?.quantity || 0;
   const schemaAvailability =
@@ -323,20 +328,20 @@ export const ListingPageComponent = props => {
               const hasValue = value !== null;
               return hasValue && config.schemaType === SCHEMA_TYPE_MULTI_ENUM
                 ? [
-                  ...pickedElements,
-                  <SectionMultiEnumMaybe
-                    key={key}
-                    heading={config?.showConfig?.label}
-                    options={createFilterOptions(enumOptions)}
-                    selectedOptions={value}
-                  />,
-                ]
+                    ...pickedElements,
+                    <SectionMultiEnumMaybe
+                      key={key}
+                      heading={config?.showConfig?.label}
+                      options={createFilterOptions(enumOptions)}
+                      selectedOptions={value}
+                    />,
+                  ]
                 : hasValue && config.schemaType === SCHEMA_TYPE_TEXT
-                  ? [
+                ? [
                     ...pickedElements,
                     <SectionTextMaybe key={key} heading={config?.showConfig?.label} text={value} />,
                   ]
-                  : pickedElements;
+                : pickedElements;
             }, [])}
             <SectionContactsMaybe
               json={publicData.contacts}
@@ -393,6 +398,8 @@ export const ListingPageComponent = props => {
               onFetchTransactionLineItems={onFetchTransactionLineItems}
               lineItems={lineItems}
               fetchLineItemsInProgress={fetchLineItemsInProgress}
+              sendTxDetailsInProgress={sendTxDetailsInProgress}
+              sendTxDetailsError={sendTxDetailsError}
               fetchLineItemsError={fetchLineItemsError}
               validListingTypes={config.listing.listingTypes}
               marketplaceCurrency={config.currency}
@@ -417,6 +424,7 @@ ListingPageComponent.defaultProps = {
   listingConfig: null,
   lineItems: null,
   fetchLineItemsError: null,
+  sendTxDetailsError: null,
 };
 
 ListingPageComponent.propTypes = {
@@ -472,6 +480,9 @@ ListingPageComponent.propTypes = {
   lineItems: array,
   fetchLineItemsInProgress: bool.isRequired,
   fetchLineItemsError: propTypes.error,
+  sendTxDetailsError: propTypes.error,
+  sendTxDetailsInProgress: bool.isRequired,
+  onSendTxDetails: func.isRequired,
 };
 
 const EnhancedListingPage = props => {
@@ -506,6 +517,8 @@ const mapStateToProps = state => {
     fetchLineItemsInProgress,
     fetchLineItemsError,
     inquiryModalOpenForListingId,
+    sendTxDetailsInProgress,
+    sendTxDetailsError,
   } = state.ListingPage;
   const { currentUser } = state.user;
 
@@ -537,6 +550,8 @@ const mapStateToProps = state => {
     fetchLineItemsError,
     sendInquiryInProgress,
     sendInquiryError,
+    sendTxDetailsInProgress,
+    sendTxDetailsError,
   };
 };
 
@@ -550,6 +565,7 @@ const mapDispatchToProps = dispatch => ({
   onInitializeCardPaymentData: () => dispatch(initializeCardPaymentData()),
   onFetchTimeSlots: (listingId, start, end, timeZone) =>
     dispatch(fetchTimeSlots(listingId, start, end, timeZone)),
+  onSendTxDetails: (listing, message) => dispatch(sendTxDetails(listing, message)),
 });
 
 // Note: it is important that the withRouter HOC is **outside** the

@@ -54,6 +54,7 @@ import { TOS_ASSET_NAME, PRIVACY_POLICY_ASSET_NAME } from './AuthenticationPage.
 
 import css from './AuthenticationPage.module.css';
 import { FacebookLogo, GoogleLogo } from './socialLoginLogos';
+import { userTypes } from '../../config/configUsers';
 
 // Social login buttons are needed by AuthenticationForms
 export const SocialLoginButtonsMaybe = props => {
@@ -143,6 +144,7 @@ export const AuthenticationForms = props => {
     termsAndConditions,
   } = props;
   const fromState = { state: from ? { from } : null };
+  const [selectedRole, setSelectedRole] = useState(null);
   const tabs = [
     {
       text: (
@@ -209,17 +211,18 @@ export const AuthenticationForms = props => {
         <SignupForm
           className={css.signupForm}
           onSubmit={handleSubmitSignup}
+          setSelectedRole={setSelectedRole}
           inProgress={authInProgress}
           termsAndConditions={termsAndConditions}
         />
       )}
 
-      <SocialLoginButtonsMaybe
+      {selectedRole === userTypes.normal && <SocialLoginButtonsMaybe
         isLogin={isLogin}
         showFacebookLogin={showFacebookLogin}
         showGoogleLogin={showGoogleLogin}
         from={from}
-      />
+      />}
     </div>
   );
 };

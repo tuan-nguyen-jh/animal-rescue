@@ -266,7 +266,7 @@ const EditListingDetailsPanel = props => {
             const {
               title,
               description,
-              accname,
+              accId,
               listingType,
               transactionProcessAlias,
               unitType,
@@ -278,7 +278,7 @@ const EditListingDetailsPanel = props => {
               title: title.trim(),
               description,
               publicData: {
-                accname,
+                accId,
                 listingType,
                 transactionProcessAlias,
                 unitType,

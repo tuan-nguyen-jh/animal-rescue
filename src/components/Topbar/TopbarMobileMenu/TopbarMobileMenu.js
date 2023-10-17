@@ -14,6 +14,7 @@ import { ensureCurrentUser } from '../../../util/data';
 import { AvatarLarge, InlineTextButton, NamedLink, NotificationBadge } from '../../../components';
 
 import css from './TopbarMobileMenu.module.css';
+import { userTypes } from '../../../config/configUsers';
 
 const TopbarMobileMenu = props => {
   const {
@@ -26,6 +27,9 @@ const TopbarMobileMenu = props => {
   } = props;
 
   const user = ensureCurrentUser(currentUser);
+
+  const isOfficer = user?.attributes?.profile?.protectedData?.userType === userTypes.officer ? true : false;
+
 
   if (!isAuthenticated) {
     const signup = (
@@ -94,12 +98,12 @@ const TopbarMobileMenu = props => {
           <FormattedMessage id="TopbarMobileMenu.inboxLink" />
           {notificationCountBadge}
         </NamedLink>
-        <NamedLink
+        {isOfficer && <NamedLink
           className={classNames(css.navigationLink, currentPageClass('ManageListingsPage'))}
           name="ManageListingsPage"
         >
           <FormattedMessage id="TopbarMobileMenu.yourListingsLink" />
-        </NamedLink>
+        </NamedLink>}
         <NamedLink
           className={classNames(css.navigationLink, currentPageClass('ProfileSettingsPage'))}
           name="ProfileSettingsPage"
@@ -114,11 +118,11 @@ const TopbarMobileMenu = props => {
         </NamedLink>
         <div className={css.spacer} />
       </div>
-      <div className={css.footer}>
+      {isOfficer && <div className={css.footer}>
         <NamedLink className={css.createNewListingLink} name="NewListingPage">
           <FormattedMessage id="TopbarMobileMenu.newListingLink" />
         </NamedLink>
-      </div>
+      </div>}
     </div>
   );
 };

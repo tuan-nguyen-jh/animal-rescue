@@ -27,6 +27,8 @@ import LineItemRefundMaybe from './LineItemRefundMaybe';
 import LineItemTotalPrice from './LineItemTotalPrice';
 import LineItemUnknownItemsMaybe from './LineItemUnknownItemsMaybe';
 
+import { ACC_SERVICES } from '../../config/configListing';
+
 import css from './OrderBreakdown.module.css';
 
 export const OrderBreakdownComponent = props => {
@@ -51,6 +53,7 @@ export const OrderBreakdownComponent = props => {
   );
   // Line-item code that matches with base unit: day, night, hour, item
   const lineItemUnitType = unitLineItem?.code;
+  const service = transaction.attributes.protectedData.selectedService;
 
   const hasCommissionLineItem = lineItems.find(item => {
     const hasCustomerCommission = isCustomer && item.code === LINE_ITEM_CUSTOMER_COMMISSION;
@@ -144,8 +147,12 @@ export const OrderBreakdownComponent = props => {
         marketplaceName={marketplaceName}
         intl={intl}
       />
-
-      <LineItemTotalPrice transaction={transaction} isProvider={isProvider} intl={intl} />
+      <span className={css.feeInfo}>
+        <FormattedMessage id="OrderBreakdown.service" />: {service}
+      </span>
+      {service !== ACC_SERVICES.adoption && (
+        <LineItemTotalPrice transaction={transaction} isProvider={isProvider} intl={intl} />
+      )}
 
       {hasCommissionLineItem ? (
         <span className={css.feeInfo}>
