@@ -52,9 +52,9 @@ import { PrivacyPolicyContent } from '../../containers/PrivacyPolicyPage/Privacy
 
 import { TOS_ASSET_NAME, PRIVACY_POLICY_ASSET_NAME } from './AuthenticationPage.duck';
 
-import css from './AuthenticationPage.module.css';
 import { FacebookLogo, GoogleLogo } from './socialLoginLogos';
 import { userTypes } from '../../config/configUsers';
+import css from './AuthenticationPage.module.css';
 
 // Social login buttons are needed by AuthenticationForms
 export const SocialLoginButtonsMaybe = props => {
@@ -217,12 +217,14 @@ export const AuthenticationForms = props => {
         />
       )}
 
-      {selectedRole === userTypes.normal && <SocialLoginButtonsMaybe
-        isLogin={isLogin}
-        showFacebookLogin={showFacebookLogin}
-        showGoogleLogin={showGoogleLogin}
-        from={from}
-      />}
+      {(selectedRole === userTypes.normal || isLogin) && (
+        <SocialLoginButtonsMaybe
+          isLogin={isLogin}
+          showFacebookLogin={showFacebookLogin}
+          showGoogleLogin={showGoogleLogin}
+          from={from}
+        />
+      )}
     </div>
   );
 };
@@ -247,7 +249,7 @@ const ConfirmIdProviderInfoForm = props => {
     };
 
     // If the confirm form has any additional values, pass them forward as user's protected data
-    const protectedData = !isEmpty(rest) ? { ...rest } : null;
+    const protectedData = { userType: userTypes.normal, ...rest };
 
     submitSingupWithIdp({
       idpToken,
