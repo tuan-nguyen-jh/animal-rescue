@@ -59,7 +59,7 @@ import css from './AuthenticationPage.module.css';
 // Social login buttons are needed by AuthenticationForms
 export const SocialLoginButtonsMaybe = props => {
   const routeConfiguration = useRouteConfiguration();
-  const { isLogin, showFacebookLogin, showGoogleLogin, from } = props;
+  const { isLoginTab, showFacebookLogin, showGoogleLogin, from } = props;
   const showSocialLogins = showFacebookLogin || showGoogleLogin;
 
   const getDefaultRoutes = () => {
@@ -104,7 +104,7 @@ export const SocialLoginButtonsMaybe = props => {
         <div className={css.socialButtonWrapper}>
           <SocialLoginButton onClick={() => authWithFacebook()}>
             <span className={css.buttonIcon}>{FacebookLogo}</span>
-            {isLogin ? (
+            {isLoginTab ? (
               <FormattedMessage id="AuthenticationPage.loginWithFacebook" />
             ) : (
               <FormattedMessage id="AuthenticationPage.signupWithFacebook" />
@@ -117,7 +117,7 @@ export const SocialLoginButtonsMaybe = props => {
         <div className={css.socialButtonWrapper}>
           <SocialLoginButton onClick={() => authWithGoogle()}>
             <span className={css.buttonIcon}>{GoogleLogo}</span>
-            {isLogin ? (
+            {isLoginTab ? (
               <FormattedMessage id="AuthenticationPage.loginWithGoogle" />
             ) : (
               <FormattedMessage id="AuthenticationPage.signupWithGoogle" />
@@ -132,7 +132,7 @@ export const SocialLoginButtonsMaybe = props => {
 // Tabs for SignupForm and LoginForm
 export const AuthenticationForms = props => {
   const {
-    isLogin,
+    isLoginTab,
     showFacebookLogin,
     showGoogleLogin,
     from,
@@ -148,11 +148,11 @@ export const AuthenticationForms = props => {
   const tabs = [
     {
       text: (
-        <Heading as={!isLogin ? 'h1' : 'h2'} rootClassName={css.tab}>
+        <Heading as={!isLoginTab ? 'h1' : 'h2'} rootClassName={css.tab}>
           <FormattedMessage id="AuthenticationPage.signupLinkText" />
         </Heading>
       ),
-      selected: !isLogin,
+      selected: !isLoginTab,
       linkProps: {
         name: 'SignupPage',
         to: fromState,
@@ -160,11 +160,11 @@ export const AuthenticationForms = props => {
     },
     {
       text: (
-        <Heading as={isLogin ? 'h1' : 'h2'} rootClassName={css.tab}>
+        <Heading as={isLoginTab ? 'h1' : 'h2'} rootClassName={css.tab}>
           <FormattedMessage id="AuthenticationPage.loginLinkText" />
         </Heading>
       ),
-      selected: isLogin,
+      selected: isLoginTab,
       linkProps: {
         name: 'LoginPage',
         to: fromState,
@@ -196,7 +196,7 @@ export const AuthenticationForms = props => {
 
   // eslint-disable-next-line no-confusing-arrow
   const errorMessage = (error, message) => (error ? message : null);
-  const loginOrSignupError = isLogin
+  const loginOrSignupError = isLoginTab
     ? errorMessage(loginError, loginErrorMessage)
     : errorMessage(signupError, signupErrorMessage);
 
@@ -205,7 +205,7 @@ export const AuthenticationForms = props => {
       <LinkTabNavHorizontal className={css.tabs} tabs={tabs} />
       {loginOrSignupError}
 
-      {isLogin ? (
+      {isLoginTab ? (
         <LoginForm className={css.loginForm} onSubmit={submitLogin} inProgress={authInProgress} />
       ) : (
         <SignupForm
@@ -217,9 +217,9 @@ export const AuthenticationForms = props => {
         />
       )}
 
-      {(selectedRole === userTypes.normal || isLogin) && (
+      {(selectedRole === userTypes.normal || isLoginTab) && (
         <SocialLoginButtonsMaybe
-          isLogin={isLogin}
+          isLoginTab={isLoginTab}
           showFacebookLogin={showFacebookLogin}
           showGoogleLogin={showGoogleLogin}
           from={from}
@@ -308,7 +308,7 @@ export const AuthenticationOrConfirmInfoForm = props => {
     termsAndConditions,
   } = props;
   const isConfirm = tab === 'confirm';
-  const isLogin = tab === 'login';
+  const isLoginTab = tab === 'login';
 
   return isConfirm ? (
     <ConfirmIdProviderInfoForm
@@ -320,7 +320,7 @@ export const AuthenticationOrConfirmInfoForm = props => {
     />
   ) : (
     <AuthenticationForms
-      isLogin={isLogin}
+      isLoginTab={isLoginTab}
       showFacebookLogin={showFacebookLogin}
       showGoogleLogin={showGoogleLogin}
       from={from}
@@ -397,13 +397,13 @@ export const AuthenticationPageComponent = props => {
 
   const user = ensureCurrentUser(currentUser);
   const currentUserLoaded = !!user.id;
-  const isLogin = tab === 'login';
+  const isLoginTab = tab === 'login';
 
   // We only want to show the email verification dialog in the signup
   // tab if the user isn't being redirected somewhere else
   // (i.e. `from` is present). We must also check the `emailVerified`
   // flag only when the current user is fully loaded.
-  const showEmailVerification = !isLogin && currentUserLoaded && !user.attributes.emailVerified;
+  const showEmailVerification = !isLoginTab && currentUserLoaded && !user.attributes.emailVerified;
 
   // Already authenticated, redirect away from auth page
   if (isAuthenticated && from) {
@@ -424,10 +424,10 @@ export const AuthenticationPageComponent = props => {
   ) : null;
 
   const marketplaceName = config.marketplaceName;
-  const schemaTitle = isLogin
+  const schemaTitle = isLoginTab
     ? intl.formatMessage({ id: 'AuthenticationPage.schemaTitleLogin' }, { marketplaceName })
     : intl.formatMessage({ id: 'AuthenticationPage.schemaTitleSignup' }, { marketplaceName });
-  const schemaDescription = isLogin
+  const schemaDescription = isLoginTab
     ? intl.formatMessage({ id: 'AuthenticationPage.schemaDescriptionLogin' }, { marketplaceName })
     : intl.formatMessage({ id: 'AuthenticationPage.schemaDescriptionSignup' }, { marketplaceName });
 
