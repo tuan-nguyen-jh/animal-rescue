@@ -52,7 +52,7 @@ const ActionButtonsMaybe = props => {
     try {
       const txId = await onUpdateTxDetails(listing, orderData, transitionName);
     } catch (error) {
-      console.log(error)
+      //hanled in TransactionPage.duck.js line 841
     }
   };
 
