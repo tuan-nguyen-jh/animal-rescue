@@ -1241,6 +1241,8 @@
   "TransactionPage.schemaTitle": "Sale details: {title}",
   "TransactionPage.unknownTransactionProcess": "Oops, it looks like the marketplace processes aren't up to date. Please contact the marketplace operator.",
   "TransactionPanel.activityHeading": "Activity",
+  "TransactionPanel.pleaseAddAnimal": "Please add animal!",
+  "TransactionPanel.noAnimal": "There is no animal available!",
   "TransactionPanel.bookingLocationHeading": "Location",
   "TransactionPanel.conversationHeading": "Conversation",
   "TransactionPanel.customerBannedStatus": "The user made the request, but was later banned.",
