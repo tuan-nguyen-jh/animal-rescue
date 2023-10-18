@@ -67,9 +67,6 @@ const LineItemFormMaybe = {
   component: compose(injectIntl)(FormComponent),
   props: {
     formName: 'lineItemForm',
-    onSubmit: values => {
-      console.log('submit values:', values);
-    },
   },
   group: 'lineItemForm',
 };
