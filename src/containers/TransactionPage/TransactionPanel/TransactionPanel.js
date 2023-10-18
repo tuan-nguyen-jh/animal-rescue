@@ -144,7 +144,9 @@ export class TransactionPanelComponent extends Component {
       onTransition,
       transaction,
       newQuantity,
-      redirectToCheckoutPageWithInitialValues
+      redirectToCheckoutPageWithInitialValues,
+      onUpdateTxDetails,
+      history
     } = this.props;
 
     const isCustomer = transactionRole === 'customer';
@@ -172,6 +174,7 @@ export class TransactionPanelComponent extends Component {
 
     const actionButtons = (
       <ActionButtonsMaybe
+        history={history}
         onTransition={onTransition}
         transaction={transaction}
         showButtons={stateData.showActionButtons}
@@ -181,6 +184,7 @@ export class TransactionPanelComponent extends Component {
         isProvider={isProvider}
         estimatedLineItem={newQuantity}
         redirectToCheckoutPageWithInitialValues={redirectToCheckoutPageWithInitialValues}
+        onUpdateTxDetails={onUpdateTxDetails}
       />
     );
 

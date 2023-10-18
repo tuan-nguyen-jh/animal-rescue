@@ -7,7 +7,9 @@
   {:name :transition/request-after-inquiry,
    :actor :actor.role/customer,
    :actions
-   [{:name :action/create-proposed-booking, :config {:type :time}}],
+   [{:name :action/create-proposed-booking, :config {:type :time}},
+    {:name :action/privileged-set-line-items},
+    {:name :action/update-protected-data}],
    :from :state/inquiry,
    :to :state/booking-request-sent,
    :privileged? true}
@@ -15,8 +17,8 @@
    :actor :actor.role/customer,
    :actions
    [{:name :action/create-proposed-booking, :config {:type :time}},
-    {:name :action/update-protected-data},
-    {:name :action/privileged-set-line-items}],
+    {:name :action/privileged-set-line-items},
+    {:name :action/update-protected-data}],
    :to :state/booking-request-sent,
    :privileged? true}
   {:name :transition/sent-request-expire,
@@ -44,9 +46,10 @@
    :actor :actor.role/provider,
    :actions
    [{:name :action/accept-booking},
-    {:name :action/update-protected-data}],
+    {:name :action/privileged-set-line-items}],
    :from :state/booking-request-sent,
-   :to :state/request-accepted}
+   :to :state/request-accepted,
+   :privileged? true}
   {:name :transition/provider-cancel,
    :actor :actor.role/provider,
    :actions
@@ -77,23 +80,23 @@
   {:name :transition/confirm-request,
    :actor :actor.role/customer,
    :actions
-   [{:name :action/update-booking, :config {:type :time}}],
+   [],
    :from :state/request-accepted,
    :to :state/officer-dispatched}
   {:name :transition/finish
    :actor :actor.role/provider,
    :actions
-   [{:name :action/update-protected-data}],
+   [{:name :action/privileged-set-line-items}],
    :from :state/officer-dispatched,
-   :to :state/exact-fee-calculated}
+   :to :state/exact-fee-calculated,
+   :privileged? true}
   {:name :transition/request-payment,
    :actor :actor.role/customer,
    :actions
-   [{:name :action/update-protected-data} 
+   [{:name :action/update-protected-data}
     {:name :action/stripe-create-payment-intent-push}],
    :from :state/exact-fee-calculated,
-   :to :state/pending-payment,
-   :privileged? true}
+   :to :state/pending-payment}
   {:name :transition/expire-payment,
    :at
    {:fn/plus

@@ -30,10 +30,7 @@ import LineItemUnknownItemsMaybe from './LineItemUnknownItemsMaybe';
 import LineItemService from './LineItemService';
 import LineItemFormMaybe from './LineItemFormMaybe';
 
-import { ACC_SERVICES } from '../../config/configListing';
-
 import css from './OrderBreakdown.module.css';
-import { transitions } from '../../transactions/transactionProcessRescueBooking';
 
 const Decimal = require('decimal.js');
 const { types } = require('sharetribe-flex-sdk');
@@ -81,36 +78,22 @@ export const OrderBreakdownComponent = props => {
   const index = lineItems.findIndex(item => item.code === lineItemUnitType && !item.reversal);
   const unitPurchase = index !== -1 ? lineItems[index] : null;
   const quantity = unitPurchase ? unitPurchase.quantity.toString() : null;
-  const lastTransition = transaction.attributes.lastTransition;
-
-  if (lineItemIsEstimated
-    && (
-      lastTransition !== transitions.CONFIRM_REQUEST
-      || !isProvider
-    )) {
+  if (showLineItemForm)
+  {
     lineItems[index].lineTotal = unitPurchase ?
-      new Money(unitPurchase.unitPrice.amount * estimatedLineItem, currency) : null;
-    lineItems[index].quantity = new Decimal(estimatedLineItem);
-  } else if ([
-    transitions.REQUEST_BOOKING,
-    transitions.REQUEST_AFTER_INQUIRY,
-    transitions.CONFIRM_REQUEST,
-  ].includes(lastTransition)) {
-    lineItems[index].lineTotal = unitPurchase ?
-      new Money(unitPurchase.unitPrice.amount * newQuantity, currency) : null;
+      new Money(unitPurchase.unitPrice.amount * (newQuantity? newQuantity: quantity), currency) : null;
     lineItems[index].quantity = new Decimal(newQuantity ? newQuantity : quantity);
   }
 
   const commission = service === SERVICE_RESCUE ?
     lineItems[index].lineTotal.amount * lineItems[1].percentage.d / 100 : null;
-  const payin =  service === SERVICE_RESCUE ? lineItems[index].lineTotal.amount : null;
+  const payin = service === SERVICE_RESCUE ? lineItems[index].lineTotal.amount : null;
   const payout = service === SERVICE_RESCUE ? payin - commission : null;
 
-  if (service === SERVICE_RESCUE){
+  if (service === SERVICE_RESCUE) {
     transaction.attributes.payinTotal = new Money(payin, currency);
     transaction.attributes.payoutTotal = new Money(payout, currency);
   }
-  
 
   /**
    * OrderBreakdown contains different line items:
@@ -164,8 +147,9 @@ export const OrderBreakdownComponent = props => {
         isProvider={isProvider}
         showPriceBreakdown={showPriceBreakdown}
         quantity={newQuantity}
-        estimatedLineItem={estimatedLineItem}
+        estimatedLineItem={quantity}
         lineItemIsEstimated={lineItemIsEstimated}
+        showLineItemForm={showLineItemForm}
       />
 
       {service === SERVICE_RESCUE
@@ -176,7 +160,7 @@ export const OrderBreakdownComponent = props => {
           lineItems={lineItems}
           code={lineItemUnitType}
           intl={intl}
-          estimatedLineItem={estimatedLineItem}
+          estimatedLineItem={quantity}
         />
       }
 
@@ -261,7 +245,7 @@ export const OrderBreakdownComponent = props => {
           {...LineItemFormMaybe.props}
           showLineItemForm
           setNewQuantity={setNewQuantity}
-          quantity={lineItemIsEstimated ? estimatedLineItem : quantity}
+          quantity={quantity}
         />
       }
     </div>

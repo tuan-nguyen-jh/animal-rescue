@@ -82,7 +82,6 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         processState,
         showLineItemForm: false,
         showPriceBreakdown: true,
-        lineItemIsEstimated: true,
         showActionButtons: true,
         secondaryButtonProps: secondary,
       }
@@ -95,10 +94,10 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         processState,
         showLineItemForm: false,
         showPriceBreakdown: true,
-        lineItemIsEstimated: true,
         primaryButtonProps: primary,
         secondaryButtonProps: secondary,
-        showActionButtons: true
+        showActionButtons: true,
+        lineItemIsEstimated: true
       }
     })
     .cond([states.OFFICER_DISPATCHED, PROVIDER], () => {
@@ -108,10 +107,10 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         processState,
         showLineItemForm: false,
         showPriceBreakdown: true,
-        lineItemIsEstimated: true,
         primaryButtonProps: primary,
         showActionButtons: true,
-        showLineItemForm: true
+        showLineItemForm: true,
+        lineItemIsEstimated: true,
       }
     })
     .cond([states.OFFICER_DISPATCHED, CUSTOMER], () => {
@@ -120,7 +119,7 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         processState,
         showLineItemForm: false,
         showPriceBreakdown: true,
-        lineItemIsEstimated: true,
+        lineItemIsEstimated: true
       }
     })
     .cond([states.EXACT_FEE_CALCULATED, PROVIDER], () => {
@@ -139,9 +138,9 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         processState,
         showLineItemForm: false,
         showPriceBreakdown: true,
-        lineItemIsEstimated: true,
         showActionButtons: true,
         primaryButtonProps: primary,
+        lineItemIsEstimated: true
       }
     })
     .cond([states.REQUEST_CANCELED, _], () => {
@@ -150,7 +149,6 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         processState,
         showLineItemForm: false,
         showPriceBreakdown: true,
-        lineItemIsEstimated: true,
       }
     })
     .cond([states.COMPLETED, _], () => {

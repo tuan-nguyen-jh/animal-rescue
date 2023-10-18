@@ -22,13 +22,13 @@ const BookingPeriod = props => {
   const timeFormatOptions =
     dateType === DATE_TYPE_DATE
       ? {
-          weekday: 'long',
-        }
+        weekday: 'long',
+      }
       : {
-          weekday: 'short',
-          hour: 'numeric',
-          minute: 'numeric',
-        };
+        weekday: 'short',
+        hour: 'numeric',
+        minute: 'numeric',
+      };
 
   const dateFormatOptions = {
     month: 'short',
@@ -55,12 +55,12 @@ const BookingPeriod = props => {
             <FormattedMessage id="OrderBreakdown.bookingEnd" />
           </div>
           <div className={css.dayInfo}>
-            {((isProvider || lineItemIsEstimated) && showPriceBreakdown ) || service !== SERVICE_RESCUE ?
+            {(isProvider || lineItemIsEstimated || service !== SERVICE_RESCUE) ?
               <FormattedDate value={endDate} {...timeFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.dayTimePlaceholder" />}
           </div>
           <div className={css.itemLabel}>
-            {((isProvider || lineItemIsEstimated) && showPriceBreakdown ) || service !== SERVICE_RESCUE ?
+            {((isProvider || lineItemIsEstimated) && showPriceBreakdown) || service !== SERVICE_RESCUE ?
               <FormattedDate value={endDate} {...dateFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.monthYearPlaceholder" />}
           </div>
@@ -78,9 +78,10 @@ const LineItemBookingPeriod = props => {
     service,
     isProvider,
     quantity,
-    showPriceBreakdown,
     estimatedLineItem,
-    lineItemIsEstimated
+    showPriceBreakdown,
+    lineItemIsEstimated,
+    showLineItemform
   } = props;
 
   if (!booking) {
@@ -92,10 +93,9 @@ const LineItemBookingPeriod = props => {
   // Read more: https://www.sharetribe.com/api-reference/marketplace.html#bookings
   const { start, displayStart } = booking.attributes;
   const localStartDate = displayStart || start;
-
   const isNightly = code === LINE_ITEM_NIGHT;
   const isHour = code === LINE_ITEM_HOUR;
-  const localEstimatedEndTime = addTime(localStartDate, lineItemIsEstimated ? estimatedLineItem : quantity, 'hours');
+  const localEstimatedEndTime = addTime(localStartDate, showLineItemform ? quantity : estimatedLineItem, 'hours');
   const endDay = isNightly || isHour
     ? localEstimatedEndTime : subtractTime(localEstimatedEndTime, 1, 'days');
 

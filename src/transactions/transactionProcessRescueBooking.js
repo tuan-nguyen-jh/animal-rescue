@@ -200,6 +200,7 @@ export const isPrivileged = transition => {
   return [
     transitions.REQUEST_AFTER_INQUIRY,
     transitions.REQUEST_PAYMENT,
+    transitions.ACCEPT,
     transitions.FINISH,
   ].includes(
     transition

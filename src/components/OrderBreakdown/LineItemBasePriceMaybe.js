@@ -26,7 +26,7 @@ const LineItemBasePriceMaybe = props => {
   const unitPrice = unitPurchase ? formatMoney(intl, unitPurchase.unitPrice) : null;
   const total = unitPurchase ? formatMoney(intl, unitPurchase.lineTotal) : null;
   const displayQuantity = quantity ? quantity : estimatedLineItem;
-  
+
   return (quantity || estimatedLineItem) && total ? (
     <div className={css.lineItem}>
       <span className={css.itemLabel}>
