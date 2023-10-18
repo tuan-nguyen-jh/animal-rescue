@@ -67,6 +67,7 @@ const LineItemFormMaybe = {
   component: compose(injectIntl)(FormComponent),
   props: {
     formName: 'lineItemForm',
+    onSubmit: ()=>{}
   },
   group: 'lineItemForm',
 };
