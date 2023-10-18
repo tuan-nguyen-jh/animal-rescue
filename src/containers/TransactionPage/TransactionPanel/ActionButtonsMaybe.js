@@ -91,7 +91,7 @@ const ActionButtonsMaybe = props => {
       protectedData: transaction.attributes.protectedData,
       txId
     }
-    console.log(values)
+
     switch (transaction.attributes.lastTransition) {
       case transitions.ACCEPT:
         onTransition(txId, transitions.CONFIRM_REQUEST, params);
