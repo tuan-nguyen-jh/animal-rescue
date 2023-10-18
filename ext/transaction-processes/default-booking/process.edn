@@ -98,7 +98,6 @@
 
   {:name :transition/adopt,
    :actor :actor.role/provider,
-   :actions [{:name :action/update-protected-data}],
    :from :state/tour-completed,
    :to :state/pending-adopt}
 
@@ -121,6 +120,7 @@
 
   {:name :transition/provider-complete-adopt,
    :actor :actor.role/provider,
+   :actions [{:name :action/update-protected-data}],
    :from :state/allow-adopt,
    :to :state/completed}
 

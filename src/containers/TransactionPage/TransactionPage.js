@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { array, arrayOf, bool, func, number, object, oneOf, shape, string } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -151,12 +151,17 @@ export const TransactionPageComponent = props => {
     listingAnimals,
     onFetchAnimalListing,
     onTransitionAndUpdate,
+    fetchListingAnimalSuccess,
   } = props;
 
   const { listing, provider, customer, booking } = transaction || {};
   const txTransitions = transaction?.attributes?.transitions || [];
   const isProviderRole = transactionRole === PROVIDER;
   const isCustomerRole = transactionRole === CUSTOMER;
+
+  useEffect(() => {
+    onFetchAnimalListing(listing?.id?.uuid);
+  }, [listing?.id?.uuid]);
 
   const processName = resolveLatestProcessName(transaction?.attributes?.processName);
   let process = null;
@@ -495,6 +500,8 @@ export const TransactionPageComponent = props => {
       }
       isInquiryProcess={processName === INQUIRY_PROCESS_NAME}
       config={config}
+      fetchListingAnimalSuccess={fetchListingAnimalSuccess}
+      listingAnimals={listingAnimals}
       {...orderBreakdownMaybe}
       orderPanel={
         <OrderPanel
@@ -564,7 +571,7 @@ export const TransactionPageComponent = props => {
           onManageDisableScrolling={onManageDisableScrolling}
           onSubmitHostInfo={onSubmitHostInfo(
             transaction?.id,
-            process?.transitions.ADOPT,
+            process?.transitions.PROVIDER_COMPLETE_ADOPT,
             onTransitionAndUpdate,
             setHostInfoModalOpen
           )}
@@ -611,6 +618,10 @@ TransactionPageComponent.defaultProps = {
   fetchTimeSlotsError: null,
   lineItems: null,
   fetchLineItemsError: null,
+  listingAnimals: [],
+  fetchListingAnimalsError: null,
+  fetchListingAnimalsInProgress: false,
+  fetchListingAnimalSuccess: false,
 };
 
 TransactionPageComponent.propTypes = {
@@ -652,6 +663,12 @@ TransactionPageComponent.propTypes = {
   fetchLineItemsInProgress: bool.isRequired,
   fetchLineItemsError: propTypes.error,
 
+  // listingAnimals
+  listingAnimals: array,
+  fetchListingAnimalsError: propTypes.error,
+  fetchListingAnimalsInProgress: bool.isRequired,
+  fetchListingAnimalSuccess: bool.isRequired,
+
   // from withRouter
   history: shape({
     push: func.isRequired,
@@ -689,6 +706,9 @@ const mapStateToProps = state => {
     fetchLineItemsInProgress,
     fetchLineItemsError,
     listingAnimals,
+    fetchListingAnimalsInProgress,
+    fetchListingAnimalsError,
+    fetchListingAnimalSuccess,
   } = state.TransactionPage;
   const { currentUser } = state.user;
 
@@ -721,6 +741,9 @@ const mapStateToProps = state => {
     listingAnimals,
     sendHostInfoInProgress,
     sendHostInfoError,
+    fetchListingAnimalsInProgress,
+    fetchListingAnimalsError,
+    fetchListingAnimalSuccess,
   };
 };
 
