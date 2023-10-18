@@ -419,6 +419,10 @@ TransactionPanelComponent.propTypes = {
   orderBreakdown: node,
   orderPanel: node,
   config: object.isRequired,
+  transaction: propTypes.transaction,
+  onTransition: func.isRequired,
+  newQuantity: string,
+  redirectToCheckoutPageWithInitialValues: func.isRequired,
 
   // from injectIntl
   intl: intlShape,

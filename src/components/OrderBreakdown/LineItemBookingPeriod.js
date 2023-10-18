@@ -1,21 +1,19 @@
 import React from 'react';
 import { bool } from 'prop-types';
 import { FormattedMessage, FormattedDate } from '../../util/reactIntl';
-import { LINE_ITEM_NIGHT, DATE_TYPE_DATE, LINE_ITEM_HOUR, propTypes } from '../../util/types';
 import { addTime, subtractTime } from '../../util/dates';
+import { LINE_ITEM_NIGHT, DATE_TYPE_DATE, LINE_ITEM_HOUR, propTypes } from '../../util/types';
 
 import css from './OrderBreakdown.module.css';
-import { SERVICE_RESCUE } from '../../config/configBookingService';
 
 const BookingPeriod = props => {
-  const { startDate,
+  const { 
+    startDate,
     endDate,
     dateType,
     timeZone,
-    isProvider,
-    service,
-    showPriceBreakdown,
-    lineItemIsEstimated
+    isRescueService,
+    isProviderOrEstimated,
   } = props;
   const timeZoneMaybe = timeZone ? { timeZone } : null;
 
@@ -34,6 +32,8 @@ const BookingPeriod = props => {
     month: 'short',
     day: 'numeric',
   };
+
+  const showDateTime = isProviderOrEstimated && isRescueService;
 
   return (
     <>
@@ -55,12 +55,12 @@ const BookingPeriod = props => {
             <FormattedMessage id="OrderBreakdown.bookingEnd" />
           </div>
           <div className={css.dayInfo}>
-            {(isProvider || lineItemIsEstimated || service !== SERVICE_RESCUE) ?
+            {showDateTime ?
               <FormattedDate value={endDate} {...timeFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.dayTimePlaceholder" />}
           </div>
           <div className={css.itemLabel}>
-            {((isProvider || lineItemIsEstimated) && showPriceBreakdown) || service !== SERVICE_RESCUE ?
+            {showDateTime ?
               <FormattedDate value={endDate} {...dateFormatOptions} {...timeZoneMaybe} />
               : <FormattedMessage id="OrderBreakdown.bookingEnd.monthYearPlaceholder" />}
           </div>
@@ -75,13 +75,12 @@ const LineItemBookingPeriod = props => {
     code,
     dateType,
     timeZone,
-    service,
-    isProvider,
+    isRescueService,
     quantity,
     estimatedLineItem,
     showPriceBreakdown,
-    lineItemIsEstimated,
-    showLineItemform
+    showLineItemform,
+    isProviderOrEstimated
   } = props;
 
   if (!booking) {
@@ -107,14 +106,12 @@ const LineItemBookingPeriod = props => {
           endDate={endDay}
           dateType={dateType}
           timeZone={timeZone}
-          service={service}
-          isProvider={isProvider}
-          showPriceBreakdown={showPriceBreakdown}
-          lineItemIsEstimated={lineItemIsEstimated}
+          isRescueService={isRescueService}
+          isProviderOrEstimated={isProviderOrEstimated}
         />
       </div>
-      {service === SERVICE_RESCUE
-        && (isProvider || lineItemIsEstimated)
+      {isRescueService
+        && isProviderOrEstimated
         && showPriceBreakdown
         && <hr className={css.totalDivider} />}
     </>
@@ -126,6 +123,8 @@ LineItemBookingPeriod.propTypes = {
   isProvider: bool.isRequired,
   booking: propTypes.booking,
   dateType: propTypes.dateType,
+  isRescueService: bool.isRequired,
+  isProviderOrEstimated: bool,
 };
 
 export default LineItemBookingPeriod;

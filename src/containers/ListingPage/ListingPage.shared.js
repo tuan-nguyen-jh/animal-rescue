@@ -4,13 +4,13 @@ import { types as sdkTypes } from '../../util/sdkLoader';
 import { createResourceLocatorString, findRouteByRouteName } from '../../util/routes';
 import { formatMoney } from '../../util/currency';
 import { timestampToDate } from '../../util/dates';
-import { createSlug } from '../../util/urlHelpers';
 
 import { Page, LayoutSingleColumn } from '../../components';
 import FooterContainer from '../../containers/FooterContainer/FooterContainer';
 
-import css from './ListingPage.module.css';
 import { SERVICE_RESCUE } from '../../config/configBookingService';
+
+import css from './ListingPage.module.css';
 
 /**
  * This file contains shared functions from each ListingPage variants.

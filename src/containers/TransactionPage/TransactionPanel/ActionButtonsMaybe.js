@@ -1,12 +1,14 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import { addTime } from '../../../util/dates';
+import { transitions } from '../../../transactions/transactionProcessRescueBooking';
+
 import { PrimaryButton, SecondaryButton } from '../../../components';
 
-import css from './TransactionPanel.module.css';
-import { transitions } from '../../../transactions/transactionProcessRescueBooking';
 import { SERVICE_RESCUE } from '../../../config/configBookingService';
-import { addTime } from '../../../util/dates';
+
+import css from './TransactionPanel.module.css';
 
 // Functional component as a helper to build ActionButtons
 const ActionButtonsMaybe = props => {
@@ -48,11 +50,8 @@ const ActionButtonsMaybe = props => {
       ...quantityMaybe,
       ...otherOrderData
     };
-    try {
-      const txId = await onUpdateTxDetails(listing, orderData, transitionName);
-    } catch (error) {
-      //hanled in TransactionPage.duck.js line 841
-    }
+    
+    const txId = await onUpdateTxDetails(listing, orderData, transitionName);
   };
 
   // In default processes default processes need special handling

@@ -1,5 +1,5 @@
 import React from 'react';
-import { bool, string } from 'prop-types';
+import { bool, string, number } from 'prop-types';
 import { FormattedMessage, intlShape } from '../../util/reactIntl';
 import { formatMoney } from '../../util/currency';
 import { types as sdkTypes } from '../../util/sdkLoader';
@@ -55,6 +55,8 @@ LineItemProviderCommissionMaybe.propTypes = {
   isProvider: bool.isRequired,
   marketplaceName: string.isRequired,
   intl: intlShape.isRequired,
+  commission: number,
+  currency: string.isRequired
 };
 
 export default LineItemProviderCommissionMaybe;

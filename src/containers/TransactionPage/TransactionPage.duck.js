@@ -806,7 +806,6 @@ export const updateTxDetails = (listing, orderData, transitionName) => async (di
 
   const { bookingStart, bookingEnd } = bookingDates;
 
-  const order = {};
 
   dispatch(updateTxDetailsRequest());
 
@@ -826,7 +825,6 @@ export const updateTxDetails = (listing, orderData, transitionName) => async (di
   try {
     const response = await transitionPrivileged({
       isSpeculative: false,
-      order,
       bodyParams,
       queryParams,
     });

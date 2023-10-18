@@ -1,5 +1,5 @@
 import React from 'react';
-import { bool } from 'prop-types';
+import { bool, string, number } from 'prop-types';
 import { FormattedMessage, intlShape } from '../../util/reactIntl';
 import { formatMoney } from '../../util/currency';
 import { propTypes } from '../../util/types';
@@ -7,11 +7,9 @@ import { types as sdkTypes } from '../../util/sdkLoader';
 import { resolveLatestProcessName, getProcess } from '../../transactions/transaction';
 
 import css from './OrderBreakdown.module.css';
-import { number } from 'prop-types';
-
-const { Money } = sdkTypes;
 
 const LineItemTotalPrice = props => {
+  const { Money } = sdkTypes;
   const { transaction, isProvider, intl, payin, payout, currency } = props;
   const processName = resolveLatestProcessName(transaction?.attributes?.processName);
   if (!processName) {
@@ -54,6 +52,9 @@ LineItemTotalPrice.propTypes = {
   transaction: propTypes.transaction.isRequired,
   isProvider: bool.isRequired,
   intl: intlShape.isRequired,
+  currency: string.isRequired,
+  payin: number,
+  payout: number
 };
 
 export default LineItemTotalPrice;
