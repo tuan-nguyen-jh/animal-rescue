@@ -1111,6 +1111,7 @@
   "TransactionPage.acc-rescue-booking.customer.transition-request-payment.actionError": "Oops! Request payment unsucceed. Please try again!",
   "TransactionPage.acc-rescue-booking.provider.transition-provider-cancel.actionButton": "Cancel",
   "TransactionPage.acc-rescue-booking.provider.transition-provider-cancel.actionError": "Oops, cancelation failed. Please try again.",
+  "TransactionPage.acc-rescue-booking.customer.transition-customer-decline.actionError": "Oops, an error happen. Please try again.",
   "TransactionPage.acc-rescue-booking.provider.transition-finish.actionButton": "Finish",
   "TransactionPage.acc-rescue-booking.provider.transition-finish.actionError": "Oops, some error happen. Please try again!",
   

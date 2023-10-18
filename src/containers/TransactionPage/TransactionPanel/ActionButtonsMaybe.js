@@ -7,7 +7,6 @@ import css from './TransactionPanel.module.css';
 import { transitions } from '../../../transactions/transactionProcessRescueBooking';
 import { SERVICE_RESCUE } from '../../../config/configBookingService';
 import { addTime } from '../../../util/dates';
-import { handleUpdateLineItems } from '../TransactionPage.duck';
 
 // Functional component as a helper to build ActionButtons
 const ActionButtonsMaybe = props => {
@@ -23,7 +22,7 @@ const ActionButtonsMaybe = props => {
     onTransition,
     transaction,
     redirectToCheckoutPageWithInitialValues,
-    onUpdateTxDetails
+    onUpdateTxDetails,
   } = props;
 
   const handleUpdateLineItems = async (values, listing, transitionName) => {
@@ -98,12 +97,14 @@ const ActionButtonsMaybe = props => {
         break;
       case transitions.CONFIRM_REQUEST:
         handleUpdateLineItems(values, listing, transitions.FINISH);
+        window.location.reload();
         break;
       case transitions.FINISH:
         redirectToCheckoutPageWithInitialValues(initialValues, listing)
         break;
       default:
         handleUpdateLineItems(values, listing, transitions.ACCEPT);
+        window.location.reload();
     }
   }
 
