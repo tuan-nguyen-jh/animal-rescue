@@ -27,6 +27,8 @@ import ActionButtonsMaybe from './ActionButtonsMaybe';
 import DiminishedActionButtonMaybe from './DiminishedActionButtonMaybe';
 import PanelHeading from './PanelHeading';
 
+import { SERVICE_RESCUE } from '../../../config/configBookingService';
+
 import css from './TransactionPanel.module.css';
 
 // Helper function to get display names for different roles
@@ -154,6 +156,7 @@ export class TransactionPanelComponent extends Component {
 
     const isCustomer = transactionRole === 'customer';
     const isProvider = transactionRole === 'provider';
+    const isRescueService = protectedData.selectedService === SERVICE_RESCUE;
 
     const listingDeleted = !!listing?.attributes?.deleted;
     const isCustomerBanned = !!customer?.attributes?.banned;
@@ -186,7 +189,10 @@ export class TransactionPanelComponent extends Component {
         transaction={transaction}
         showButtons={stateData.showActionButtons}
         primaryButtonProps={
-          listingAnimals.length !== 0 || isReviewState ? stateData?.primaryButtonProps : null
+          listingAnimals.length !== 0
+            || isReviewState
+            || isRescueService ?
+            stateData?.primaryButtonProps : null
         }
         secondaryButtonProps={stateData?.secondaryButtonProps}
         isListingDeleted={listingDeleted}
@@ -367,12 +373,12 @@ export class TransactionPanelComponent extends Component {
                   processName={stateData.processName}
                 />
 
-                {isProvider && isDisplayNoAnimal && (
+                {isProvider && isDisplayNoAnimal && !isRescueService && (
                   <div className={css.addAnimal}>
                     <FormattedMessage id="TransactionPanel.pleaseAddAnimal" />
                   </div>
                 )}
-                {isCustomer && isDisplayNoAnimal && (
+                {isCustomer && isDisplayNoAnimal && !isRescueService && (
                   <div className={css.addAnimal}>
                     <FormattedMessage id="TransactionPanel.noAnimal" />
                   </div>
