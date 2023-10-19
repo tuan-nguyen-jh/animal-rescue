@@ -70,6 +70,7 @@ export const FETCH_LINE_ITEMS_SUCCESS = 'app/TransactionPage/FETCH_LINE_ITEMS_SU
 export const FETCH_LINE_ITEMS_ERROR = 'app/TransactionPage/FETCH_LINE_ITEMS_ERROR';
 
 export const FETCH_ANIMAL_LISTINGS = 'app/TransactionPage/FETCH_ANIMAL_LISTINGS';
+export const FETCH_ANIMAL_LISTINGS_SUCCESS = 'app/TransactionPage/FETCH_ANIMAL_LISTINGS_SUCCESS';
 export const FETCH_ANIMAL_LISTINGS_ERROR = 'app/TransactionPage/FETCH_ANIMAL_LISTINGS_ERROR';
 
 export const UPDATE_HOST_INFO_REQUEST = 'app/TransactionPage/UPDATE_HOST_INFO_REQUEST';
@@ -114,6 +115,9 @@ const initialState = {
   fetchLineItemsInProgress: false,
   fetchLineItemsError: null,
   listingAnimals: [],
+  fetchListingAnimalsInProgress: false,
+  fetchListingAnimalSuccess: false,
+  fetchListingAnimalsError: null,
   sendHostInfoInProgress: false,
   sendHostInfoError: null,
   updateTxDetailsInProgress: false,
@@ -249,9 +253,16 @@ export default function transactionPageReducer(state = initialState, action = {}
       return { ...state, fetchLineItemsInProgress: false, fetchLineItemsError: payload };
 
     case FETCH_ANIMAL_LISTINGS:
-      return { ...state, listingAnimals: payload };
+      return { ...state, fetchListingAnimalsInProgress: true, fetchListingAnimalsError: null };
+    case FETCH_ANIMAL_LISTINGS_SUCCESS:
+      return {
+        ...state,
+        listingAnimals: payload,
+        fetchListingAnimalsInProgress: false,
+        fetchListingAnimalSuccess: true,
+      };
     case FETCH_ANIMAL_LISTINGS_ERROR:
-      return { ...state, listingAnimals: [] };
+      return { ...state, fetchListingAnimalsError: payload, fetchListingAnimalsInProgress: false };
 
     case UPDATE_HOST_INFO_REQUEST:
       return { ...state, sendHostInfoInProgress: true, sendHostInfoError: null };
@@ -345,15 +356,6 @@ export const fetchLineItemsError = error => ({
   payload: error,
 });
 
-export const updateFetchAnimalListings = listingAnimals => ({
-  type: FETCH_ANIMAL_LISTINGS,
-  payload: listingAnimals,
-});
-
-export const updateFetchAnimalListingsError = () => ({
-  type: FETCH_ANIMAL_LISTINGS_ERROR,
-});
-
 // SDK method: ownListings.update
 export const updateHostInfoRequest = requestAction(UPDATE_HOST_INFO_REQUEST);
 export const updateHostInfoSuccess = successAction(UPDATE_HOST_INFO_SUCCESS);
@@ -362,6 +364,16 @@ export const updateHostInfoError = errorAction(UPDATE_HOST_INFO_ERROR);
 export const updateTxDetailsRequest = () => ({ type: UPDATE_TX_DETAILS_REQUEST });
 export const updateTxDetailsSuccess = () => ({ type: UPDATE_TX_DETAILS_SUCCESS });
 export const updateTxDetailsError = (e) => ({ type: UPDATE_TX_DETAILS_ERROR, error: true, payload: e });
+export const updateFetchAnimalListings = () => ({ type: FETCH_ANIMAL_LISTINGS });
+export const updateFetchAnimalListingsSuccess = listingAnimals => ({
+  type: FETCH_ANIMAL_LISTINGS_SUCCESS,
+  payload: listingAnimals,
+});
+export const updateFetchAnimalListingsError = error => ({
+  type: FETCH_ANIMAL_LISTINGS_ERROR,
+  error: true,
+  payload: error,
+});
 
 // ================ Thunks ================ //
 
@@ -732,15 +744,17 @@ export const fetchTransactionLineItems = ({ orderData, listingId, isOwnListing }
 };
 
 export const fetchAnimalListingsByACC = accId => async (dispatch, getState, sdk) => {
+  if (!accId) return;
   try {
+    dispatch(updateFetchAnimalListings());
     const response = await sdk.listings.query({
       pub_accId: accId,
       pub_isAdopted: ADOPTED.notAdopted,
     });
     const listingAnimals = denormalisedResponseEntities(response);
-    dispatch(updateFetchAnimalListings(listingAnimals));
+    dispatch(updateFetchAnimalListingsSuccess(listingAnimals));
   } catch (err) {
-    dispatch(updateFetchAnimalListingsError());
+    dispatch(updateFetchAnimalListingsError(err));
     console.err(err);
   }
 };

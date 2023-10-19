@@ -8,6 +8,7 @@ import { propTypes } from '../../../util/types';
 import { userDisplayNameAsString } from '../../../util/data';
 import { isMobileSafari } from '../../../util/userAgent';
 import { createSlug } from '../../../util/urlHelpers';
+import { reviewStates } from '../../../config/configState';
 
 import { AvatarLarge, NamedLink, UserDisplayName } from '../../../components';
 
@@ -146,7 +147,9 @@ export class TransactionPanelComponent extends Component {
       newQuantity,
       redirectToCheckoutPageWithInitialValues,
       onUpdateTxDetails,
-      history
+      history,
+      listingAnimals,
+      fetchListingAnimalSuccess,
     } = this.props;
 
     const isCustomer = transactionRole === 'customer';
@@ -172,13 +175,19 @@ export class TransactionPanelComponent extends Component {
     const listingTitle = listingDeleted ? deletedListingTitle : listing?.attributes?.title;
     const firstImage = listing?.images?.length > 0 ? listing?.images[0] : null;
 
+    const isReviewState = reviewStates.includes(stateData.processState);
+    const isDisplayNoAnimal =
+      !isReviewState && listingAnimals.length === 0 && fetchListingAnimalSuccess;
+
     const actionButtons = (
       <ActionButtonsMaybe
         history={history}
         onTransition={onTransition}
         transaction={transaction}
         showButtons={stateData.showActionButtons}
-        primaryButtonProps={stateData?.primaryButtonProps}
+        primaryButtonProps={
+          listingAnimals.length !== 0 || isReviewState ? stateData?.primaryButtonProps : null
+        }
         secondaryButtonProps={stateData?.secondaryButtonProps}
         isListingDeleted={listingDeleted}
         isProvider={isProvider}
@@ -358,6 +367,17 @@ export class TransactionPanelComponent extends Component {
                   processName={stateData.processName}
                 />
 
+                {isProvider && isDisplayNoAnimal && (
+                  <div className={css.addAnimal}>
+                    <FormattedMessage id="TransactionPanel.pleaseAddAnimal" />
+                  </div>
+                )}
+                {isCustomer && isDisplayNoAnimal && (
+                  <div className={css.addAnimal}>
+                    <FormattedMessage id="TransactionPanel.noAnimal" />
+                  </div>
+                )}
+
                 {stateData.showActionButtons ? (
                   <div className={css.desktopActionButtons}>{actionButtons}</div>
                 ) : null}
@@ -392,6 +412,8 @@ TransactionPanelComponent.defaultProps = {
   showBookingLocation: false,
   orderBreakdown: null,
   orderPanel: null,
+  listingAnimals: [],
+  fetchListingAnimalSuccess: false,
 };
 
 TransactionPanelComponent.propTypes = {
@@ -423,6 +445,8 @@ TransactionPanelComponent.propTypes = {
   onTransition: func.isRequired,
   newQuantity: string,
   redirectToCheckoutPageWithInitialValues: func.isRequired,
+  listingAnimals: arrayOf(propTypes.listing),
+  fetchListingAnimalSuccess: bool.isRequired,
 
   // from injectIntl
   intl: intlShape,

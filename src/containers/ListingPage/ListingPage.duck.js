@@ -207,7 +207,7 @@ export const sendInquiryError = e => ({ type: SEND_INQUIRY_ERROR, error: true, p
 
 export const sendTxDetailsRequest = () => ({ type: SEND_TX_DETAILS_REQUEST });
 export const sendTxDetailsSuccess = () => ({ type: SEND_TX_DETAILS_SUCCESS });
-export const sendTxDetailsError = () => ({ type: SEND_TX_DETAILS_ERROR, error: true, payload: e });
+export const sendTxDetailsError = e => ({ type: SEND_TX_DETAILS_ERROR, error: true, payload: e });
 
 // ================ Thunks ================ //
 

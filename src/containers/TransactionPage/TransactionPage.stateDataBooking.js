@@ -90,6 +90,7 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
       };
     })
     .cond([states.TOUR_COMPLETED, PROVIDER], () => {
+      const primary = isCustomerBanned ? null : actionButtonProps(transitions.ADOPT);
       const secondary = isCustomerBanned
         ? null
         : actionButtonProps(transitions.PROVIDER_NOT_ADOPT, PROVIDER);
@@ -98,7 +99,7 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
         processState,
         showDetailCardHeadings: true,
         showActionButtons: true,
-        primaryButtonProps: hostInfoProps,
+        primaryButtonProps: primary,
         secondaryButtonProps: secondary,
       };
     })
@@ -125,13 +126,12 @@ export const getStateDataForBookingProcess = (txInfo, processInfo) => {
       };
     })
     .cond([states.ALLOW_ADOPT, PROVIDER], () => {
-      const primary = actionButtonProps(transitions.PROVIDER_COMPLETE_ADOPT, PROVIDER);
       return {
         processName,
         processState,
         showDetailCardHeadings: true,
         showActionButtons: true,
-        primaryButtonProps: primary,
+        primaryButtonProps: hostInfoProps,
       };
     })
     .cond([states.NOT_ALLOW_ADOPT, PROVIDER], () => {

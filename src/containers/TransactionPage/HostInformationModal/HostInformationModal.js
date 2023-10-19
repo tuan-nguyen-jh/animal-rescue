@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes, { arrayOf } from 'prop-types';
 import classNames from 'classnames';
 
@@ -22,17 +22,11 @@ const HostInformationModal = props => {
     onSubmitHostInfo,
     sendHostInfoInProgress,
     sendHostInfoError,
-    listing,
     listingAnimals,
-    onFetchAnimalListing,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
   const closeButtonMessage = intl.formatMessage({ id: 'HostInfoModal.later' });
-
-  useEffect(() => {
-    onFetchAnimalListing(listing?.id?.uuid);
-  }, []);
 
   return (
     <Modal
@@ -78,7 +72,6 @@ HostInformationModal.defaultProps = {
   sendHostInfoInProgress: false,
   sendHostInfoError: null,
   listingAnimals: [],
-  listing: {},
 };
 
 HostInformationModal.propTypes = {
