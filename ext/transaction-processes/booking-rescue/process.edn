@@ -97,17 +97,31 @@
     {:name :action/stripe-create-payment-intent}],
    :from :state/exact-fee-calculated,
    :to :state/pending-payment}
+  {:name :transition/report,
+   :actor :actor.role/provider,
+   :actions
+   [],
+   :from :state/pending-payment,
+   :to :state/operator-processing}
+  {:name :transition/processing-complete,
+   :actor :actor.role/operator,
+   :actions
+   [],
+   :from :state/operator-processing,
+   :to :state/processing-completed}
+  {:name :transition/processing-expire,
+   :actor :actor.role/operator,
+   :actions
+   [],
+   :from :state/operator-processing,
+   :to :state/processing-expired}
   {:name :transition/expire-payment,
    :at
    {:fn/plus
     [{:fn/timepoint [:time/first-entered-state :state/pending-payment]}
-     {:fn/period ["PT15M"]}]},
+     {:fn/period ["P3D"]}]},
    :actions
-   [{:name :action/calculate-full-refund}
-    {:name :action/stripe-refund-payment}
-      ;; Keep this action last in the list of actions for
-      ;; the transition
-    {:name :action/cancel-booking}],
+   [{:name :action/cancel-booking}],
    :from :state/pending-payment,
    :to :state/payment-expired}
   {:name :transition/confirm-payment,
