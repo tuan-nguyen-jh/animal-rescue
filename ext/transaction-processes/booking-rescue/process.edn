@@ -7,15 +7,20 @@
   {:name :transition/request-after-inquiry,
    :actor :actor.role/customer,
    :actions
-  [{:name :action/create-proposed-booking, :config {:type :time}}],
+   [{:name :action/create-proposed-booking, :config {:type :time}},
+    {:name :action/privileged-set-line-items},
+    {:name :action/update-protected-data}],
    :from :state/inquiry,
    :to :state/booking-request-sent,
    :privileged? true}
   {:name :transition/request-booking,
    :actor :actor.role/customer,
    :actions
-   [{:name :action/create-proposed-booking, :config {:type :time}}],
-   :to :state/booking-request-sent}
+   [{:name :action/create-proposed-booking, :config {:type :time}},
+    {:name :action/privileged-set-line-items},
+    {:name :action/update-protected-data}],
+   :to :state/booking-request-sent,
+   :privileged? true}
   {:name :transition/sent-request-expire,
    :at
    {:fn/plus
@@ -89,11 +94,9 @@
    :actor :actor.role/customer,
    :actions
    [{:name :action/update-protected-data}
-    {:name :action/privileged-set-line-items}
     {:name :action/stripe-create-payment-intent-push}],
    :from :state/exact-fee-calculated,
-   :to :state/pending-payment,
-   :privileged? true}
+   :to :state/pending-payment}
   {:name :transition/expire-payment,
    :at
    {:fn/plus
@@ -173,7 +176,7 @@
   {:name :notification/booking-accepted-request,
    :on :transition/accept,
    :to :actor.role/customer,
-   :template :booking-accepted-request} 
+   :template :booking-accepted-request}
   {:name :notification/booking-declined-request,
    :on :transition/provider-decline,
    :to :actor.role/customer,
@@ -193,7 +196,7 @@
   {:name :notification/review-period-start-customer,
    :on :transition/complete,
    :to :actor.role/customer,
-   :template :booking-review-by-customer-wanted} 
+   :template :booking-review-by-customer-wanted}
   {:name :notification/review-by-provider-first,
    :on :transition/review-1-by-provider,
    :to :actor.role/customer,

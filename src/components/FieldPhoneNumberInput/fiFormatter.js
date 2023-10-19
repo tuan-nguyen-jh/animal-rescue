@@ -65,3 +65,11 @@ export const format = value => {
  * string so that the plain number can be stored.
  */
 export const parse = value => (value ? value.replace(/\s/g, '') : '');
+
+export const formatNumber = value => {
+  if (!value) {
+    return '';
+  }
+
+ return value.replace(/[^\d]/g, '');
+};

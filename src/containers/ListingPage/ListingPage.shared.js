@@ -4,10 +4,11 @@ import { types as sdkTypes } from '../../util/sdkLoader';
 import { createResourceLocatorString, findRouteByRouteName } from '../../util/routes';
 import { formatMoney } from '../../util/currency';
 import { timestampToDate } from '../../util/dates';
-import { createSlug } from '../../util/urlHelpers';
 
 import { Page, LayoutSingleColumn } from '../../components';
 import FooterContainer from '../../containers/FooterContainer/FooterContainer';
+
+import { SERVICE_RESCUE } from '../../config/configBookingService';
 
 import css from './ListingPage.module.css';
 
@@ -145,6 +146,10 @@ export const handleSubmit = parameters => async values => {
     bookingEndDate, // not relevant (omit)
     quantity: quantityRaw,
     deliveryMethod,
+    selectedService,
+    rescueDescription,
+    typeAnimal,
+    location,
     ...otherOrderData
   } = values;
 
@@ -166,12 +171,15 @@ export const handleSubmit = parameters => async values => {
   const quantity = Number.parseInt(quantityRaw, 10);
   const quantityMaybe = Number.isInteger(quantity) ? { quantity } : {};
   const deliveryMethodMaybe = deliveryMethod ? { deliveryMethod } : {};
+  const selectServiceInfo = selectedService === SERVICE_RESCUE ?
+    { selectedService, rescueDescription, typeAnimal, location } : {selectedService};
 
   const orderData = {
     ...bookingMaybe,
     ...quantityMaybe,
     ...deliveryMethodMaybe,
     ...otherOrderData,
+    ...selectServiceInfo,
   };
 
   try {

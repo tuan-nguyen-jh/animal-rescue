@@ -197,7 +197,12 @@ export const isProviderReview = transition => {
 // should go through the local API endpoints, or if using JS SDK is
 // enough.
 export const isPrivileged = transition => {
-  return [transitions.REQUEST_AFTER_INQUIRY, transitions.REQUEST_PAYMENT, transitions.FINISH, transitions.ACCEPT].includes(
+  return [
+    transitions.REQUEST_AFTER_INQUIRY,
+    transitions.REQUEST_PAYMENT,
+    transitions.ACCEPT,
+    transitions.FINISH,
+  ].includes(
     transition
   );
 };
@@ -206,6 +211,11 @@ export const isPrivileged = transition => {
 export const isCompleted = transition => {
   const txCompletedTransitions = [
     transitions.COMPLETE,
+    transitions.PROVIDER_CANCEL,
+    transitions.CUSTOMER_CANCEL,
+    transitions.OPERATOR_CANCEL,
+    transitions.PROVIDER_DECLINE,
+    transitions.CUSTOMER_DECLINE,
     transitions.REVIEW_1_BY_CUSTOMER,
     transitions.REVIEW_1_BY_PROVIDER,
     transitions.REVIEW_2_BY_CUSTOMER,

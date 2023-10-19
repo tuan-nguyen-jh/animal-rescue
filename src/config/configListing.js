@@ -62,13 +62,16 @@ export const listingFields = [
   {
     key: 'service',
     scope: 'public',
-    includeForListingTypes: [ACC_LISTING_TYPE],
+    includedForListingTypes: [ACC_LISTING_TYPE],
     schemaType: 'multi-enum',
-    enumOptions: [{ option: 'adoption', label: 'Adoption' }, { option: 'rescue', label: 'Rescue' }],
+    enumOptions: [
+      { option: 'adoption', label: 'Adoption' },
+      { option: 'rescue', label: 'Rescue' },
+    ],
     filterConfig: {
       indexForSearch: true,
       label: 'Service',
-      group: 'primary',
+      group: 'secondary',
     },
     showConfig: {
       label: 'Service',

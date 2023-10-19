@@ -22,6 +22,7 @@ import {
   hasDefaultPaymentMethod,
   hasPaymentExpired,
   hasTransactionPassedPendingPayment,
+  hasTransactionPassedRequestAccepted,
   processCheckoutWithPayment,
   setOrderPageInitialValues,
 } from './CheckoutPageTransactionHelpers.js';
@@ -107,7 +108,7 @@ const fetchSpeculatedTransactionIfNeeded = (orderParams, pageData, fetchSpeculat
     !!pageData?.listing?.id &&
     !!pageData.orderData &&
     !!process &&
-    !hasTransactionPassedPendingPayment(tx, process);
+    !hasTransactionPassedRequestAccepted(tx, process);
 
   if (shouldFetchSpeculatedTransaction) {
     const processAlias = pageData.listing.attributes.publicData?.transactionProcessAlias;
@@ -117,7 +118,7 @@ const fetchSpeculatedTransactionIfNeeded = (orderParams, pageData, fetchSpeculat
 
     const requestTransition = isInquiryInPaymentProcess
       ? process.transitions.REQUEST_AFTER_INQUIRY
-      : process.transitions.REQUEST;
+      : process.transitions.REQUEST_PAYMENT;
     const isPrivileged = process.isPrivileged(requestTransition);
 
     fetchSpeculatedTransaction(

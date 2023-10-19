@@ -5,7 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 import { types as sdkTypes, createImageVariantConfig } from '../../util/sdkLoader';
 import { findNextBoundary, getStartOf, monthIdString } from '../../util/dates';
 import { isTransactionsTransitionInvalidTransition, storableError } from '../../util/errors';
-import { transactionLineItems } from '../../util/api';
+import { transactionLineItems, transitionPrivileged } from '../../util/api';
 import * as log from '../../util/log';
 import {
   updatedEntities,
@@ -20,7 +20,7 @@ import {
 
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 import { fetchCurrentUserNotifications } from '../../ducks/user.duck';
-import { ADOPTED } from '../../config/configListing';
+import { ACC_SERVICES, ADOPTED, txTypes } from '../../config/configListing';
 
 const { UUID } = sdkTypes;
 
@@ -77,6 +77,10 @@ export const UPDATE_HOST_INFO_REQUEST = 'app/TransactionPage/UPDATE_HOST_INFO_RE
 export const UPDATE_HOST_INFO_SUCCESS = 'app/TransactionPage/UPDATE_HOST_INFO_SUCCESS';
 export const UPDATE_HOST_INFO_ERROR = 'app/TransactionPage/UPDATE_HOST_INFO_ERROR';
 
+export const UPDATE_TX_DETAILS_REQUEST = 'app/ListingPage/UPDATE_TX_DETAILS_REQUEST';
+export const UPDATE_TX_DETAILS_SUCCESS = 'app/ListingPage/UPDATE_TX_DETAILS_SUCCESS';
+export const UPDATE_TX_DETAILS_ERROR = 'app/ListingPage/UPDATE_TX_DETAILS_ERROR';
+
 // ================ Reducer ================ //
 
 const initialState = {
@@ -116,6 +120,7 @@ const initialState = {
   fetchListingAnimalsError: null,
   sendHostInfoInProgress: false,
   sendHostInfoError: null,
+  updateTxDetailsInProgress: false,
 };
 
 // Merge entity arrays using ids, so that conflicting items in newer array (b) overwrite old values (a).
@@ -269,6 +274,13 @@ export default function transactionPageReducer(state = initialState, action = {}
     case UPDATE_HOST_INFO_ERROR:
       return { ...state, sendHostInfoInProgress: false, sendHostInfoError: payload };
 
+    case UPDATE_TX_DETAILS_REQUEST:
+      return { ...state, updateTxDetailsInProgress: true, updateTxDetailsError: null };
+    case UPDATE_TX_DETAILS_SUCCESS:
+      return { ...state, updateTxDetailsInProgress: false };
+    case UPDATE_TX_DETAILS_ERROR:
+      return { ...state, updateTxDetailsInProgress: false, updateTxDetailsError: payload };
+
     default:
       return state;
   }
@@ -349,6 +361,9 @@ export const updateHostInfoRequest = requestAction(UPDATE_HOST_INFO_REQUEST);
 export const updateHostInfoSuccess = successAction(UPDATE_HOST_INFO_SUCCESS);
 export const updateHostInfoError = errorAction(UPDATE_HOST_INFO_ERROR);
 
+export const updateTxDetailsRequest = () => ({ type: UPDATE_TX_DETAILS_REQUEST });
+export const updateTxDetailsSuccess = () => ({ type: UPDATE_TX_DETAILS_SUCCESS });
+export const updateTxDetailsError = (e) => ({ type: UPDATE_TX_DETAILS_ERROR, error: true, payload: e });
 export const updateFetchAnimalListings = () => ({ type: FETCH_ANIMAL_LISTINGS });
 export const updateFetchAnimalListingsSuccess = listingAnimals => ({
   type: FETCH_ANIMAL_LISTINGS_SUCCESS,
@@ -792,4 +807,49 @@ export const loadData = (params, search, config) => (dispatch, getState) => {
     dispatch(fetchMessages(txId, 1, config)),
     dispatch(fetchNextTransitions(txId)),
   ]);
+};
+
+export const updateTxDetails = (listing, orderData, transitionName) => async (dispatch, getState, sdk) => {
+  const {
+    bookingDates,
+    protectedData,
+    txId
+  } = orderData;
+
+  if (!listing) return;
+
+  const { bookingStart, bookingEnd } = bookingDates;
+
+
+  dispatch(updateTxDetailsRequest());
+
+  const listingId = listing.id.uuid;
+
+  const bodyParams = {
+    id: txId,
+    transition: transitionName,
+    params: { listingId, bookingStart, bookingEnd, protectedData },
+  };
+
+  const queryParams = {
+    include: ['booking', 'provider'],
+    expand: true,
+  };
+
+  try {
+    const response = await transitionPrivileged({
+      isSpeculative: false,
+      bodyParams,
+      queryParams,
+    });
+
+    const tx = denormalisedResponseEntities(response);
+    const returnedOrder = tx[0];
+
+    dispatch(updateTxDetailsSuccess());
+
+    return returnedOrder;
+  } catch (error) {
+    dispatch(updateTxDetailsError(storableError(error)));
+  }
 };

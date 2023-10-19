@@ -351,7 +351,7 @@ export const sendInquiry = (listing, message) => (dispatch, getState, sdk) => {
 export const sendTxDetails = (listing, orderData) => async (dispatch, getState, sdk) => {
   const {
     bookingDates,
-    selectService: selectedService,
+    selectedService,
     location,
     typeAnimal,
     rescueDescription,

@@ -1,7 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import { addTime } from '../../../util/dates';
+import { transitions } from '../../../transactions/transactionProcessRescueBooking';
+
 import { PrimaryButton, SecondaryButton } from '../../../components';
+
+import { SERVICE_RESCUE } from '../../../config/configBookingService';
 
 import css from './TransactionPanel.module.css';
 
@@ -15,7 +20,39 @@ const ActionButtonsMaybe = props => {
     secondaryButtonProps,
     isListingDeleted,
     isProvider,
+    estimatedLineItem,
+    onTransition,
+    transaction,
+    redirectToCheckoutPageWithInitialValues,
+    onUpdateTxDetails,
   } = props;
+
+  const handleUpdateLineItems = async (values, listing, transitionName) => {
+    const {
+      bookingDates,
+      quantity: quantityRaw,
+      ...otherOrderData
+    } = values;
+
+    const bookingMaybe = bookingDates
+      ? {
+        bookingDates: {
+          bookingStart: bookingDates.startDate,
+          bookingEnd: bookingDates.endDate,
+        },
+      }
+      : {};
+    const quantity = Number.parseInt(quantityRaw, 10);
+    const quantityMaybe = Number.isInteger(quantity) ? { quantity } : {};
+
+    const orderData = {
+      ...bookingMaybe,
+      ...quantityMaybe,
+      ...otherOrderData
+    };
+    
+    const txId = await onUpdateTxDetails(listing, orderData, transitionName);
+  };
 
   // In default processes default processes need special handling
   // Booking: provider should not be able to accept on-going transactions
@@ -24,13 +61,60 @@ const ActionButtonsMaybe = props => {
     return null;
   }
 
+  const hanldeClick = () => {
+    const params = {};
+
+    const txId = transaction.id.uuid;
+    const { listing } = transaction;
+
+    const initialValues = {
+      listing,
+      // Transaction with payment pending should be passed to CheckoutPage
+      transaction,
+      // Original orderData content is not available,
+      // but it is already saved since tx is in state: payment-pending.
+      orderData: {},
+    };
+
+    const values = {
+      bookingDates: {
+        startDate: transaction.booking.attributes.start,
+        endDate: addTime(
+          transaction.booking.attributes.start,
+          estimatedLineItem,
+          'hours'
+        )
+      },
+      quantity: estimatedLineItem,
+      protectedData: transaction.attributes.protectedData,
+      txId
+    }
+
+    switch (transaction.attributes.lastTransition) {
+      case transitions.ACCEPT:
+        onTransition(txId, transitions.CONFIRM_REQUEST, params);
+        break;
+      case transitions.CONFIRM_REQUEST:
+        handleUpdateLineItems(values, listing, transitions.FINISH);
+        window.location.reload();
+        break;
+      case transitions.FINISH:
+        redirectToCheckoutPageWithInitialValues(initialValues, listing)
+        break;
+      default:
+        handleUpdateLineItems(values, listing, transitions.ACCEPT);
+        window.location.reload();
+    }
+  }
+
   const buttonsDisabled = primaryButtonProps?.inProgress || secondaryButtonProps?.inProgress;
+  const service = transaction.attributes?.protectedData?.selectedService;
 
   const primaryButton = primaryButtonProps ? (
     <PrimaryButton
       inProgress={primaryButtonProps.inProgress}
       disabled={buttonsDisabled}
-      onClick={primaryButtonProps.onAction}
+      onClick={service === SERVICE_RESCUE ? hanldeClick : primaryButtonProps.onAction}
     >
       {primaryButtonProps.buttonText}
     </PrimaryButton>

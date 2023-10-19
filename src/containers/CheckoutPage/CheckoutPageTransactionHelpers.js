@@ -158,6 +158,10 @@ export const hasTransactionPassedPendingPayment = (tx, process) => {
   return process.hasPassedState(process.states.PENDING_PAYMENT, tx);
 };
 
+export const hasTransactionPassedRequestAccepted = (tx, process) => {
+  return process.hasPassedState(process.states.REQUEST_ACCEPTED, tx)
+}
+
 const persistTransaction = (order, pageData, storeData, setPageData, sessionStorageKey) => {
   // Store the returned transaction (order)
   if (order?.id) {

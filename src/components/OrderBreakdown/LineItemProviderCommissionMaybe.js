@@ -1,5 +1,5 @@
 import React from 'react';
-import { bool, string } from 'prop-types';
+import { bool, string, number } from 'prop-types';
 import { FormattedMessage, intlShape } from '../../util/reactIntl';
 import { formatMoney } from '../../util/currency';
 import { types as sdkTypes } from '../../util/sdkLoader';
@@ -16,7 +16,7 @@ const isValidCommission = commissionLineItem => {
 };
 
 const LineItemProviderCommissionMaybe = props => {
-  const { lineItems, isProvider, marketplaceName, intl } = props;
+  const { lineItems, isProvider, marketplaceName, intl, commission, currency } = props;
 
   const providerCommissionLineItem = lineItems.find(
     item => item.code === LINE_ITEM_PROVIDER_COMMISSION && !item.reversal
@@ -35,8 +35,7 @@ const LineItemProviderCommissionMaybe = props => {
       throw new Error('Commission should be present and the value should be zero or negative');
     }
 
-    const commission = providerCommissionLineItem.lineTotal;
-    const formattedCommission = commission ? formatMoney(intl, commission) : null;
+    const formattedCommission = commission ? formatMoney(intl, new Money(commission, currency)) : null;
 
     commissionItem = (
       <div className={css.lineItem}>
@@ -56,6 +55,8 @@ LineItemProviderCommissionMaybe.propTypes = {
   isProvider: bool.isRequired,
   marketplaceName: string.isRequired,
   intl: intlShape.isRequired,
+  commission: number,
+  currency: string.isRequired
 };
 
 export default LineItemProviderCommissionMaybe;

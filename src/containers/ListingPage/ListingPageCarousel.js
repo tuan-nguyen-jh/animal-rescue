@@ -565,7 +565,7 @@ const mapDispatchToProps = dispatch => ({
   onInitializeCardPaymentData: () => dispatch(initializeCardPaymentData()),
   onFetchTimeSlots: (listingId, start, end, timeZone) =>
     dispatch(fetchTimeSlots(listingId, start, end, timeZone)),
-  onSendTxDetails: (listing, message) => dispatch(sendTxDetails(listing, message)),
+  onSendTxDetails: (listing, orderData) => dispatch(sendTxDetails(listing, orderData)),
 });
 
 // Note: it is important that the withRouter HOC is **outside** the

@@ -42,7 +42,16 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
       return { processName, processState, showDetailCardHeadings: true };
     })
     .cond([states.BOOKING_REQUEST_SENT, CUSTOMER], () => {
-      return { processName, processState, showDetailCardHeadings: true, showExtraInfo: true };
+      const secondary = actionButtonProps(transitions.CUSTOMER_DECLINE, CUSTOMER);
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showExtraInfo: true,
+        secondaryButtonProps: secondary,
+        showActionButtons: true,
+        showLineItemForm: false,
+      };
     })
     .cond([states.BOOKING_REQUEST_SENT, PROVIDER], () => {
       const primary = isCustomerBanned ? null : actionButtonProps(transitions.ACCEPT, PROVIDER);
@@ -54,7 +63,93 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showActionButtons: true,
         primaryButtonProps: primary,
         secondaryButtonProps: secondary,
+        showLineItemForm: true,
+        showPriceBreakdown: true
       };
+    })
+    .cond([states.REQUEST_DECLINED, _], () => {
+      return {
+        processName,
+        processState,
+        showPriceBreakdown: false,
+        showLineItemForm: false,
+      }
+    })
+    .cond([states.REQUEST_ACCEPTED, PROVIDER], () => {
+      const secondary = isCustomerBanned ? null : actionButtonProps(transitions.PROVIDER_CANCEL, PROVIDER);
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        showActionButtons: true,
+        secondaryButtonProps: secondary,
+      }
+    })
+    .cond([states.REQUEST_ACCEPTED, CUSTOMER], () => {
+      const primary = isCustomerBanned ? null : actionButtonProps(transitions.CONFIRM_REQUEST, CUSTOMER);
+      const secondary = isCustomerBanned ? null : actionButtonProps(transitions.CUSTOMER_CANCEL, CUSTOMER);
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        primaryButtonProps: primary,
+        secondaryButtonProps: secondary,
+        showActionButtons: true,
+        lineItemIsEstimated: true
+      }
+    })
+    .cond([states.OFFICER_DISPATCHED, PROVIDER], () => {
+      const primary = isCustomerBanned ? null : actionButtonProps(transitions.FINISH, PROVIDER);
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        primaryButtonProps: primary,
+        showActionButtons: true,
+        showLineItemForm: true,
+        lineItemIsEstimated: true,
+      }
+    })
+    .cond([states.OFFICER_DISPATCHED, CUSTOMER], () => {
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true
+      }
+    })
+    .cond([states.EXACT_FEE_CALCULATED, PROVIDER], () => {
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true,
+      }
+    })
+    .cond([states.EXACT_FEE_CALCULATED, CUSTOMER], () => {
+      const primary = isCustomerBanned ? null : actionButtonProps(transitions.REQUEST_PAYMENT, CUSTOMER);
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        showActionButtons: true,
+        primaryButtonProps: primary,
+        lineItemIsEstimated: true
+      }
+    })
+    .cond([states.REQUEST_CANCELED, _], () => {
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+      }
     })
     .cond([states.COMPLETED, _], () => {
       return {
