@@ -184,6 +184,7 @@ export class TransactionPanelComponent extends Component {
 
     const actionButtons = (
       <ActionButtonsMaybe
+        isRescueService={isRescueService}
         history={history}
         onTransition={onTransition}
         transaction={transaction}

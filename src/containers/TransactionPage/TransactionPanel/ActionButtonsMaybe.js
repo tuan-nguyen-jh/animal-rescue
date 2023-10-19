@@ -25,6 +25,7 @@ const ActionButtonsMaybe = props => {
     transaction,
     redirectToCheckoutPageWithInitialValues,
     onUpdateTxDetails,
+    isRescueService,
   } = props;
 
   const handleUpdateLineItems = async (values, listing, transitionName) => {
@@ -73,7 +74,12 @@ const ActionButtonsMaybe = props => {
       transaction,
       // Original orderData content is not available,
       // but it is already saved since tx is in state: payment-pending.
-      orderData: {},
+      orderData: {
+        bookingDates: {
+          bookingStart: transaction.booking.attributes.start,
+          bookingEnd: addTime(transaction.booking.attributes.start, 3, 'hours')
+        }
+      },
     };
 
     const values = {
@@ -108,13 +114,12 @@ const ActionButtonsMaybe = props => {
   }
 
   const buttonsDisabled = primaryButtonProps?.inProgress || secondaryButtonProps?.inProgress;
-  const service = transaction.attributes?.protectedData?.selectedService;
 
   const primaryButton = primaryButtonProps ? (
     <PrimaryButton
       inProgress={primaryButtonProps.inProgress}
       disabled={buttonsDisabled}
-      onClick={service === SERVICE_RESCUE ? hanldeClick : primaryButtonProps.onAction}
+      onClick={isRescueService ? hanldeClick : primaryButtonProps.onAction}
     >
       {primaryButtonProps.buttonText}
     </PrimaryButton>

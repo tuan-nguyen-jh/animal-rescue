@@ -94,7 +94,7 @@
    :actor :actor.role/customer,
    :actions
    [{:name :action/update-protected-data}
-    {:name :action/stripe-create-payment-intent-push}],
+    {:name :action/stripe-create-payment-intent}],
    :from :state/exact-fee-calculated,
    :to :state/pending-payment}
   {:name :transition/expire-payment,
@@ -113,7 +113,8 @@
   {:name :transition/confirm-payment,
    :actor :actor.role/customer,
    :actions
-   [{:name :action/stripe-confirm-payment-intent}],
+   [{:name :action/stripe-confirm-payment-intent},
+    {:name :action/stripe-confirm-payment-intent}],
    :from :state/pending-payment,
    :to :state/completed}
   {:name :transition/complete,

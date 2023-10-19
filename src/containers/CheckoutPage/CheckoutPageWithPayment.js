@@ -355,6 +355,8 @@ export const CheckoutPageWithPayment = props => {
         {...txBookingMaybe}
         currency={config.currency}
         marketplaceName={config.marketplaceName}
+        lineItemIsEstimated
+        showPriceBreakdown
       />
     ) : null;
 
