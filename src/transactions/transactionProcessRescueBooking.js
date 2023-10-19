@@ -44,7 +44,7 @@ export const states = {
   OFFICER_DISPATCHED: 'officer-dispatched',
   EXACT_FEE_CALCULATED: 'exact-fee-calculated',
   PENDING_PAYMENT: 'pending-payment',
-  PAYMENT_EXPIRED: 'pending-expired',
+  PAYMENT_EXPIRED: 'payment-expired',
   OPERATOR_PROCESSING: "operator-processing",
   PROCESSING_COMPLETED: "processing-completed",
   PROCESIING_EXPIRED: "processing-expired",
@@ -212,6 +212,7 @@ export const isProviderReview = transition => {
 export const isPrivileged = transition => {
   return [
     transitions.REQUEST_AFTER_INQUIRY,
+    transitions.REQUEST_BOOKING,
     transitions.ACCEPT,
     transitions.FINISH,
   ].includes(
