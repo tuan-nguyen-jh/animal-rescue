@@ -33,7 +33,7 @@ const BookingPeriod = props => {
     day: 'numeric',
   };
 
-  const showDateTime = isProviderOrEstimated && isRescueService;
+  const showDateTime = isProviderOrEstimated || !isRescueService;
 
   return (
     <>
