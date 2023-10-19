@@ -6,8 +6,6 @@ import { transitions } from '../../../transactions/transactionProcessRescueBooki
 
 import { PrimaryButton, SecondaryButton } from '../../../components';
 
-import { SERVICE_RESCUE } from '../../../config/configBookingService';
-
 import css from './TransactionPanel.module.css';
 
 // Functional component as a helper to build ActionButtons
