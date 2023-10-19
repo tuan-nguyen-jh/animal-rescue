@@ -480,7 +480,6 @@ export const TransactionPageComponent = props => {
     <TransactionPanel
       history={history}
       onUpdateTxDetails={onUpdateTxDetails}
-      redirectToCheckoutPageWithInitialValues={redirectToCheckoutPageWithInitialValues}
       newQuantity={newQuantity}
       onTransition={onTransition}
       transaction={transaction}

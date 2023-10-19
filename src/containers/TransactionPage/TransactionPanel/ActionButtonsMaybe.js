@@ -23,7 +23,6 @@ const ActionButtonsMaybe = props => {
     estimatedLineItem,
     onTransition,
     transaction,
-    redirectToCheckoutPageWithInitialValues,
     onUpdateTxDetails,
     isRescueService,
   } = props;
@@ -105,7 +104,10 @@ const ActionButtonsMaybe = props => {
         window.location.reload();
         break;
       case transitions.FINISH:
-        redirectToCheckoutPageWithInitialValues(initialValues, listing)
+        params.bodyParams = {
+          bookingDates: values.bookingDates,
+        }
+        onTransition(txId, transitions.REQUEST_PAYMENT, params);
         break;
       default:
         handleUpdateLineItems(values, listing, transitions.ACCEPT);

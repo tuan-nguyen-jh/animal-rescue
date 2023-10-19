@@ -409,6 +409,7 @@
   "InboxPage.adoption-booking.reviewed.status": "Reviewed",
   "InboxPage.acc-rescue-booking.completed.status": "Completed",
   "InboxPage.acc-rescue-booking.pending-expired.status": "Payment Expired",
+  "InboxPage.acc-rescue-booking.pending-payment.status": "Pending Payment",
   "TransactionPage.adoption-booking.provider.pending-adopt.title": "You allowed {customerName} to adopted. Waiting for {customerName} to confirm.",
 
   "TransactionPage.ActivityFeed.adoption-booking.not-allow-adopt": "The animal did not allowed to adopt.",
