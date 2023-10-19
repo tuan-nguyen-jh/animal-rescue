@@ -151,6 +151,26 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showPriceBreakdown: true,
       }
     })
+    .cond([states.PENDING_PAYMENT, PROVIDER], () => {
+      const primary = isCustomerBanned ? null : actionButtonProps(transitions.REPORT, PROVIDER);
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        showActionButtons: true,
+        primaryButtonProps: primary,
+      }
+    })
+    .cond([states.OPERATOR_PROCESSING, _], () => {
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true,
+      }
+    })
     .cond([states.COMPLETED, _], () => {
       return {
         processName,
@@ -214,11 +234,11 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
       };
     })
     .cond([states.REVIEWED, _], () => {
-      return { 
-        processName, 
-        processState, 
-        showDetailCardHeadings: true, 
-        showReviews: true ,
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showReviews: true,
         showPriceBreakdown: true,
         lineItemIsEstimated: true,
       };

@@ -110,7 +110,10 @@
    :from :state/operator-processing,
    :to :state/processing-completed}
   {:name :transition/processing-expire,
-   :actor :actor.role/operator,
+   :at
+   {:fn/plus
+    [{:fn/timepoint [:time/first-entered-state :state/pending-payment]}
+     {:fn/period ["P7D"]}]},
    :actions
    [],
    :from :state/operator-processing,

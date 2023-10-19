@@ -95,6 +95,9 @@ const ActionButtonsMaybe = props => {
         }
         onTransition(txId, transitions.REQUEST_PAYMENT, params);
         break;
+      case transitions.REQUEST_PAYMENT:
+        onTransition(txId, transitions.REPORT, params);
+        break;
       default:
         handleUpdateLineItems(values, listing, transitions.ACCEPT);
         window.location.reload();
