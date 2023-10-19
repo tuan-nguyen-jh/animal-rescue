@@ -67,20 +67,6 @@ const ActionButtonsMaybe = props => {
     const txId = transaction.id.uuid;
     const { listing } = transaction;
 
-    const initialValues = {
-      listing,
-      // Transaction with payment pending should be passed to CheckoutPage
-      transaction,
-      // Original orderData content is not available,
-      // but it is already saved since tx is in state: payment-pending.
-      orderData: {
-        bookingDates: {
-          bookingStart: transaction.booking.attributes.start,
-          bookingEnd: addTime(transaction.booking.attributes.start, 3, 'hours')
-        }
-      },
-    };
-
     const values = {
       bookingDates: {
         startDate: transaction.booking.attributes.start,
