@@ -179,6 +179,26 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showReviewAsSecondLink: true,
         showActionButtons: true,
         primaryButtonProps: leaveReviewProps,
+        lineItemIsEstimated: true,
+        showPriceBreakdown: true,
+      };
+    })
+    .cond([states.REVIEWED_BY_PROVIDER, PROVIDER], () => {
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        lineItemIsEstimated: true,
+        showPriceBreakdown: true,
+      };
+    })
+    .cond([states.REVIEWED_BY_CUSTOMER, CUSTOMER], () => {
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        lineItemIsEstimated: true,
+        showPriceBreakdown: true,
       };
     })
     .cond([states.REVIEWED_BY_CUSTOMER, PROVIDER], () => {
@@ -189,10 +209,19 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showReviewAsSecondLink: true,
         showActionButtons: true,
         primaryButtonProps: leaveReviewProps,
+        lineItemIsEstimated: true,
+        showPriceBreakdown: true,
       };
     })
     .cond([states.REVIEWED, _], () => {
-      return { processName, processState, showDetailCardHeadings: true, showReviews: true };
+      return { 
+        processName, 
+        processState, 
+        showDetailCardHeadings: true, 
+        showReviews: true ,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true,
+      };
     })
     .default(() => {
       // Default values for other states

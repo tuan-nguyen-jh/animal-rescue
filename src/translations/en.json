@@ -419,6 +419,9 @@
   "InboxPage.acc-rescue-booking.request-decline.status": "Declined",
   "InboxPage.acc-rescue-booking.request-expired.status": "Expired",
   "InboxPage.acc-rescue-booking.request-canceled.status": "Canceled",
+  "InboxPage.acc-rescue-booking.reviewed.status": "Reviewed",
+  "InboxPage.acc-rescue-booking.reviewed-by-provider.status": "{transactionRole, select, customer {Waiting for your review} other {Waiting for customer review}}",
+  "InboxPage.acc-rescue-booking.reviewed-by-customer.status": "{transactionRole, select, customer {Waiting for listing owner review} other {Waiting for your review}}",
   "InboxPage.acc-rescue-booking.officer-dispatched.status": "Scheduled",
   "InboxPage.acc-rescue-booking.exact-fee-calculated.status": "Required payment",
 
@@ -1116,6 +1119,13 @@
   "TransactionPage.acc-rescue-booking.customer.transition-request-payment.actionButton": "Request payment",
   "TransactionPage.acc-rescue-booking.customer.transition-request-payment.actionError": "Oops! Request payment unsucceed. Please try again!",
   "TransactionPage.acc-rescue-booking.customer.completed.title": "Completed",
+  "TransactionPage.acc-rescue-booking.provider.pending-payment.title": "Pending payment",
+  "TransactionPage.acc-rescue-booking.customer.reviewed-by-provider.title": "Provider has left a review. Please provide a review.",
+  "TransactionPage.acc-rescue-booking.customer.reviewed-by-customer.title": "You have left a review. Wait for provider's review.",
+  "TransactionPage.acc-rescue-booking.customer.reviewed.title": "Reviewed",
+  "TransactionPage.acc-rescue-booking.provider.reviewed.title": "Reviewed",
+  "TransactionPage.acc-rescue-booking.provider.reviewed-by-provider.title": "You have left a review. Wait for customer review.",
+  "TransactionPage.acc-rescue-booking.provider.reviewed-by-customer.title": "Customer has left a review. Please provide a review.",
   "TransactionPage.acc-rescue-booking.provider.transition-provider-cancel.actionButton": "Cancel",
   "TransactionPage.acc-rescue-booking.provider.transition-provider-cancel.actionError": "Oops, cancelation failed. Please try again.",
   "TransactionPage.acc-rescue-booking.customer.transition-customer-decline.actionError": "Oops, an error happen. Please try again.",
@@ -1199,6 +1209,9 @@
   "TransactionPage.ActivityFeed.acc-rescue-booking.pending-payment": "{actor, select, you {Your requested} other {{ actor }'s requested}} payment is pending.",
   "TransactionPage.ActivityFeed.acc-rescue-booking.completed": "{actor, select, you {You completed} other {{ actor } completed}} payment.",
   "TransactionPage.ActivityFeed.acc-rescue-booking.pending-expired": "Payment period have expired.",
+  "TransactionPage.ActivityFeed.acc-rescue-booking.reviewed-by-provider": "{actor, select, you {You have left a review} other {{ actor } has left a review}}.",
+  "TransactionPage.ActivityFeed.acc-rescue-booking.reviewed-by-customer": "{actor, select, you {You have left a review} other {{ actor } has left a review}}.",
+  "TransactionPage.ActivityFeed.acc-rescue-booking.reviewed": "Reviews from both side are provided.",
   "TransactionPage.adoption-booking.customer.cancelled.title": "Your booking was cancelled",
 
 

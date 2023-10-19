@@ -131,17 +131,10 @@
     {:name :action/stripe-capture-payment-intent}],
    :from :state/pending-payment,
    :to :state/completed}
-  {:name :transition/complete,
-   :at
-   {:fn/plus
-    [{:fn/timepoint [:time/booking-end]} {:fn/period ["PT1S"]}]},
-   :actions [{:name :action/stripe-create-payout}],
-   :from :state/completed,
-   :to :state/delivered}
   {:name :transition/review-1-by-provider,
    :actor :actor.role/provider,
    :actions [{:name :action/post-review-by-provider}],
-   :from :state/delivered,
+   :from :state/completed,
    :to :state/reviewed-by-provider}
   {:name :transition/review-2-by-provider,
    :actor :actor.role/provider,
@@ -153,7 +146,7 @@
   {:name :transition/review-1-by-customer,
    :actor :actor.role/customer,
    :actions [{:name :action/post-review-by-customer}],
-   :from :state/delivered,
+   :from :state/completed,
    :to :state/reviewed-by-customer}
   {:name :transition/review-2-by-customer,
    :actor :actor.role/customer,
@@ -167,7 +160,7 @@
    {:fn/plus
     [{:fn/timepoint [:time/booking-end]} {:fn/period ["P7D"]}]},
    :actions [],
-   :from :state/delivered,
+   :from :state/completed,
    :to :state/reviewed}
   {:name :transition/expire-provider-review-period,
    :at
@@ -201,15 +194,15 @@
    :to :actor.role/customer,
    :template :booking-expired-request}
   {:name :notification/booking-money-paid,
-   :on :transition/complete,
+   :on :transition/confirm-payment,
    :to :actor.role/provider,
    :template :booking-money-paid}
   {:name :notification/review-period-start-provider,
-   :on :transition/complete,
+   :on :transition/confirm-payment,
    :to :actor.role/provider,
    :template :booking-review-by-provider-wanted}
   {:name :notification/review-period-start-customer,
-   :on :transition/complete,
+   :on :transition/confirm-payment,
    :to :actor.role/customer,
    :template :booking-review-by-customer-wanted}
   {:name :notification/review-by-provider-first,

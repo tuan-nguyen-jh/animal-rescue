@@ -50,7 +50,7 @@ const ActionButtonsMaybe = props => {
       ...quantityMaybe,
       ...otherOrderData
     };
-    
+
     const txId = await onUpdateTxDetails(listing, orderData, transitionName);
   };
 
@@ -102,12 +102,16 @@ const ActionButtonsMaybe = props => {
   }
 
   const buttonsDisabled = primaryButtonProps?.inProgress || secondaryButtonProps?.inProgress;
+  const paymentIsCompleted = transaction.attributes.transitions.find(
+    item => item.transition === transitions.CONFIRM_PAYMENT
+  );
 
   const primaryButton = primaryButtonProps ? (
     <PrimaryButton
       inProgress={primaryButtonProps.inProgress}
       disabled={buttonsDisabled}
-      onClick={isRescueService ? hanldeClick : primaryButtonProps.onAction}
+      onClick={isRescueService && !paymentIsCompleted ?
+        hanldeClick : primaryButtonProps.onAction}
     >
       {primaryButtonProps.buttonText}
     </PrimaryButton>
