@@ -114,7 +114,7 @@
    :actor :actor.role/customer,
    :actions
    [{:name :action/stripe-confirm-payment-intent},
-    {:name :action/stripe-confirm-payment-intent}],
+    {:name :action/stripe-capture-payment-intent}],
    :from :state/pending-payment,
    :to :state/completed}
   {:name :transition/complete,

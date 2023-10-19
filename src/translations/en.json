@@ -407,6 +407,8 @@
   "InboxPage.adoption-booking.reviewed-by-customer.status": "{transactionRole, select, customer {Waiting for listing owner review} other {Waiting for your review}}",
   "InboxPage.adoption-booking.reviewed-by-provider.status": "{transactionRole, select, customer {Waiting for your review} other {Waiting for customer review}}",
   "InboxPage.adoption-booking.reviewed.status": "Reviewed",
+  "InboxPage.acc-rescue-booking.completed.status": "Completed",
+  "InboxPage.acc-rescue-booking.pending-expired.status": "Payment Expired",
   "TransactionPage.adoption-booking.provider.pending-adopt.title": "You allowed {customerName} to adopted. Waiting for {customerName} to confirm.",
 
   "TransactionPage.ActivityFeed.adoption-booking.not-allow-adopt": "The animal did not allowed to adopt.",
@@ -1105,16 +1107,19 @@
   "TransactionPage.acc-rescue-booking.provider.exact-fee-calculated.title": "Service is finished.",
   "TransactionPage.acc-rescue-booking.customer.exact-fee-calculated.title": "Service is finished.",
   "TransactionPage.acc-rescue-booking.customer.officer-dispatched.title": "Officer has been scheduled to dispatch.",
+  "TransactionPage.acc-rescue-booking.provider.completed.title": "Completed",
+  "TransactionPage.acc-rescue-booking.provider.pending-expired.title": "Payment period have expired without any payment.",
+  "TransactionPage.acc-rescue-booking.customer.pending-expired.title": "Payment period have expired.",
   "TransactionPage.acc-rescue-booking.customer.transition-confirm-request.actionError": "Oops, confirmation failed. Please try again.",
   "TransactionPage.acc-rescue-booking.customer.transition-customer-cancel.actionError": "Oops, cancelation failed. Please try again.",
   "TransactionPage.acc-rescue-booking.customer.transition-request-payment.actionButton": "Request payment",
   "TransactionPage.acc-rescue-booking.customer.transition-request-payment.actionError": "Oops! Request payment unsucceed. Please try again!",
+  "TransactionPage.acc-rescue-booking.customer.completed.title": "Completed",
   "TransactionPage.acc-rescue-booking.provider.transition-provider-cancel.actionButton": "Cancel",
   "TransactionPage.acc-rescue-booking.provider.transition-provider-cancel.actionError": "Oops, cancelation failed. Please try again.",
   "TransactionPage.acc-rescue-booking.customer.transition-customer-decline.actionError": "Oops, an error happen. Please try again.",
   "TransactionPage.acc-rescue-booking.provider.transition-finish.actionButton": "Finish",
   "TransactionPage.acc-rescue-booking.provider.transition-finish.actionError": "Oops, some error happen. Please try again!",
-  
 
   "TransactionPage.adopt.actionButton": "Allow adopt",
   "TransactionPage.adopt.actionError": "Oops",
@@ -1190,6 +1195,9 @@
   "TransactionPage.ActivityFeed.acc-rescue-booking.request-canceled" : "{actor, select, you {You canceled} other {{ actor } canceled}} after the estimated fee was provided.",
   "TransactionPage.ActivityFeed.acc-rescue-booking.officer-dispatched": "Officer has been scheduled to dispatch.",
   "TransactionPage.ActivityFeed.acc-rescue-booking.exact-fee-calculated":"Rescue service is finished",
+  "TransactionPage.ActivityFeed.acc-rescue-booking.pending-payment": "{actor, select, you {Your requested} other {{ actor }'s requested}} payment is pending.",
+  "TransactionPage.ActivityFeed.acc-rescue-booking.completed": "{actor, select, you {You completed} other {{ actor } completed}} payment.",
+  "TransactionPage.ActivityFeed.acc-rescue-booking.pending-expired": "Payment period have expired.",
   "TransactionPage.adoption-booking.customer.cancelled.title": "Your booking was cancelled",
 
 

@@ -159,6 +159,16 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showReviewAsFirstLink: true,
         showActionButtons: true,
         primaryButtonProps: leaveReviewProps,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true,
+      };
+    })
+    .cond([states.PAYMENT_EXPIRED, _], () => {
+      return {
+        processName,
+        processState,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true,
       };
     })
     .cond([states.REVIEWED_BY_PROVIDER, CUSTOMER], () => {
