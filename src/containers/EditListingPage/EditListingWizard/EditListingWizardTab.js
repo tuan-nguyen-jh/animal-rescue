@@ -21,6 +21,7 @@ import EditListingPricingPanel from './EditListingPricingPanel/EditListingPricin
 import EditListingPricingAndStockPanel from './EditListingPricingAndStockPanel/EditListingPricingAndStockPanel';
 import EditListingStaffsPanel from './EditListingStaffsPanel/EditListingStaffsPanel'
 import EditListingContactsPanel from './EditListingContactsPanel/EditListingContactsPanel';
+import EditListingAnimalsPanel from './EditListingAnimalsPanel/EditListingAnimalsPanel';
 
 import css from './EditListingWizardTab.module.css';
 
@@ -31,8 +32,9 @@ export const DELIVERY = 'delivery';
 export const LOCATION = 'location';
 export const AVAILABILITY = 'availability';
 export const PHOTOS = 'photos';
-export const STAFFS = 'staffs'
-export const CONTACTS = 'contacts'
+export const STAFFS = 'staffs';
+export const CONTACTS = 'contacts';
+export const ANIMALS = 'animals';
 
 // EditListingWizardTab component supports these tabs
 export const SUPPORTED_TABS = [
@@ -45,6 +47,7 @@ export const SUPPORTED_TABS = [
   CONTACTS,
   STAFFS,
   PHOTOS,
+  ANIMALS,
 ];
 
 const pathParamsToNextTab = (params, tab, marketplaceTabs) => {
@@ -272,6 +275,13 @@ const EditListingWizardTab = props => {
           {...panelProps(CONTACTS)}
         />
       );
+    }
+    case ANIMALS:{
+      return (
+        <EditListingAnimalsPanel
+          {...panelProps(ANIMALS)}
+        />
+      )
     }
     default:
       return null;
