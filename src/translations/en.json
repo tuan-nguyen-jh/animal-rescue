@@ -313,6 +313,7 @@
   "EditListingContactsPanel.createListingTitle": "Contacts",
   "EditListingContactsPanel.title": "Edit the contacts list of {listingTitle}",
   "EditListingWizard.acc-rescue-booking.new.saveAvailability": "Next: Contacts",
+  "EditListingWizard.acc-rescue-booking.new.saveAnimals": "Next: Photos",
   "EditListingWizard.acc-rescue-booking.new.saveContacts": "Next: Staffs",
   "EditListingWizard.acc-rescue-booking.new.saveStaffs": "Next: Animals",
   "EditListingWizard.acc-rescue-booking.new.saveDetails": "Next: Location",

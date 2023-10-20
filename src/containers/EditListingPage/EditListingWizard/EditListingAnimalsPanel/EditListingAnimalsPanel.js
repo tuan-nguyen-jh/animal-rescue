@@ -14,13 +14,9 @@ import { H3, ListingLink } from '../../../../components';
 import EditListingAnimalsForm from './EditListingAnimalsForm';
 import css from './EditListingAnimalsPanel.module.css';
 
-const { Money } = sdkTypes;
-
 const getInitialValues = params => {
-  const { listing } = params;
-  const { price } = listing?.attributes || {};
-
-  return { price };
+  const { animals } = params?.listing?.attributes?.publicData || {};
+  return { animals };
 };
 
 const EditListingAnimalsPanel = props => {
@@ -28,8 +24,6 @@ const EditListingAnimalsPanel = props => {
     className,
     rootClassName,
     listing,
-    marketplaceCurrency,
-    listingMinimumPriceSubUnits,
     disabled,
     ready,
     onSubmit,
@@ -37,16 +31,12 @@ const EditListingAnimalsPanel = props => {
     panelUpdated,
     updateInProgress,
     errors,
+
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
-  const initialValues = getInitialValues(props);
   const isPublished = listing?.id && listing?.attributes?.state !== LISTING_STATE_DRAFT;
-  const priceCurrencyValid =
-    initialValues.price instanceof Money
-      ? initialValues.price.currency === marketplaceCurrency
-      : true;
-  const unitType = listing?.attributes?.publicData?.unitType;
+  const initialValues = getInitialValues(props);
 
   return (
     <div className={classes}>
@@ -63,34 +53,16 @@ const EditListingAnimalsPanel = props => {
           />
         )}
       </H3>
-      {priceCurrencyValid ? (
-        <EditListingAnimalsForm
-          className={css.form}
-          initialValues={initialValues}
-          onSubmit={values => {
-            const { price } = values;
 
-            // New values for listing attributes
-            const updateValues = {
-              price,
-            };
-            onSubmit(updateValues);
-          }}
-          marketplaceCurrency={marketplaceCurrency}
-          unitType={unitType}
-          listingMinimumPriceSubUnits={listingMinimumPriceSubUnits}
-          saveActionMsg={submitButtonText}
-          disabled={disabled}
-          ready={ready}
-          updated={panelUpdated}
-          updateInProgress={updateInProgress}
-          fetchErrors={errors}
-        />
-      ) : (
-        <div className={css.priceCurrencyInvalid}>
-          <FormattedMessage id="EditListingAnimalsPanel.listingPriceCurrencyInvalid" />
-        </div>
-      )}
+      <EditListingAnimalsForm
+        onSubmit={onSubmit}
+        initialValues={initialValues}
+        saveActionMsg={submitButtonText}
+        disabled={disabled}
+        ready={ready}
+        updated={panelUpdated}
+        updateInProgress={updateInProgress}
+      />
     </div>
   );
 };

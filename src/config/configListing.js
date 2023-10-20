@@ -62,7 +62,7 @@ export const listingFields = [
   {
     key: 'service',
     scope: 'public',
-    includedForListingTypes: [ACC_LISTING_TYPE],
+    includeForListingTypes: [ACC_LISTING_TYPE],
     schemaType: 'multi-enum',
     enumOptions: [
       { option: 'adoption', label: 'Adoption' },

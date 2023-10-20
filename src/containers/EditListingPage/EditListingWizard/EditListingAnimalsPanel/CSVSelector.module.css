@@ -1,0 +1,15 @@
+.customFileInput::-webkit-file-upload-button {
+    border-radius: 10px;
+    background-color: white;
+    border: solid 1px;
+    border-color: var(--colorGrey300);
+}
+
+.customFileInput{
+    border: none;
+    margin-bottom: 50px;
+}
+
+.customFileInput:hover{
+    border: none;
+}
