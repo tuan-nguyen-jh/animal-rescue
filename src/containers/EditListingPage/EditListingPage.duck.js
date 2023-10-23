@@ -1013,19 +1013,22 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
     });
 };
 
-export const bulkPublishListing = (listingArray, listingId) => async (dispatch, getState, sdk) => {
+export const bulkPublishListing = (listingArray, additionalData, listingId) => async (dispatch, getState, sdk) => {
   dispatch(bulkPublishListingRequest());
-  
+
+  const {geolocation, ...otherAdditionalData} = additionalData;
+
   try {
     const response = await Promise.all(listingArray.map((item) => {
       const { title, ...otherData } = item;
-      const publicData = { ...otherData };
+      const publicData = { ...otherData, ...otherAdditionalData };
       publicData.listingType = ANIMAL_LISTING_TYPE;
       publicData.unitType = "inquiry";
       publicData.transactionProcessAlias = "default-inquiry/release-1";
       publicData.accId = listingId.uuid;
       return sdk.ownListings.create({
         title,
+        geolocation,
         publicData
       })
     }));

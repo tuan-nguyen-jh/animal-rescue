@@ -364,7 +364,7 @@ class EditListingWizard extends Component {
   }
 
   handlePublishListing(id) {
-    const { 
+    const {
       onPublishListingDraft,
       currentUser,
       stripeAccount,
@@ -383,10 +383,12 @@ class EditListingWizard extends Component {
         hasRequirements(stripeAccountData, 'currently_due'));
 
     if (isInquiryProcess || (stripeConnected && !stripeRequirementsMissing)) {
-      const animals = listing.attributes.publicData.animals;
       const response = onPublishListingDraft(id);
-      if (!publishListingError){
-        onBulkPublishListing(animals, id);
+      if (!publishListingError) {
+        const animals = listing.attributes.publicData.animals;
+        const location = listing.attributes.publicData.location;
+        const geolocation = listing.attributes.geolocation;
+        onBulkPublishListing(animals, { location, geolocation }, id);
       }
     } else {
       this.setState({

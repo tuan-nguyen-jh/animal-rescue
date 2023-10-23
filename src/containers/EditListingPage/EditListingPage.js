@@ -392,7 +392,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(savePayoutDetails(values, isUpdateCall)),
   onGetStripeConnectAccountLink: params => dispatch(getStripeConnectAccountLink(params)),
   onRemoveListingImage: imageId => dispatch(removeListingImage(imageId)),
-  onBulkPublishListing: (listingArray, listingId) => dispatch(bulkPublishListing(listingArray, listingId))
+  onBulkPublishListing: (listingArray, additionalData, listingId) =>
+    dispatch(bulkPublishListing(listingArray, additionalData, listingId)),
 });
 
 // Note: it is important that the withRouter HOC is **outside** the
