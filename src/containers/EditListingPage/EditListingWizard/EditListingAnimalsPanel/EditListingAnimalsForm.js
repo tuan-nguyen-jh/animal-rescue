@@ -27,7 +27,7 @@ const formatAnimalListing = (rows, headers) => {
 const convertInitialValues = (initialValues) => {
   const data = []
   data.push(Object.keys(initialValues.animals[0]));
-  initialValues.animals.slice(1).map((item)=>{
+  initialValues.animals.map((item)=>{
     data.push(Object.values(item))
   })
   return data
@@ -45,7 +45,7 @@ export const EditListingAnimalsFormComponent = props => {
     initialValues
   } = props;
 
-  const [data, setData] = useState(initialValues? convertInitialValues(initialValues): []);
+  const [data, setData] = useState(initialValues?.animals?.length > 0? convertInitialValues(initialValues): []);
 
   const headers = data[0];
   const rows = formatAnimalListing(data.slice(1), headers);
@@ -66,6 +66,7 @@ export const EditListingAnimalsFormComponent = props => {
       inProgress={submitInProgress}
       ready={submitReady}
       onClick={handleClick}
+      disabled={disabled}
     >
       {saveActionMsg}
     </Button>

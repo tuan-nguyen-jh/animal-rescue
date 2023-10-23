@@ -69,8 +69,8 @@ const TABS_BOOKING = [
   AVAILABILITY,
   CONTACTS,
   STAFFS,
+  PHOTOS,
   ANIMALS,
-  PHOTOS
 ];
 const TABS_INQUIRY = [DETAILS, LOCATION, PRICING, PHOTOS];
 const TABS_INQUIRY_WITHOUT_PRICE = [DETAILS, LOCATION, PHOTOS];
@@ -364,7 +364,14 @@ class EditListingWizard extends Component {
   }
 
   handlePublishListing(id) {
-    const { onPublishListingDraft, currentUser, stripeAccount, listing, config } = this.props;
+    const { 
+      onPublishListingDraft,
+      currentUser,
+      stripeAccount,
+      listing,
+      config,
+      onBulkPublishListing,
+      publishListingError } = this.props;
     const processName = listing?.attributes?.publicData?.transactionProcessAlias.split('/')[0];
     const isInquiryProcess = processName === INQUIRY_PROCESS_NAME;
 
@@ -376,14 +383,17 @@ class EditListingWizard extends Component {
         hasRequirements(stripeAccountData, 'currently_due'));
 
     if (isInquiryProcess || (stripeConnected && !stripeRequirementsMissing)) {
-      onPublishListingDraft(id);
+      const animals = listing.attributes.publicData.animals;
+      const response = onPublishListingDraft(id);
+      if (!publishListingError){
+        onBulkPublishListing(animals, id);
+      }
     } else {
       this.setState({
         draftId: id,
         showPayoutDetails: true,
       });
     }
-    // onPublishListingDraft(id);
   }
 
   handlePayoutModalClose() {
@@ -418,6 +428,9 @@ class EditListingWizard extends Component {
       currentUser,
       config,
       routeConfiguration,
+      onBulkPublishListing,
+      publishListingError,
+      isBulkPublishing,
       ...rest
     } = this.props;
 
@@ -598,6 +611,7 @@ class EditListingWizard extends Component {
                 onManageDisableScrolling={onManageDisableScrolling}
                 config={config}
                 routeConfiguration={routeConfiguration}
+                isBulkPublishing={isBulkPublishing}
               />
             );
           })}

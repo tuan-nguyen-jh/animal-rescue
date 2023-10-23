@@ -3,6 +3,7 @@ import { bool, func, object, shape, string, oneOf } from 'prop-types';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Alert, AlertTitle } from '@material-ui/lab'
 
 // Import configs and util modules
 import { intlShape, injectIntl } from '../../util/reactIntl';
@@ -39,6 +40,7 @@ import {
   requestImageUpload,
   removeListingImage,
   savePayoutDetails,
+  bulkPublishListing,
 } from './EditListingPage.duck';
 import EditListingWizard from './EditListingWizard/EditListingWizard';
 import css from './EditListingPage.module.css';
@@ -112,6 +114,7 @@ export const EditListingPageComponent = props => {
     stripeAccountFetched,
     stripeAccount,
     updateStripeAccountError,
+    onBulkPublishListing
   } = props;
 
   const { id, type, returnURLType } = params;
@@ -129,7 +132,9 @@ export const EditListingPageComponent = props => {
   const hasStripeOnboardingDataIfNeeded = returnURLType ? !!(currentUser && currentUser.id) : true;
   const showForm = hasStripeOnboardingDataIfNeeded && (isNewURI || currentListing.id);
 
-  if (shouldRedirect) {
+  const { isBulkPublishing } = page;
+
+  if (shouldRedirect && !isBulkPublishing) {
     const isPendingApproval =
       currentListing && currentListingState === LISTING_STATE_PENDING_APPROVAL;
 
@@ -139,20 +144,20 @@ export const EditListingPageComponent = props => {
 
     const redirectProps = isPendingApproval
       ? {
-          name: 'ListingPageVariant',
-          params: {
-            id: listingId.uuid,
-            slug: listingSlug,
-            variant: LISTING_PAGE_PENDING_APPROVAL_VARIANT,
-          },
-        }
+        name: 'ListingPageVariant',
+        params: {
+          id: listingId.uuid,
+          slug: listingSlug,
+          variant: LISTING_PAGE_PENDING_APPROVAL_VARIANT,
+        },
+      }
       : {
-          name: 'ListingPage',
-          params: {
-            id: listingId.uuid,
-            slug: listingSlug,
-          },
-        };
+        name: 'ListingPage',
+        params: {
+          id: listingId.uuid,
+          slug: listingSlug,
+        },
+      };
 
     return <NamedRedirect {...redirectProps} />;
   } else if (showForm) {
@@ -205,6 +210,11 @@ export const EditListingPageComponent = props => {
           desktopClassName={css.desktopTopbar}
           mobileClassName={css.mobileTopbar}
         />
+        {isBulkPublishing &&
+          <Alert severity="warning">
+            <AlertTitle>Info</AlertTitle>
+            <strong>The listing publishing is processing</strong> — Please wait.
+          </Alert>}
         <EditListingWizard
           id="EditListingWizard"
           className={css.wizard}
@@ -227,6 +237,7 @@ export const EditListingPageComponent = props => {
           onUpdateListing={onUpdateListing}
           onCreateListingDraft={onCreateListingDraft}
           onPublishListingDraft={onPublishListingDraft}
+          isBulkPublishing={isBulkPublishing}
           onPayoutDetailsChange={onPayoutDetailsChange}
           onPayoutDetailsSubmit={onPayoutDetailsSubmit}
           onGetStripeConnectAccountLink={onGetStripeConnectAccountLink}
@@ -246,6 +257,8 @@ export const EditListingPageComponent = props => {
             createStripeAccountError || updateStripeAccountError || fetchStripeAccountError
           }
           stripeAccountLinkError={getAccountLinkError}
+          onBulkPublishListing={onBulkPublishListing}
+          publishListingError={publishListingError}
         />
       </Page>
     );
@@ -379,6 +392,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(savePayoutDetails(values, isUpdateCall)),
   onGetStripeConnectAccountLink: params => dispatch(getStripeConnectAccountLink(params)),
   onRemoveListingImage: imageId => dispatch(removeListingImage(imageId)),
+  onBulkPublishListing: (listingArray, listingId) => dispatch(bulkPublishListing(listingArray, listingId))
 });
 
 // Note: it is important that the withRouter HOC is **outside** the

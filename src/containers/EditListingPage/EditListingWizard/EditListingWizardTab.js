@@ -113,6 +113,7 @@ const EditListingWizardTab = props => {
     tabSubmitButtonText,
     config,
     routeConfiguration,
+    isBulkPublishing
   } = props;
 
   const { type } = params;
@@ -177,7 +178,7 @@ const EditListingWizardTab = props => {
       updateInProgress,
       // newListingPublished and fetchInProgress are flags for the last wizard tab
       ready: newListingPublished,
-      disabled: fetchInProgress,
+      disabled: fetchInProgress || isBulkPublishing,
       submitButtonText: tabSubmitButtonText,
       listingTypes: config.listing.listingTypes,
       onManageDisableScrolling,
@@ -341,6 +342,7 @@ EditListingWizardTab.propTypes = {
   updateInProgress: bool.isRequired,
   config: object.isRequired,
   routeConfiguration: arrayOf(propTypes.route).isRequired,
+  isBulkPublishing: bool,
 };
 
 export default EditListingWizardTab;

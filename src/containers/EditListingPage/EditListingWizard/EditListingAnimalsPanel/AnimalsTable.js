@@ -25,6 +25,7 @@ export default function AnimalsTable(props) {
         <TableHead>
           <TableRow>
             <TableCell align="center">#</TableCell>
+            <TableCell align="center">Name</TableCell>
             <TableCell align="center">Type of Animal</TableCell>
             <TableCell align="center">Size</TableCell>
             <TableCell align="center">Birth date</TableCell>
@@ -34,6 +35,7 @@ export default function AnimalsTable(props) {
           {rows.map((row, index) => (
             <TableRow key={index}>
               <TableCell align="center">{index}</TableCell>
+              <TableCell align="center">{row.title}</TableCell>
               <TableCell component="th" scope="row" align="center">
                 {row.typeOfAnimal.toUpperCase()}
               </TableCell>

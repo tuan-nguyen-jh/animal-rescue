@@ -23,7 +23,7 @@ import {
   fetchStripeAccount,
 } from '../../ducks/stripeConnectAccount.duck';
 import { fetchCurrentUser } from '../../ducks/user.duck';
-import { ACC_LISTING_TYPE } from '../../config/configListing';
+import { ACC_LISTING_TYPE, ANIMAL_LISTING_TYPE } from '../../config/configListing';
 
 const { UUID } = sdkTypes;
 
@@ -56,13 +56,13 @@ const updateUploadedImagesState = (state, payload) => {
   );
   return duplicateImageEntities.length > 0
     ? {
-        uploadedImages: {},
-        uploadedImagesOrder: [],
-      }
+      uploadedImages: {},
+      uploadedImagesOrder: [],
+    }
     : {
-        uploadedImages,
-        uploadedImagesOrder,
-      };
+      uploadedImages,
+      uploadedImagesOrder,
+    };
 };
 
 const getImageVariantInfo = listingImageConfig => {
@@ -88,14 +88,14 @@ const sortExceptionsByStartTime = (a, b) => {
 const mergeToWeeklyExceptionQueries = (weeklyExceptionQueries, weekStartId, newDataProps) => {
   return weekStartId
     ? {
-        weeklyExceptionQueries: {
-          ...weeklyExceptionQueries,
-          [weekStartId]: {
-            ...weeklyExceptionQueries[weekStartId],
-            ...newDataProps,
-          },
+      weeklyExceptionQueries: {
+        ...weeklyExceptionQueries,
+        [weekStartId]: {
+          ...weeklyExceptionQueries[weekStartId],
+          ...newDataProps,
         },
-      }
+      },
+    }
     : {};
 };
 // When navigating through monthly calendar (e.g. when adding a new AvailabilityException),
@@ -103,14 +103,14 @@ const mergeToWeeklyExceptionQueries = (weeklyExceptionQueries, weekStartId, newD
 const mergeToMonthlyExceptionQueries = (monthlyExceptionQueries, monthId, newDataProps) => {
   return monthId
     ? {
-        monthlyExceptionQueries: {
-          ...monthlyExceptionQueries,
-          [monthId]: {
-            ...monthlyExceptionQueries[monthId],
-            ...newDataProps,
-          },
+      monthlyExceptionQueries: {
+        ...monthlyExceptionQueries,
+        [monthId]: {
+          ...monthlyExceptionQueries[monthId],
+          ...newDataProps,
         },
-      }
+      },
+    }
     : {};
 };
 
@@ -171,6 +171,10 @@ export const SAVE_PAYOUT_DETAILS_ERROR = 'app/EditListingPage/SAVE_PAYOUT_DETAIL
 
 export const UPDATE_FETCH_LISTINGS = 'app/EditListingPage/UPDATE_FETCH_LISTINGS';
 export const UPDATE_FETCH_LISTINGS_ERROR = 'app/EditListingPage/UPDATE_FETCH_LISTINGS_ERROR';
+
+export const BULK_PUBLISH_LISTING_REQUEST = 'app/EditListingPage/BULK_PUBLISH_LISTING_REQUEST';
+export const BULK_PUBLISH_LISTING_SUCCESS = 'app/EditListingPage/BULK_PUBLISH_LISTING_SUCCESS';
+export const BULK_PUBLISH_LISTING_ERROR = 'app/EditListingPage/BULK_PUBLISH_LISTING_ERROR';
 
 // ================ Reducer ================ //
 
@@ -276,6 +280,29 @@ export default function reducer(state = initialState, action = {}) {
       };
     }
 
+    case BULK_PUBLISH_LISTING_REQUEST:
+      return {
+        ...state,
+        isBulkPublishing: true,
+      };
+    case BULK_PUBLISH_LISTING_SUCCESS:
+      return {
+        ...state,
+        redirectToListing: true,
+        isBulkPublishing: false,
+      };
+    case BULK_PUBLISH_LISTING_ERROR: {
+      // eslint-disable-next-line no-console
+      return {
+        ...state,
+        isBulkPublishing: false,
+        publishListingError: {
+          listingId: state.listingId,
+          error: payload,
+        },
+      };
+    }
+
     case UPDATE_LISTING_REQUEST:
       return { ...state, updateInProgress: true, updateListingError: null };
     case UPDATE_LISTING_SUCCESS:
@@ -296,12 +323,12 @@ export default function reducer(state = initialState, action = {}) {
       // If listing stays the same, we trust previously fetched exception data.
       return listingIdFromPayload?.uuid === state.listingId?.uuid
         ? {
-            ...initialState,
-            listingId,
-            allExceptions,
-            weeklyExceptionQueries,
-            monthlyExceptionQueries,
-          }
+          ...initialState,
+          listingId,
+          allExceptions,
+          weeklyExceptionQueries,
+          monthlyExceptionQueries,
+        }
         : { ...initialState, listingId: listingIdFromPayload };
     }
     case SHOW_LISTINGS_ERROR:
@@ -316,8 +343,8 @@ export default function reducer(state = initialState, action = {}) {
       const exceptionQueriesMaybe = monthId
         ? mergeToMonthlyExceptionQueries(state.monthlyExceptionQueries, monthId, newData)
         : weekStartId
-        ? mergeToWeeklyExceptionQueries(state.weeklyExceptionQueries, weekStartId, newData)
-        : {};
+          ? mergeToWeeklyExceptionQueries(state.weeklyExceptionQueries, weekStartId, newData)
+          : {};
       return { ...state, ...exceptionQueriesMaybe };
     }
     case FETCH_EXCEPTIONS_SUCCESS: {
@@ -330,8 +357,8 @@ export default function reducer(state = initialState, action = {}) {
       const exceptionQueriesMaybe = monthId
         ? mergeToMonthlyExceptionQueries(state.monthlyExceptionQueries, monthId, newData)
         : weekStartId
-        ? mergeToWeeklyExceptionQueries(state.weeklyExceptionQueries, weekStartId, newData)
-        : {};
+          ? mergeToWeeklyExceptionQueries(state.weeklyExceptionQueries, weekStartId, newData)
+          : {};
       return { ...state, allExceptions, ...exceptionQueriesMaybe };
     }
     case FETCH_EXCEPTIONS_ERROR: {
@@ -341,8 +368,8 @@ export default function reducer(state = initialState, action = {}) {
       const exceptionQueriesMaybe = monthId
         ? mergeToMonthlyExceptionQueries(state.monthlyExceptionQueries, monthId, newData)
         : weekStartId
-        ? mergeToWeeklyExceptionQueries(state.weeklyExceptionQueries, weekStartId, newData)
-        : {};
+          ? mergeToWeeklyExceptionQueries(state.weeklyExceptionQueries, weekStartId, newData)
+          : {};
 
       return { ...state, ...exceptionQueriesMaybe };
     }
@@ -456,7 +483,7 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, payoutDetailsSaveInProgress: false };
     case SAVE_PAYOUT_DETAILS_SUCCESS:
       return { ...state, payoutDetailsSaveInProgress: false, payoutDetailsSaved: true };
-    
+
     case UPDATE_FETCH_LISTINGS:
       return { ...state, listingACCs: payload}
     case UPDATE_FETCH_LISTINGS_ERROR:
@@ -551,6 +578,10 @@ export const deleteAvailabilityExceptionError = errorAction(DELETE_EXCEPTION_ERR
 export const savePayoutDetailsRequest = requestAction(SAVE_PAYOUT_DETAILS_REQUEST);
 export const savePayoutDetailsSuccess = successAction(SAVE_PAYOUT_DETAILS_SUCCESS);
 export const savePayoutDetailsError = errorAction(SAVE_PAYOUT_DETAILS_ERROR);
+
+export const bulkPublishListingRequest = requestAction(BULK_PUBLISH_LISTING_REQUEST);
+export const bulkPublishListingSuccess = successAction(BULK_PUBLISH_LISTING_SUCCESS);
+export const bulkPublishListingError = (e) => ({ type: BULK_PUBLISH_LISTING_ERROR, error: true, payload: e });
 
 // export const fetchListings = requestAction(UPDATE_FETCH_LISTINGS)
 
@@ -981,3 +1012,28 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
       throw e;
     });
 };
+
+export const bulkPublishListing = (listingArray, listingId) => async (dispatch, getState, sdk) => {
+  dispatch(bulkPublishListingRequest());
+  
+  try {
+    const response = await Promise.all(listingArray.map((item) => {
+      const { title, ...otherData } = item;
+      const publicData = { ...otherData };
+      publicData.listingType = ANIMAL_LISTING_TYPE;
+      publicData.unitType = "inquiry";
+      publicData.transactionProcessAlias = "default-inquiry/release-1";
+      publicData.accId = listingId.uuid;
+      return sdk.ownListings.create({
+        title,
+        publicData
+      })
+    }));
+
+    dispatch(bulkPublishListingSuccess())
+    
+  }
+  catch (error) {
+    dispatch(bulkPublishListingError(storableError(error)));
+  }
+}
