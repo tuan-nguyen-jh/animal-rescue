@@ -29,6 +29,7 @@ const EditListingAnimalsPanel = props => {
     submitButtonText,
     panelUpdated,
     updateInProgress,
+    submitInProgress,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
@@ -56,6 +57,7 @@ const EditListingAnimalsPanel = props => {
         initialValues={initialValues}
         saveActionMsg={submitButtonText}
         disabled={disabled}
+        submitInProgress={submitInProgress}
         ready={ready}
         updated={panelUpdated}
         updateInProgress={updateInProgress}
@@ -82,6 +84,7 @@ EditListingAnimalsPanel.propTypes = {
   submitButtonText: string.isRequired,
   panelUpdated: bool.isRequired,
   updateInProgress: bool.isRequired,
+  submitInProgress: bool,
 };
 
 export default EditListingAnimalsPanel;

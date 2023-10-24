@@ -3,7 +3,6 @@ import { bool, func, object, shape, string, oneOf } from 'prop-types';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Alert, AlertTitle } from '@material-ui/lab'
 
 // Import configs and util modules
 import { intlShape, injectIntl } from '../../util/reactIntl';
@@ -210,11 +209,6 @@ export const EditListingPageComponent = props => {
           desktopClassName={css.desktopTopbar}
           mobileClassName={css.mobileTopbar}
         />
-        {isBulkPublishing &&
-          <Alert severity="warning">
-            <AlertTitle>Info</AlertTitle>
-            <strong>The listing publishing is processing</strong> — Please wait.
-          </Alert>}
         <EditListingWizard
           id="EditListingWizard"
           className={css.wizard}

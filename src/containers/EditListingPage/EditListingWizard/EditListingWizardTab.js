@@ -175,10 +175,11 @@ const EditListingWizardTab = props => {
       panelUpdated: updatedTab === tab,
       params,
       locationSearch,
-      updateInProgress,
+      updateInProgress: updateInProgress || isBulkPublishing,
       // newListingPublished and fetchInProgress are flags for the last wizard tab
       ready: newListingPublished,
       disabled: fetchInProgress || isBulkPublishing,
+      submitInProgress: isBulkPublishing,
       submitButtonText: tabSubmitButtonText,
       listingTypes: config.listing.listingTypes,
       onManageDisableScrolling,
@@ -270,14 +271,14 @@ const EditListingWizardTab = props => {
         />
       );
     }
-    case CONTACTS:{
+    case CONTACTS: {
       return (
         <EditListingContactsPanel
           {...panelProps(CONTACTS)}
         />
       );
     }
-    case ANIMALS:{
+    case ANIMALS: {
       return (
         <EditListingAnimalsPanel
           {...panelProps(ANIMALS)}
