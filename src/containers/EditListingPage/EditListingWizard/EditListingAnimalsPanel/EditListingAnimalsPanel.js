@@ -5,7 +5,6 @@ import classNames from 'classnames';
 // Import configs and util modules
 import { FormattedMessage } from '../../../../util/reactIntl';
 import { LISTING_STATE_DRAFT } from '../../../../util/types';
-import { types as sdkTypes } from '../../../../util/sdkLoader';
 
 // Import shared components
 import { H3, ListingLink } from '../../../../components';
@@ -30,8 +29,6 @@ const EditListingAnimalsPanel = props => {
     submitButtonText,
     panelUpdated,
     updateInProgress,
-    errors,
-
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
@@ -78,17 +75,13 @@ EditListingAnimalsPanel.defaultProps = {
 EditListingAnimalsPanel.propTypes = {
   className: string,
   rootClassName: string,
-
-  // We cannot use propTypes.listing since the listing might be a draft.
   listing: object,
-
-  disabled: bool.isRequired,
+  disabled: bool,
   ready: bool.isRequired,
   onSubmit: func.isRequired,
   submitButtonText: string.isRequired,
   panelUpdated: bool.isRequired,
   updateInProgress: bool.isRequired,
-  errors: object.isRequired,
 };
 
 export default EditListingAnimalsPanel;

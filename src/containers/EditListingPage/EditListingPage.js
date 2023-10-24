@@ -317,6 +317,7 @@ EditListingPageComponent.propTypes = {
   onPayoutDetailsSubmit: func.isRequired,
   onRemoveListingImage: func.isRequired,
   onUpdateListing: func.isRequired,
+  onBulkPublishListing: func.isRequired,
   page: object.isRequired,
   params: shape({
     id: string.isRequired,

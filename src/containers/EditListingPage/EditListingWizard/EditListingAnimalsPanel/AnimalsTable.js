@@ -1,4 +1,6 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -24,12 +26,24 @@ export default function AnimalsTable(props) {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell align="center">#</TableCell>
-            <TableCell align="center">Name</TableCell>
-            <TableCell align="center">Type of Animal</TableCell>
-            <TableCell align="center">Size</TableCell>
-            <TableCell align="center">Birth date</TableCell>
-            <TableCell align="center">Number of Images</TableCell>
+            <TableCell align="center">
+              <FormattedMessage id="AnimalTable.rowId" />
+            </TableCell>
+            <TableCell align="center">
+              <FormattedMessage id="AnimalTable.nameColumnLabel" />
+            </TableCell>
+            <TableCell align="center">
+              <FormattedMessage id="AnimalTable.typeOfAnimalColumnLabel" />
+            </TableCell>
+            <TableCell align="center">
+              <FormattedMessage id="AnimalTable.sizeColumnLabel" />
+            </TableCell>
+            <TableCell align="center">
+              <FormattedMessage id="AnimalTable.birthColumnLabel" />
+            </TableCell>
+            <TableCell align="center">
+              <FormattedMessage id="AnimalTable.imageColumnLabel" />
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -42,7 +56,9 @@ export default function AnimalsTable(props) {
               </TableCell>
               <TableCell align="center">{row.size.toUpperCase()}</TableCell>
               <TableCell align="center">{row.birth}</TableCell>
-              <TableCell align="center">{Array.isArray(row.images) ? row.images.length : row.images ? 1 : 0}</TableCell>
+              <TableCell align="center">
+                {Array.isArray(row.images) ? row.images.length : row.images ? 1 : 0}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

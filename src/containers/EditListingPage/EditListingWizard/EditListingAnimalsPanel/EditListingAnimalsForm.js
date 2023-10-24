@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
 import { compose } from 'redux';
-import { string } from 'prop-types';
-
-import classNames from 'classnames';
+import { bool, func, object, string } from 'prop-types';
 
 // Import configs and util modules
-import appSettings from '../../../../config/settings';
-import { intlShape, injectIntl, FormattedMessage } from '../../../../util/reactIntl';
+import { intlShape, injectIntl } from '../../../../util/reactIntl';
 
 // Import shared components
 import CSVReader from './CSVReader';
-import { Button, Form, FieldCurrencyInput, FieldTextInput } from '../../../../components';
+import { Button } from '../../../../components';
 
 // Import modules from this directory
 import css from './EditListingAnimalsForm.module.css';
@@ -45,8 +42,6 @@ export const EditListingAnimalsFormComponent = props => {
     saveActionMsg,
     submitReady,
     disabled,
-    ready,
-    updated,
     initialValues
   } = props;
 
@@ -83,6 +78,10 @@ EditListingAnimalsFormComponent.defaultProps = {
 
 EditListingAnimalsFormComponent.propTypes = {
   formId: string,
+  onSubmit: func.isRequired,
+  submitInProgress: bool,
+  disabled: bool,
+  initialValues: object,
   intl: intlShape.isRequired,
 };
 

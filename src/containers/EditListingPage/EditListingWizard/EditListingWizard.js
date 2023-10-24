@@ -369,9 +369,9 @@ class EditListingWizard extends Component {
       currentUser,
       stripeAccount,
       listing,
-      config,
       onBulkPublishListing,
-      publishListingError } = this.props;
+      publishListingError 
+    } = this.props;
     const processName = listing?.attributes?.publicData?.transactionProcessAlias.split('/')[0];
     const isInquiryProcess = processName === INQUIRY_PROCESS_NAME;
 
@@ -750,6 +750,7 @@ EditListingWizard.propTypes = {
   onPayoutDetailsSubmit: func.isRequired,
   onGetStripeConnectAccountLink: func.isRequired,
   onManageDisableScrolling: func.isRequired,
+  onBulkPublishListing: func.isRequired,
 
   // from withViewport
   viewport: shape({

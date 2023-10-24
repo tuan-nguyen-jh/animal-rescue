@@ -1317,5 +1317,12 @@
   "UserDisplayName.deleted": "Deleted user",
   "UserNav.accountSettings": "Account settings",
   "UserNav.profileSettings": "Profile settings",
-  "UserNav.yourListings": "Your listings"
+  "UserNav.yourListings": "Your listings",
+
+  "AnimalTable.rowId": "#",
+  "AnimalTable.nameColumnLabel": "Name",
+  "AnimalTable.typeOfAnimalColumnLabel": "Type of Animal",
+  "AnimalTable.birthColumnLabel": "Date of birth",
+  "AnimalTable.sizeColumnLabel": "Size",
+  "AnimalTable.imageColumnLabel": "Number of Label"
 }
