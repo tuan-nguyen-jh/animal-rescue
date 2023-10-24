@@ -171,14 +171,14 @@ const hasValidListingFieldsInExtendedData = (publicData, privateData, config) =>
       return schemaType === SCHEMA_TYPE_ENUM
         ? typeof savedListingField === 'string' && hasValidEnumValue(savedListingField)
         : schemaType === SCHEMA_TYPE_MULTI_ENUM
-          ? Array.isArray(savedListingField) && hasValidMultiEnumValues(savedListingField)
-          : schemaType === SCHEMA_TYPE_TEXT
-            ? typeof savedListingField === 'string'
-            : schemaType === SCHEMA_TYPE_LONG
-              ? typeof savedListingField === 'number' && Number.isInteger(savedListingField)
-              : schemaType === SCHEMA_TYPE_BOOLEAN
-                ? savedListingField === true || savedListingField === false
-                : false;
+        ? Array.isArray(savedListingField) && hasValidMultiEnumValues(savedListingField)
+        : schemaType === SCHEMA_TYPE_TEXT
+        ? typeof savedListingField === 'string'
+        : schemaType === SCHEMA_TYPE_LONG
+        ? typeof savedListingField === 'number' && Number.isInteger(savedListingField)
+        : schemaType === SCHEMA_TYPE_BOOLEAN
+        ? savedListingField === true || savedListingField === false
+        : false;
     }
     return true;
   };
@@ -326,10 +326,10 @@ const getListingTypeConfig = (listing, selectedListingType, config) => {
   const listingTypeConfig = existingListingType
     ? validListingTypes.find(conf => conf.listingType === existingListingType)
     : selectedListingType
-      ? validListingTypes.find(conf => conf.listingType === selectedListingType.listingType)
-      : hasOnlyOneListingType
-        ? validListingTypes[0]
-        : null;
+    ? validListingTypes.find(conf => conf.listingType === selectedListingType.listingType)
+    : hasOnlyOneListingType
+    ? validListingTypes[0]
+    : null;
   return listingTypeConfig;
 };
 
@@ -467,8 +467,8 @@ class EditListingWizard extends Component {
     const processName = transactionProcessAlias
       ? transactionProcessAlias.split('/')[0]
       : validListingTypes.length === 1
-        ? validListingTypes[0].transactionType.process
-        : INQUIRY_PROCESS_NAME;
+      ? validListingTypes[0].transactionType.process
+      : INQUIRY_PROCESS_NAME;
 
     const hasListingTypeSelected =
       existingListingType || this.state.selectedListingType || validListingTypes.length === 1;
@@ -478,12 +478,12 @@ class EditListingWizard extends Component {
       isNewListingFlow && (invalidExistingListingType || !hasListingTypeSelected)
         ? TABS_DETAILS_ONLY
         : isBookingProcess(processName)
-          ? TABS_BOOKING
-          : isPurchaseProcess(processName)
-            ? TABS_PRODUCT
-            : isPriceDisabled
-              ? TABS_INQUIRY_WITHOUT_PRICE
-              : TABS_INQUIRY;
+        ? TABS_BOOKING
+        : isPurchaseProcess(processName)
+        ? TABS_PRODUCT
+        : isPriceDisabled
+        ? TABS_INQUIRY_WITHOUT_PRICE
+        : TABS_INQUIRY;
 
     // Check if wizard tab is active / linkable.
     // When creating a new listing, we don't allow users to access next tab until the current one is completed.

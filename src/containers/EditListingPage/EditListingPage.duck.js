@@ -61,13 +61,13 @@ const updateUploadedImagesState = (state, payload) => {
   );
   return duplicateImageEntities.length > 0
     ? {
-      uploadedImages: {},
-      uploadedImagesOrder: [],
-    }
+        uploadedImages: {},
+        uploadedImagesOrder: [],
+      }
     : {
-      uploadedImages,
-      uploadedImagesOrder,
-    };
+        uploadedImages,
+        uploadedImagesOrder,
+      };
 };
 
 const getImageVariantInfo = listingImageConfig => {
@@ -93,14 +93,14 @@ const sortExceptionsByStartTime = (a, b) => {
 const mergeToWeeklyExceptionQueries = (weeklyExceptionQueries, weekStartId, newDataProps) => {
   return weekStartId
     ? {
-      weeklyExceptionQueries: {
-        ...weeklyExceptionQueries,
-        [weekStartId]: {
-          ...weeklyExceptionQueries[weekStartId],
-          ...newDataProps,
+        weeklyExceptionQueries: {
+          ...weeklyExceptionQueries,
+          [weekStartId]: {
+            ...weeklyExceptionQueries[weekStartId],
+            ...newDataProps,
+          },
         },
-      },
-    }
+      }
     : {};
 };
 // When navigating through monthly calendar (e.g. when adding a new AvailabilityException),
@@ -108,14 +108,14 @@ const mergeToWeeklyExceptionQueries = (weeklyExceptionQueries, weekStartId, newD
 const mergeToMonthlyExceptionQueries = (monthlyExceptionQueries, monthId, newDataProps) => {
   return monthId
     ? {
-      monthlyExceptionQueries: {
-        ...monthlyExceptionQueries,
-        [monthId]: {
-          ...monthlyExceptionQueries[monthId],
-          ...newDataProps,
+        monthlyExceptionQueries: {
+          ...monthlyExceptionQueries,
+          [monthId]: {
+            ...monthlyExceptionQueries[monthId],
+            ...newDataProps,
+          },
         },
-      },
-    }
+      }
     : {};
 };
 
@@ -328,12 +328,12 @@ export default function reducer(state = initialState, action = {}) {
       // If listing stays the same, we trust previously fetched exception data.
       return listingIdFromPayload?.uuid === state.listingId?.uuid
         ? {
-          ...initialState,
-          listingId,
-          allExceptions,
-          weeklyExceptionQueries,
-          monthlyExceptionQueries,
-        }
+            ...initialState,
+            listingId,
+            allExceptions,
+            weeklyExceptionQueries,
+            monthlyExceptionQueries,
+          }
         : { ...initialState, listingId: listingIdFromPayload };
     }
     case SHOW_LISTINGS_ERROR:
@@ -348,8 +348,8 @@ export default function reducer(state = initialState, action = {}) {
       const exceptionQueriesMaybe = monthId
         ? mergeToMonthlyExceptionQueries(state.monthlyExceptionQueries, monthId, newData)
         : weekStartId
-          ? mergeToWeeklyExceptionQueries(state.weeklyExceptionQueries, weekStartId, newData)
-          : {};
+        ? mergeToWeeklyExceptionQueries(state.weeklyExceptionQueries, weekStartId, newData)
+        : {};
       return { ...state, ...exceptionQueriesMaybe };
     }
     case FETCH_EXCEPTIONS_SUCCESS: {
@@ -362,8 +362,8 @@ export default function reducer(state = initialState, action = {}) {
       const exceptionQueriesMaybe = monthId
         ? mergeToMonthlyExceptionQueries(state.monthlyExceptionQueries, monthId, newData)
         : weekStartId
-          ? mergeToWeeklyExceptionQueries(state.weeklyExceptionQueries, weekStartId, newData)
-          : {};
+        ? mergeToWeeklyExceptionQueries(state.weeklyExceptionQueries, weekStartId, newData)
+        : {};
       return { ...state, allExceptions, ...exceptionQueriesMaybe };
     }
     case FETCH_EXCEPTIONS_ERROR: {
@@ -373,8 +373,8 @@ export default function reducer(state = initialState, action = {}) {
       const exceptionQueriesMaybe = monthId
         ? mergeToMonthlyExceptionQueries(state.monthlyExceptionQueries, monthId, newData)
         : weekStartId
-          ? mergeToWeeklyExceptionQueries(state.weeklyExceptionQueries, weekStartId, newData)
-          : {};
+        ? mergeToWeeklyExceptionQueries(state.weeklyExceptionQueries, weekStartId, newData)
+        : {};
 
       return { ...state, ...exceptionQueriesMaybe };
     }

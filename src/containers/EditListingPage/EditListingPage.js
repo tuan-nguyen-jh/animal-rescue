@@ -144,20 +144,20 @@ export const EditListingPageComponent = props => {
 
     const redirectProps = isPendingApproval
       ? {
-        name: 'ListingPageVariant',
-        params: {
-          id: listingId.uuid,
-          slug: listingSlug,
-          variant: LISTING_PAGE_PENDING_APPROVAL_VARIANT,
-        },
-      }
+          name: 'ListingPageVariant',
+          params: {
+            id: listingId.uuid,
+            slug: listingSlug,
+            variant: LISTING_PAGE_PENDING_APPROVAL_VARIANT,
+          },
+        }
       : {
-        name: 'ListingPage',
-        params: {
-          id: listingId.uuid,
-          slug: listingSlug,
-        },
-      };
+          name: 'ListingPage',
+          params: {
+            id: listingId.uuid,
+            slug: listingSlug,
+          },
+        };
 
     return <NamedRedirect {...redirectProps} />;
   } else if (showForm) {
