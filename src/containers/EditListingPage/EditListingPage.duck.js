@@ -1,5 +1,6 @@
 import omit from 'lodash/omit';
 
+import { uploadMultiImages } from '../../util/api';
 import { types as sdkTypes, createImageVariantConfig } from '../../util/sdkLoader';
 import { denormalisedResponseEntities } from '../../util/data';
 import {
@@ -14,7 +15,7 @@ import { uniqueBy } from '../../util/generators';
 import { storableError } from '../../util/errors';
 import * as log from '../../util/log';
 import { parse } from '../../util/urlHelpers';
-import { isBookingProcessAlias } from '../../transactions/transaction';
+import { getProcess, INQUIRY, INQUIRY_PROCESS_NAME, isBookingProcessAlias } from '../../transactions/transaction';
 
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 import {
@@ -23,7 +24,11 @@ import {
   fetchStripeAccount,
 } from '../../ducks/stripeConnectAccount.duck';
 import { fetchCurrentUser } from '../../ducks/user.duck';
-import { ACC_LISTING_TYPE, ANIMAL_LISTING_TYPE } from '../../config/configListing';
+import {
+  ACC_LISTING_TYPE,
+  ANIMAL_LISTING_TYPE,
+  INQUIRY_TRANSACTION_PROCESS_ALIAS
+} from '../../config/configListing';
 
 const { UUID } = sdkTypes;
 
@@ -1016,27 +1021,50 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
 export const bulkPublishListing = (listingArray, additionalData, listingId) => async (dispatch, getState, sdk) => {
   dispatch(bulkPublishListingRequest());
 
-  const {geolocation, ...otherAdditionalData} = additionalData;
+  const { geolocation, ...otherAdditionalData } = additionalData;
+
+  const unitType = INQUIRY;
+  const alias = INQUIRY_TRANSACTION_PROCESS_ALIAS;
 
   try {
-    const response = await Promise.all(listingArray.map((item) => {
-      const { title, ...otherData } = item;
+    const response = await Promise.all(listingArray.map(async (item) => {
+      const { title, images, ...otherData } = item;
       const publicData = { ...otherData, ...otherAdditionalData };
       publicData.listingType = ANIMAL_LISTING_TYPE;
-      publicData.unitType = "inquiry";
-      publicData.transactionProcessAlias = "default-inquiry/release-1";
+      publicData.unitType = unitType;
+      publicData.transactionProcessAlias = alias;
       publicData.accId = listingId.uuid;
+
+      const uploadRes = await requestUploadMultiImage(images);
+
       return sdk.ownListings.create({
         title,
         geolocation,
-        publicData
+        publicData,
+        images: uploadRes.data
       })
     }));
 
     dispatch(bulkPublishListingSuccess())
-    
+
   }
   catch (error) {
     dispatch(bulkPublishListingError(storableError(error)));
   }
+}
+
+const requestUploadMultiImage = (images) => {
+
+  const imagePaths = Array.isArray(images)
+    ? images : images
+      ? [images] : [];
+
+  const bodyParams = {
+    imagePaths
+  }
+  const queryParams = {
+    expand: true,
+  }
+
+  return uploadMultiImages({ bodyParams, queryParams });
 }

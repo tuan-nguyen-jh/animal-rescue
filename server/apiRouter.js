@@ -15,6 +15,7 @@ const loginAs = require('./api/login-as');
 const transactionLineItems = require('./api/transaction-line-items');
 const initiatePrivileged = require('./api/initiate-privileged');
 const transitionPrivileged = require('./api/transition-privileged');
+const uploadMultiImages = require('./api/service/upload-multi-images');
 
 const createUserWithIdp = require('./api/auth/createUserWithIdp');
 
@@ -48,6 +49,8 @@ router.use((req, res, next) => {
 });
 
 // ================ API router endpoints: ================ //
+
+router.post('/service/upload-multi-images', uploadMultiImages);
 
 router.get('/initiate-login-as', initiateLoginAs);
 router.get('/login-as', loginAs);

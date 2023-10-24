@@ -114,7 +114,7 @@ export const EditListingPageComponent = props => {
     stripeAccountFetched,
     stripeAccount,
     updateStripeAccountError,
-    onBulkPublishListing
+    onBulkPublishListing,
   } = props;
 
   const { id, type, returnURLType } = params;

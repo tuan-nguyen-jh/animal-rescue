@@ -18,7 +18,12 @@ import css from './EditListingAnimalsForm.module.css';
 const formatAnimalListing = (rows, headers) => {
   return rows.map(row => {
     return row.reduce((dict, item, index) => {
-      dict[headers[index].trim()] = item;
+      const splitData = item.split(';');
+      if (splitData.length > 1) {
+        dict[headers[index].trim()] = splitData.map((path) => path.trim());
+      } else {
+        dict[headers[index].trim()] = item.trim();
+      }
       return dict
     }, {})
   })
@@ -27,7 +32,7 @@ const formatAnimalListing = (rows, headers) => {
 const convertInitialValues = (initialValues) => {
   const data = []
   data.push(Object.keys(initialValues.animals[0]));
-  initialValues.animals.map((item)=>{
+  initialValues.animals.map((item) => {
     data.push(Object.values(item))
   })
   return data
@@ -45,7 +50,7 @@ export const EditListingAnimalsFormComponent = props => {
     initialValues
   } = props;
 
-  const [data, setData] = useState(initialValues?.animals?.length > 0? convertInitialValues(initialValues): []);
+  const [data, setData] = useState(initialValues?.animals?.length > 0 ? convertInitialValues(initialValues) : []);
 
   const headers = data[0];
   const rows = formatAnimalListing(data.slice(1), headers);

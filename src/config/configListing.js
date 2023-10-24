@@ -46,6 +46,7 @@
  *   - isRequired (optional):         Is the field required for providers to fill
  *   - requiredMessage (optional):    Message for those fields, which are mandatory.
  */
+export const INQUIRY_TRANSACTION_PROCESS_ALIAS = 'default-inquiry/release-1';
 export const ANIMAL_LISTING_TYPE = 'animal';
 export const ACC_LISTING_TYPE = 'acc';
 export const ACC_SERVICES = {

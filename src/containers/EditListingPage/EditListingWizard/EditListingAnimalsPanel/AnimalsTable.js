@@ -29,6 +29,7 @@ export default function AnimalsTable(props) {
             <TableCell align="center">Type of Animal</TableCell>
             <TableCell align="center">Size</TableCell>
             <TableCell align="center">Birth date</TableCell>
+            <TableCell align="center">Number of Images</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -41,6 +42,7 @@ export default function AnimalsTable(props) {
               </TableCell>
               <TableCell align="center">{row.size.toUpperCase()}</TableCell>
               <TableCell align="center">{row.birth}</TableCell>
+              <TableCell align="center">{Array.isArray(row.images) ? row.images.length : row.images ? 1 : 0}</TableCell>
             </TableRow>
           ))}
         </TableBody>
