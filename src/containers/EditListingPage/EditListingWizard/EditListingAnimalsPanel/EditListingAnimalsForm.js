@@ -15,7 +15,7 @@ import css from './EditListingAnimalsForm.module.css';
 const formatAnimalListing = (rows, headers) => {
   return rows.map(row => {
     return row.reduce((dict, item, index) => {
-      const splitData = item.split(';');
+      const splitData = Array.isArray(item)? item : item.split(';');
       if (splitData.length > 1) {
         dict[headers[index].trim()] = splitData.map((path) => path.trim());
       } else {
