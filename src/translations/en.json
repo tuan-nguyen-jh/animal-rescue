@@ -1325,5 +1325,5 @@
   "AnimalTable.typeOfAnimalColumnLabel": "Type of Animal",
   "AnimalTable.birthColumnLabel": "Date of birth",
   "AnimalTable.sizeColumnLabel": "Size",
-  "AnimalTable.imageColumnLabel": "Number of Label"
+  "AnimalTable.imageColumnLabel": "Number of images"
 }

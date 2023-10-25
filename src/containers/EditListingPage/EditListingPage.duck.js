@@ -26,6 +26,7 @@ import {
 import { fetchCurrentUser } from '../../ducks/user.duck';
 import {
   ACC_LISTING_TYPE,
+  ADOPTED,
   ANIMAL_LISTING_TYPE,
   INQUIRY_TRANSACTION_PROCESS_ALIAS
 } from '../../config/configListing';
@@ -1034,6 +1035,7 @@ export const bulkPublishListing = (listingArray, additionalData, listingId) => a
       publicData.unitType = unitType;
       publicData.transactionProcessAlias = alias;
       publicData.accId = listingId.uuid;
+      publicData.isAdopted = ADOPTED.notAdopted;
 
       const uploadRes = await requestUploadMultiImage(images);
 
