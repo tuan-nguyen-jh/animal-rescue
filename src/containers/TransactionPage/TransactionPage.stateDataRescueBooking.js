@@ -151,6 +151,26 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showPriceBreakdown: true,
       }
     })
+    .cond([states.PENDING_PAYMENT, PROVIDER], () => {
+      const primary = isCustomerBanned ? null : actionButtonProps(transitions.REPORT, PROVIDER);
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        showActionButtons: true,
+        primaryButtonProps: primary,
+      }
+    })
+    .cond([states.OPERATOR_PROCESSING, _], () => {
+      return {
+        processName,
+        processState,
+        showLineItemForm: false,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true,
+      }
+    })
     .cond([states.COMPLETED, _], () => {
       return {
         processName,
@@ -159,6 +179,16 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showReviewAsFirstLink: true,
         showActionButtons: true,
         primaryButtonProps: leaveReviewProps,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true,
+      };
+    })
+    .cond([states.PAYMENT_EXPIRED, _], () => {
+      return {
+        processName,
+        processState,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true,
       };
     })
     .cond([states.REVIEWED_BY_PROVIDER, CUSTOMER], () => {
@@ -169,6 +199,26 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showReviewAsSecondLink: true,
         showActionButtons: true,
         primaryButtonProps: leaveReviewProps,
+        lineItemIsEstimated: true,
+        showPriceBreakdown: true,
+      };
+    })
+    .cond([states.REVIEWED_BY_PROVIDER, PROVIDER], () => {
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        lineItemIsEstimated: true,
+        showPriceBreakdown: true,
+      };
+    })
+    .cond([states.REVIEWED_BY_CUSTOMER, CUSTOMER], () => {
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        lineItemIsEstimated: true,
+        showPriceBreakdown: true,
       };
     })
     .cond([states.REVIEWED_BY_CUSTOMER, PROVIDER], () => {
@@ -179,10 +229,19 @@ export const getStateDataForRescueBookingProcess = (txInfo, processInfo) => {
         showReviewAsSecondLink: true,
         showActionButtons: true,
         primaryButtonProps: leaveReviewProps,
+        lineItemIsEstimated: true,
+        showPriceBreakdown: true,
       };
     })
     .cond([states.REVIEWED, _], () => {
-      return { processName, processState, showDetailCardHeadings: true, showReviews: true };
+      return {
+        processName,
+        processState,
+        showDetailCardHeadings: true,
+        showReviews: true,
+        showPriceBreakdown: true,
+        lineItemIsEstimated: true,
+      };
     })
     .default(() => {
       // Default values for other states

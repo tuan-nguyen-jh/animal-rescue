@@ -19,6 +19,9 @@ export const transitions = {
   FINISH: 'transition/finish',
   REQUEST_PAYMENT: 'transition/request-payment',
   EXPIRE_PAYMENT: 'transition/expire-payment',
+  REPORT: "transition/report",
+  PROCESSING_COMPLETE: "transition/processing-complete",
+  PROCESSING_EXPIRE: "transition/processing-expire",
   CONFIRM_PAYMENT: 'transition/confirm-payment',
   COMPLETE: 'transition/complete',
   REVIEW_1_BY_PROVIDER: 'transition/review-1-by-provider',
@@ -41,7 +44,10 @@ export const states = {
   OFFICER_DISPATCHED: 'officer-dispatched',
   EXACT_FEE_CALCULATED: 'exact-fee-calculated',
   PENDING_PAYMENT: 'pending-payment',
-  PAYMENT_EXPIRED: 'pending-expired',
+  PAYMENT_EXPIRED: 'payment-expired',
+  OPERATOR_PROCESSING: "operator-processing",
+  PROCESSING_COMPLETED: "processing-completed",
+  PROCESIING_EXPIRED: "processing-expired",
   COMPLETED: 'completed',
   DELIVERED: 'delivered',
   REVIEWED: 'reviewed',
@@ -114,9 +120,15 @@ export const graph = {
       on: {
         [transitions.EXPIRE_PAYMENT]: states.PAYMENT_EXPIRED,
         [transitions.CONFIRM_PAYMENT]: states.COMPLETED,
+        [transitions.REPORT]: states.OPERATOR_PROCESSING
       },
     },
-
+    [states.OPERATOR_PROCESSING]:{
+      on: {
+        [transitions.PROCESSING_COMPLETE]: states.PROCESSING_COMPLETED,
+        [transitions.PROCESSING_EXPIRE]: states.PROCESIING_EXPIRED
+      }
+    },
     [states.COMPLETED]: {
       on: {
         [transitions.COMPLETE]: states.DELIVERED,
@@ -169,6 +181,7 @@ export const isRelevantPastTransition = transition => {
     transitions.FINISH,
     transitions.REQUEST_PAYMENT,
     transitions.EXPIRE_PAYMENT,
+    transitions.REPORT,
     transitions.COMPLETE,
     transitions.CONFIRM_PAYMENT,
     transitions.REVIEW_1_BY_CUSTOMER,
@@ -199,7 +212,7 @@ export const isProviderReview = transition => {
 export const isPrivileged = transition => {
   return [
     transitions.REQUEST_AFTER_INQUIRY,
-    transitions.REQUEST_PAYMENT,
+    transitions.REQUEST_BOOKING,
     transitions.ACCEPT,
     transitions.FINISH,
   ].includes(
@@ -211,11 +224,15 @@ export const isPrivileged = transition => {
 export const isCompleted = transition => {
   const txCompletedTransitions = [
     transitions.COMPLETE,
+    transitions.SENT_REQUEST_EXPIRE,
     transitions.PROVIDER_CANCEL,
     transitions.CUSTOMER_CANCEL,
     transitions.OPERATOR_CANCEL,
     transitions.PROVIDER_DECLINE,
     transitions.CUSTOMER_DECLINE,
+    transitions.PROCESSING_COMPLETE,
+    transitions.PROCESSING_EXPIRE,
+    transitions.EXPIRE_PAYMENT,
     transitions.REVIEW_1_BY_CUSTOMER,
     transitions.REVIEW_1_BY_PROVIDER,
     transitions.REVIEW_2_BY_CUSTOMER,

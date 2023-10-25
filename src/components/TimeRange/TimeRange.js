@@ -1,5 +1,5 @@
 import React from 'react';
-import { instanceOf, string } from 'prop-types';
+import { bool, instanceOf, string } from 'prop-types';
 import classNames from 'classnames';
 import { isSameDay, formatDateIntoPartials } from '../../util/dates';
 import { injectIntl, intlShape } from '../../util/reactIntl';
@@ -13,10 +13,10 @@ const DASH = '–';
 const BREAK_WORD_MIN_LENGTH = 27;
 
 export const TimeRangeComponent = props => {
-  const { rootClassName, className, startDate, endDate, dateType, timeZone, intl } = props;
+  const { rootClassName, className, startDate, endDate, dateType, timeZone, isAdoptionBooking, intl } = props;
   const start = formatDateIntoPartials(startDate, intl, { timeZone });
   const end = formatDateIntoPartials(endDate, intl, { timeZone });
-  const isSingleDay = isSameDay(startDate, endDate, timeZone);
+  const isSingleDay = isAdoptionBooking || isSameDay(startDate, endDate, timeZone);
 
   const dateFormatting = { month: 'short', day: 'numeric', timeZone };
 
@@ -73,7 +73,7 @@ export const TimeRangeComponent = props => {
   } else if (isSingleDay && dateType === DATE_TYPE_DATETIME) {
     return (
       <div className={classes}>
-        <span className={css.dateSection}>{`${start.date}, ${start.time} - ${end.time}`}</span>
+        <span className={css.dateSection}>{`${start.date}, ${start.time}`}</span>
       </div>
     );
   } else {
@@ -100,6 +100,7 @@ TimeRangeComponent.propTypes = {
   endDate: instanceOf(Date).isRequired,
   dateType: propTypes.dateType,
   timeZone: string,
+  isAdoptionBooking: bool.isRequired,
 
   // from injectIntl
   intl: intlShape.isRequired,

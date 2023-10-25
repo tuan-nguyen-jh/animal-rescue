@@ -6,8 +6,6 @@ import { transitions } from '../../../transactions/transactionProcessRescueBooki
 
 import { PrimaryButton, SecondaryButton } from '../../../components';
 
-import { SERVICE_RESCUE } from '../../../config/configBookingService';
-
 import css from './TransactionPanel.module.css';
 
 // Functional component as a helper to build ActionButtons
@@ -23,8 +21,8 @@ const ActionButtonsMaybe = props => {
     estimatedLineItem,
     onTransition,
     transaction,
-    redirectToCheckoutPageWithInitialValues,
     onUpdateTxDetails,
+    isRescueService,
   } = props;
 
   const handleUpdateLineItems = async (values, listing, transitionName) => {
@@ -50,7 +48,7 @@ const ActionButtonsMaybe = props => {
       ...quantityMaybe,
       ...otherOrderData
     };
-    
+
     const txId = await onUpdateTxDetails(listing, orderData, transitionName);
   };
 
@@ -66,15 +64,6 @@ const ActionButtonsMaybe = props => {
 
     const txId = transaction.id.uuid;
     const { listing } = transaction;
-
-    const initialValues = {
-      listing,
-      // Transaction with payment pending should be passed to CheckoutPage
-      transaction,
-      // Original orderData content is not available,
-      // but it is already saved since tx is in state: payment-pending.
-      orderData: {},
-    };
 
     const values = {
       bookingDates: {
@@ -99,7 +88,13 @@ const ActionButtonsMaybe = props => {
         window.location.reload();
         break;
       case transitions.FINISH:
-        redirectToCheckoutPageWithInitialValues(initialValues, listing)
+        params.bodyParams = {
+          bookingDates: values.bookingDates,
+        }
+        onTransition(txId, transitions.REQUEST_PAYMENT, params);
+        break;
+      case transitions.REQUEST_PAYMENT:
+        onTransition(txId, transitions.REPORT, params);
         break;
       default:
         handleUpdateLineItems(values, listing, transitions.ACCEPT);
@@ -108,13 +103,16 @@ const ActionButtonsMaybe = props => {
   }
 
   const buttonsDisabled = primaryButtonProps?.inProgress || secondaryButtonProps?.inProgress;
-  const service = transaction.attributes?.protectedData?.selectedService;
+  const paymentIsCompleted = transaction.attributes.transitions.find(
+    item => item.transition === transitions.CONFIRM_PAYMENT
+  );
 
   const primaryButton = primaryButtonProps ? (
     <PrimaryButton
       inProgress={primaryButtonProps.inProgress}
       disabled={buttonsDisabled}
-      onClick={service === SERVICE_RESCUE ? hanldeClick : primaryButtonProps.onAction}
+      onClick={isRescueService && !paymentIsCompleted ?
+        hanldeClick : primaryButtonProps.onAction}
     >
       {primaryButtonProps.buttonText}
     </PrimaryButton>

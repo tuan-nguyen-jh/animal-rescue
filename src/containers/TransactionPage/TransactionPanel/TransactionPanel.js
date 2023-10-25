@@ -147,7 +147,6 @@ export class TransactionPanelComponent extends Component {
       onTransition,
       transaction,
       newQuantity,
-      redirectToCheckoutPageWithInitialValues,
       onUpdateTxDetails,
       history,
       listingAnimals,
@@ -184,6 +183,7 @@ export class TransactionPanelComponent extends Component {
 
     const actionButtons = (
       <ActionButtonsMaybe
+        isRescueService={isRescueService}
         history={history}
         onTransition={onTransition}
         transaction={transaction}
@@ -198,7 +198,6 @@ export class TransactionPanelComponent extends Component {
         isListingDeleted={listingDeleted}
         isProvider={isProvider}
         estimatedLineItem={newQuantity}
-        redirectToCheckoutPageWithInitialValues={redirectToCheckoutPageWithInitialValues}
         onUpdateTxDetails={onUpdateTxDetails}
       />
     );
@@ -450,7 +449,6 @@ TransactionPanelComponent.propTypes = {
   transaction: propTypes.transaction,
   onTransition: func.isRequired,
   newQuantity: string,
-  redirectToCheckoutPageWithInitialValues: func.isRequired,
   listingAnimals: arrayOf(propTypes.listing),
   fetchListingAnimalSuccess: bool.isRequired,
 
