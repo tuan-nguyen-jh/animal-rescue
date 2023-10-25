@@ -22,7 +22,7 @@ const formatAnimalListing = (rows, headers) => {
         dict[headers[index].trim()] = item.trim();
       }
       return dict
-    }, {})
+    }, {});
   })
 }
 
