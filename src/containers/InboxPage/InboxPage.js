@@ -22,6 +22,7 @@ import {
   resolveLatestProcessName,
   getProcess,
   isBookingProcess,
+  BOOKING_PROCESS_NAME,
 } from '../../transactions/transaction';
 
 import { getMarketplaceEntities } from '../../ducks/marketplaceData.duck';
@@ -98,12 +99,15 @@ const BookingTimeInfoMaybe = props => {
   const timeZone = transaction?.listing?.attributes?.availabilityPlan?.timezone || 'Etc/UTC';
   const { bookingStart, bookingEnd } = bookingData(transaction, lineItemUnitType, timeZone);
 
+  const isAdoptionBooking = processName === BOOKING_PROCESS_NAME;
+
   return (
     <TimeRange
       startDate={bookingStart}
       endDate={bookingEnd}
       dateType={dateType}
       timeZone={timeZone}
+      isAdoptionBooking={isAdoptionBooking}
       {...rest}
     />
   );
