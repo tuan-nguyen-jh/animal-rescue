@@ -30,7 +30,6 @@ import PanelHeading from './PanelHeading';
 import { SERVICE_RESCUE } from '../../../config/configBookingService';
 
 import css from './TransactionPanel.module.css';
-import { INQUIRY } from '../../../transactions/transaction';
 
 // Helper function to get display names for different roles
 const displayNames = (currentUser, provider, customer, intl) => {
