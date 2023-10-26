@@ -75,6 +75,8 @@ import SectionGallery from './SectionGallery';
 
 import SectionContactsMaybe from './SectionContactsMaybe';
 
+import { INQUIRY } from '../../transactions/transaction';
+
 import css from './ListingPage.module.css';
 
 const MIN_LENGTH_FOR_LONG_WORDS_IN_TITLE = 16;
@@ -230,10 +232,16 @@ export const ListingPageComponent = props => {
 
   const handleOrderSubmit = values => {
     const isCurrentlyClosed = currentListing.attributes.state === LISTING_STATE_CLOSED;
+    const { unitType } = currentListing.attributes.publicData;
+    const isInquiryProcess = unitType === INQUIRY;
     if (isOwnListing || isCurrentlyClosed) {
       window.scrollTo(0, 0);
     } else {
-      onSubmit(values);
+      if (isInquiryProcess) {
+        setInquiryModalOpen(true);
+      } else {
+        onSubmit(values);
+      }
     }
   };
 

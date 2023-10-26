@@ -129,10 +129,10 @@ export const OrderBreakdownComponent = props => {
 
   return (
     <div className={classes}>
-      <LineItemService
+      {isRescueService && <LineItemService
         service={service}
         intl={intl}
-      />
+      />}
 
       <LineItemBookingPeriod
         booking={booking}

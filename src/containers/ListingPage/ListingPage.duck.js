@@ -326,7 +326,9 @@ export const sendInquiry = (listing, message) => (dispatch, getState, sdk) => {
   const transitions = getProcess(processName)?.transitions;
 
   const bodyParams = {
-    transition: transitions.INQUIRE,
+    transition:
+      processName === txTypes.inquiry.process ?
+        transitions.INQUIRE_WITHOUT_PAYMENT : transitions.INQUIRE,
     processAlias,
     params: { listingId },
   };

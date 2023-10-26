@@ -373,11 +373,14 @@ export class TransactionPanelComponent extends Component {
                   processName={stateData.processName}
                 />
 
-                {isProvider && isDisplayNoAnimal && !isRescueService && (
-                  <div className={css.addAnimal}>
-                    <FormattedMessage id="TransactionPanel.pleaseAddAnimal" />
-                  </div>
-                )}
+                {isProvider
+                  && isDisplayNoAnimal
+                  && !isRescueService
+                  && !isInquiryProcess && (
+                    <div className={css.addAnimal}>
+                      <FormattedMessage id="TransactionPanel.pleaseAddAnimal" />
+                    </div>
+                  )}
                 {isCustomer && isDisplayNoAnimal && !isRescueService && (
                   <div className={css.addAnimal}>
                     <FormattedMessage id="TransactionPanel.noAnimal" />

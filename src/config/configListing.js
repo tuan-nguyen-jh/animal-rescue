@@ -255,6 +255,11 @@ export const txTypes = {
     alias: 'acc-rescue-booking/release-1',
     unitType: 'hour',
   },
+  inquiry: {
+    process: 'default-inquiry',
+    alias: 'default-inquiry/release-1',
+    unitType: 'inqury'
+  }
 };
 
 export const listingTypes = [
