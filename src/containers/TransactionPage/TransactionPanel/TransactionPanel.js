@@ -30,6 +30,7 @@ import PanelHeading from './PanelHeading';
 import { SERVICE_RESCUE } from '../../../config/configBookingService';
 
 import css from './TransactionPanel.module.css';
+import { INQUIRY } from '../../../transactions/transaction';
 
 // Helper function to get display names for different roles
 const displayNames = (currentUser, provider, customer, intl) => {
@@ -373,11 +374,14 @@ export class TransactionPanelComponent extends Component {
                   processName={stateData.processName}
                 />
 
-                {isProvider && isDisplayNoAnimal && !isRescueService && (
-                  <div className={css.addAnimal}>
-                    <FormattedMessage id="TransactionPanel.pleaseAddAnimal" />
-                  </div>
-                )}
+                {isProvider
+                  && isDisplayNoAnimal
+                  && !isRescueService
+                  && !isInquiryProcess && (
+                    <div className={css.addAnimal}>
+                      <FormattedMessage id="TransactionPanel.pleaseAddAnimal" />
+                    </div>
+                  )}
                 {isCustomer && isDisplayNoAnimal && !isRescueService && (
                   <div className={css.addAnimal}>
                     <FormattedMessage id="TransactionPanel.noAnimal" />

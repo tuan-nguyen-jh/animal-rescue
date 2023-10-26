@@ -1285,6 +1285,7 @@
   "TransactionPanel.conversationHeading": "Conversation",
   "TransactionPanel.customerBannedStatus": "The user made the request, but was later banned.",
   "TransactionPanel.default-booking.orderBreakdownTitle": "Booking breakdown",
+  "TransactionPanel.default-inquiry.orderBreakdownTitle": "Free Inquiry",
   "TransactionPanel.acc-rescue-booking.orderBreakdownTitle": "Booking breakdown",
   "TransactionPanel.adoption-booking.orderBreakdownTitle": "Booking breakdown",
   "TransactionPanel.default-purchase.orderBreakdownTitle": "Order breakdown",

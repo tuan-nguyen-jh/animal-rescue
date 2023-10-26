@@ -94,7 +94,11 @@ export const loadData = (params, search) => (dispatch, getState, sdk) => {
   const apiQueryParams = {
     only: onlyFilter,
     lastTransitions: getAllTransitionsForEveryProcess(),
-    processNames: [ txTypes.adoption.process, txTypes.rescue.process],
+    processNames: [ 
+      txTypes.adoption.process, 
+      txTypes.rescue.process, 
+      txTypes.inquiry.process,
+    ],
     include: [
       'listing',
       'provider',
