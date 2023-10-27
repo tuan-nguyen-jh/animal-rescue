@@ -25,7 +25,7 @@ const CSVSelector = (props) => {
 
   const inputStyles = generateStyle();
 
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     if (e.target.files) {
       const file = e.target.files[0];
       Papa.parse(file, {
