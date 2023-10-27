@@ -1,5 +1,7 @@
-export const SERVICE_RESCUE = 'rescue'
-export const CONFIG_LISTING_FIELD_KEY = 'typeOfAnimal'
+export const SERVICE_RESCUE = 'rescue';
+export const CONFIG_LISTING_FIELD_KEY = 'typeOfAnimal';
+export const TYPE_OF_ANIMAL_FIELD_KEY = 'typeOfAnimal';
+export const SIZE_FIELD_KEY = 'size';
 export const MINIMUN_QUANTITY = 1;
 
 export const ANIMAL_TABLE_COLUMN_FORMAT = [
