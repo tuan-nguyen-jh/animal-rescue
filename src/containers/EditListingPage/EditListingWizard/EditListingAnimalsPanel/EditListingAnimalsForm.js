@@ -9,30 +9,22 @@ import { intlShape, injectIntl } from '../../../../util/reactIntl';
 import CSVReader from './CSVReader';
 import { Button } from '../../../../components';
 
+import { ANIMAL_TABLE_COLUMN_FORMAT } from '../../../../config/configBookingService';
+
 // Import modules from this directory
 import css from './EditListingAnimalsForm.module.css';
 
-const formatAnimalListing = (rows, headers) => {
-  return rows.map(row => {
-    return row.reduce((dict, item, index) => {
-      const splitData = Array.isArray(item)? item : item.split(';');
-      if (splitData.length > 1) {
-        dict[headers[index].trim()] = splitData.map((path) => path.trim());
-      } else {
-        dict[headers[index].trim()] = item.trim();
-      }
-      return dict
-    }, {});
+const convertData = (dataTable) => {
+  return dataTable.map((data) => {
+    const row = Object.values(data).map(item => item.value);
+    return row.reduce((rowDict, item, columnIndex) => {
+      const columnFormat = ANIMAL_TABLE_COLUMN_FORMAT.find(
+        (format) => format.index === columnIndex
+      );
+      rowDict[columnFormat.key] = item;
+      return rowDict;
+    }, {})
   })
-}
-
-const convertInitialValues = (initialValues) => {
-  const data = []
-  data.push(Object.keys(initialValues.animals[0]));
-  initialValues.animals.map((item) => {
-    data.push(Object.values(item))
-  })
-  return data
 }
 
 export const EditListingAnimalsFormComponent = props => {
@@ -45,21 +37,26 @@ export const EditListingAnimalsFormComponent = props => {
     initialValues
   } = props;
 
-  const [data, setData] = useState(initialValues?.animals?.length > 0 ? convertInitialValues(initialValues) : []);
-
-  const headers = data[0];
-  const rows = formatAnimalListing(data.slice(1), headers);
+  const [spread, setSpread] = useState(null);
+  const [data, setData] = useState(initialValues?.animals || []);
 
   const handleClick = () => {
     onSubmit({
       publicData: {
-        animals: rows,
+        animals: convertData(
+          Object.values(spread.getActiveSheet().toJSON().data.dataTable).slice(1)
+        ),
       }
     });
   }
 
   return <>
-    <CSVReader rows={rows} setData={setData} />
+    <CSVReader
+      data={data}
+      setData={setData}
+      spread={spread}
+      setSpread={setSpread}
+    />
     <Button
       className={css.submitButton}
       type="submit"
