@@ -1,5 +1,6 @@
 import omit from 'lodash/omit';
 
+import { uploadMultiImages } from '../../util/api';
 import { types as sdkTypes, createImageVariantConfig } from '../../util/sdkLoader';
 import { denormalisedResponseEntities } from '../../util/data';
 import {
@@ -14,7 +15,7 @@ import { uniqueBy } from '../../util/generators';
 import { storableError } from '../../util/errors';
 import * as log from '../../util/log';
 import { parse } from '../../util/urlHelpers';
-import { isBookingProcessAlias } from '../../transactions/transaction';
+import { getProcess, INQUIRY, INQUIRY_PROCESS_NAME, isBookingProcessAlias } from '../../transactions/transaction';
 
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 import {
@@ -23,7 +24,12 @@ import {
   fetchStripeAccount,
 } from '../../ducks/stripeConnectAccount.duck';
 import { fetchCurrentUser } from '../../ducks/user.duck';
-import { ACC_LISTING_TYPE } from '../../config/configListing';
+import {
+  ACC_LISTING_TYPE,
+  ADOPTED,
+  ANIMAL_LISTING_TYPE,
+  INQUIRY_TRANSACTION_PROCESS_ALIAS
+} from '../../config/configListing';
 
 const { UUID } = sdkTypes;
 
@@ -172,6 +178,10 @@ export const SAVE_PAYOUT_DETAILS_ERROR = 'app/EditListingPage/SAVE_PAYOUT_DETAIL
 export const UPDATE_FETCH_LISTINGS = 'app/EditListingPage/UPDATE_FETCH_LISTINGS';
 export const UPDATE_FETCH_LISTINGS_ERROR = 'app/EditListingPage/UPDATE_FETCH_LISTINGS_ERROR';
 
+export const BULK_PUBLISH_LISTING_REQUEST = 'app/EditListingPage/BULK_PUBLISH_LISTING_REQUEST';
+export const BULK_PUBLISH_LISTING_SUCCESS = 'app/EditListingPage/BULK_PUBLISH_LISTING_SUCCESS';
+export const BULK_PUBLISH_LISTING_ERROR = 'app/EditListingPage/BULK_PUBLISH_LISTING_ERROR';
+
 // ================ Reducer ================ //
 
 const initialState = {
@@ -269,6 +279,29 @@ export default function reducer(state = initialState, action = {}) {
       console.error(payload);
       return {
         ...state,
+        publishListingError: {
+          listingId: state.listingId,
+          error: payload,
+        },
+      };
+    }
+
+    case BULK_PUBLISH_LISTING_REQUEST:
+      return {
+        ...state,
+        isBulkPublishing: true,
+      };
+    case BULK_PUBLISH_LISTING_SUCCESS:
+      return {
+        ...state,
+        redirectToListing: true,
+        isBulkPublishing: false,
+      };
+    case BULK_PUBLISH_LISTING_ERROR: {
+      // eslint-disable-next-line no-console
+      return {
+        ...state,
+        isBulkPublishing: false,
         publishListingError: {
           listingId: state.listingId,
           error: payload,
@@ -456,7 +489,7 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, payoutDetailsSaveInProgress: false };
     case SAVE_PAYOUT_DETAILS_SUCCESS:
       return { ...state, payoutDetailsSaveInProgress: false, payoutDetailsSaved: true };
-    
+
     case UPDATE_FETCH_LISTINGS:
       return { ...state, listingACCs: payload}
     case UPDATE_FETCH_LISTINGS_ERROR:
@@ -551,6 +584,10 @@ export const deleteAvailabilityExceptionError = errorAction(DELETE_EXCEPTION_ERR
 export const savePayoutDetailsRequest = requestAction(SAVE_PAYOUT_DETAILS_REQUEST);
 export const savePayoutDetailsSuccess = successAction(SAVE_PAYOUT_DETAILS_SUCCESS);
 export const savePayoutDetailsError = errorAction(SAVE_PAYOUT_DETAILS_ERROR);
+
+export const bulkPublishListingRequest = requestAction(BULK_PUBLISH_LISTING_REQUEST);
+export const bulkPublishListingSuccess = successAction(BULK_PUBLISH_LISTING_SUCCESS);
+export const bulkPublishListingError = (e) => ({ type: BULK_PUBLISH_LISTING_ERROR, error: true, payload: e });
 
 // export const fetchListings = requestAction(UPDATE_FETCH_LISTINGS)
 
@@ -981,3 +1018,55 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
       throw e;
     });
 };
+
+export const bulkPublishListing = (listingArray, additionalData, listingId) => async (dispatch, getState, sdk) => {
+  dispatch(bulkPublishListingRequest());
+
+  const { geolocation, ...otherAdditionalData } = additionalData;
+
+  const unitType = INQUIRY;
+  const alias = INQUIRY_TRANSACTION_PROCESS_ALIAS;
+
+  try {
+    const response = await Promise.all(listingArray.map(async (item) => {
+      const { title, images, ...otherData } = item;
+      const publicData = { ...otherData, ...otherAdditionalData };
+      publicData.listingType = ANIMAL_LISTING_TYPE;
+      publicData.unitType = unitType;
+      publicData.transactionProcessAlias = alias;
+      publicData.accId = listingId.uuid;
+      publicData.isAdopted = ADOPTED.notAdopted;
+
+      const uploadRes = await requestUploadMultiImage(images);
+
+      return sdk.ownListings.create({
+        title,
+        geolocation,
+        publicData,
+        images: uploadRes.data
+      })
+    }));
+
+    dispatch(bulkPublishListingSuccess())
+
+  }
+  catch (error) {
+    dispatch(bulkPublishListingError(storableError(error)));
+  }
+}
+
+const requestUploadMultiImage = (images) => {
+
+  const imagePaths = Array.isArray(images)
+    ? images : images
+      ? [images] : [];
+
+  const bodyParams = {
+    imagePaths
+  }
+  const queryParams = {
+    expand: true,
+  }
+
+  return uploadMultiImages({ bodyParams, queryParams });
+}

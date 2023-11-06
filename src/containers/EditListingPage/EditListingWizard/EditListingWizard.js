@@ -50,6 +50,7 @@ import EditListingWizardTab, {
   STAFFS,
   CONTACTS,
   PHOTOS,
+  ANIMALS,
 } from './EditListingWizardTab';
 import css from './EditListingWizard.module.css';
 
@@ -61,7 +62,16 @@ import css from './EditListingWizard.module.css';
 //         Details tab asks for "title" and is therefore the first tab in the wizard flow.
 const TABS_DETAILS_ONLY = [DETAILS];
 const TABS_PRODUCT = [DETAILS, PRICING_AND_STOCK, DELIVERY, PHOTOS];
-const TABS_BOOKING = [DETAILS, LOCATION, PRICING, AVAILABILITY, CONTACTS, STAFFS, PHOTOS];
+const TABS_BOOKING = [
+  DETAILS,
+  LOCATION,
+  PRICING,
+  AVAILABILITY,
+  CONTACTS,
+  STAFFS,
+  PHOTOS,
+  ANIMALS,
+];
 const TABS_INQUIRY = [DETAILS, LOCATION, PRICING, PHOTOS];
 const TABS_INQUIRY_WITHOUT_PRICE = [DETAILS, LOCATION, PHOTOS];
 const TABS_ALL = [...TABS_PRODUCT, ...TABS_BOOKING, ...TABS_INQUIRY];
@@ -117,6 +127,10 @@ const tabLabelAndSubmit = (intl, tab, isNewListingFlow, isPriceDisabled, process
   else if (tab === CONTACTS) {
     labelKey = 'EditListingWizard.tabLabelContacts';
     submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveContacts`;
+  }
+  else if (tab === ANIMALS) {
+    labelKey = 'EditListingWizard.tabLabelAnimals';
+    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveAnimals`;
   }
   return {
     label: intl.formatMessage({ id: labelKey }),
@@ -223,6 +237,8 @@ const tabCompleted = (tab, listing, config) => {
       return !!publicData.staffs;
     case CONTACTS:
       return !!publicData.contacts;
+    case ANIMALS:
+      return !!publicData.animals;
     default:
       return false;
   }
@@ -348,7 +364,14 @@ class EditListingWizard extends Component {
   }
 
   handlePublishListing(id) {
-    const { onPublishListingDraft, currentUser, stripeAccount, listing, config } = this.props;
+    const {
+      onPublishListingDraft,
+      currentUser,
+      stripeAccount,
+      listing,
+      onBulkPublishListing,
+      publishListingError 
+    } = this.props;
     const processName = listing?.attributes?.publicData?.transactionProcessAlias.split('/')[0];
     const isInquiryProcess = processName === INQUIRY_PROCESS_NAME;
 
@@ -360,14 +383,19 @@ class EditListingWizard extends Component {
         hasRequirements(stripeAccountData, 'currently_due'));
 
     if (isInquiryProcess || (stripeConnected && !stripeRequirementsMissing)) {
-      onPublishListingDraft(id);
+      const response = onPublishListingDraft(id);
+      if (!publishListingError) {
+        const animals = listing.attributes.publicData.animals;
+        const location = listing.attributes.publicData.location;
+        const geolocation = listing.attributes.geolocation;
+        onBulkPublishListing(animals, { location, geolocation }, id);
+      }
     } else {
       this.setState({
         draftId: id,
         showPayoutDetails: true,
       });
     }
-    // onPublishListingDraft(id);
   }
 
   handlePayoutModalClose() {
@@ -402,6 +430,9 @@ class EditListingWizard extends Component {
       currentUser,
       config,
       routeConfiguration,
+      onBulkPublishListing,
+      publishListingError,
+      isBulkPublishing,
       ...rest
     } = this.props;
 
@@ -582,6 +613,7 @@ class EditListingWizard extends Component {
                 onManageDisableScrolling={onManageDisableScrolling}
                 config={config}
                 routeConfiguration={routeConfiguration}
+                isBulkPublishing={isBulkPublishing}
               />
             );
           })}
@@ -718,6 +750,7 @@ EditListingWizard.propTypes = {
   onPayoutDetailsSubmit: func.isRequired,
   onGetStripeConnectAccountLink: func.isRequired,
   onManageDisableScrolling: func.isRequired,
+  onBulkPublishListing: func.isRequired,
 
   // from withViewport
   viewport: shape({

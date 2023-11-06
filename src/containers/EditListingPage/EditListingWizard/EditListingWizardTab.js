@@ -21,6 +21,7 @@ import EditListingPricingPanel from './EditListingPricingPanel/EditListingPricin
 import EditListingPricingAndStockPanel from './EditListingPricingAndStockPanel/EditListingPricingAndStockPanel';
 import EditListingStaffsPanel from './EditListingStaffsPanel/EditListingStaffsPanel'
 import EditListingContactsPanel from './EditListingContactsPanel/EditListingContactsPanel';
+import EditListingAnimalsPanel from './EditListingAnimalsPanel/EditListingAnimalsPanel';
 
 import css from './EditListingWizardTab.module.css';
 
@@ -31,8 +32,9 @@ export const DELIVERY = 'delivery';
 export const LOCATION = 'location';
 export const AVAILABILITY = 'availability';
 export const PHOTOS = 'photos';
-export const STAFFS = 'staffs'
-export const CONTACTS = 'contacts'
+export const STAFFS = 'staffs';
+export const CONTACTS = 'contacts';
+export const ANIMALS = 'animals';
 
 // EditListingWizardTab component supports these tabs
 export const SUPPORTED_TABS = [
@@ -45,6 +47,7 @@ export const SUPPORTED_TABS = [
   CONTACTS,
   STAFFS,
   PHOTOS,
+  ANIMALS,
 ];
 
 const pathParamsToNextTab = (params, tab, marketplaceTabs) => {
@@ -110,6 +113,7 @@ const EditListingWizardTab = props => {
     tabSubmitButtonText,
     config,
     routeConfiguration,
+    isBulkPublishing
   } = props;
 
   const { type } = params;
@@ -171,10 +175,11 @@ const EditListingWizardTab = props => {
       panelUpdated: updatedTab === tab,
       params,
       locationSearch,
-      updateInProgress,
+      updateInProgress: updateInProgress || isBulkPublishing,
       // newListingPublished and fetchInProgress are flags for the last wizard tab
       ready: newListingPublished,
-      disabled: fetchInProgress,
+      disabled: fetchInProgress || isBulkPublishing,
+      submitInProgress: isBulkPublishing,
       submitButtonText: tabSubmitButtonText,
       listingTypes: config.listing.listingTypes,
       onManageDisableScrolling,
@@ -266,12 +271,19 @@ const EditListingWizardTab = props => {
         />
       );
     }
-    case CONTACTS:{
+    case CONTACTS: {
       return (
         <EditListingContactsPanel
           {...panelProps(CONTACTS)}
         />
       );
+    }
+    case ANIMALS: {
+      return (
+        <EditListingAnimalsPanel
+          {...panelProps(ANIMALS)}
+        />
+      )
     }
     default:
       return null;
@@ -331,6 +343,7 @@ EditListingWizardTab.propTypes = {
   updateInProgress: bool.isRequired,
   config: object.isRequired,
   routeConfiguration: arrayOf(propTypes.route).isRequired,
+  isBulkPublishing: bool,
 };
 
 export default EditListingWizardTab;

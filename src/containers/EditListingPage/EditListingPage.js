@@ -39,6 +39,7 @@ import {
   requestImageUpload,
   removeListingImage,
   savePayoutDetails,
+  bulkPublishListing,
 } from './EditListingPage.duck';
 import EditListingWizard from './EditListingWizard/EditListingWizard';
 import css from './EditListingPage.module.css';
@@ -112,6 +113,7 @@ export const EditListingPageComponent = props => {
     stripeAccountFetched,
     stripeAccount,
     updateStripeAccountError,
+    onBulkPublishListing,
   } = props;
 
   const { id, type, returnURLType } = params;
@@ -129,7 +131,9 @@ export const EditListingPageComponent = props => {
   const hasStripeOnboardingDataIfNeeded = returnURLType ? !!(currentUser && currentUser.id) : true;
   const showForm = hasStripeOnboardingDataIfNeeded && (isNewURI || currentListing.id);
 
-  if (shouldRedirect) {
+  const { isBulkPublishing } = page;
+
+  if (shouldRedirect && !isBulkPublishing) {
     const isPendingApproval =
       currentListing && currentListingState === LISTING_STATE_PENDING_APPROVAL;
 
@@ -227,6 +231,7 @@ export const EditListingPageComponent = props => {
           onUpdateListing={onUpdateListing}
           onCreateListingDraft={onCreateListingDraft}
           onPublishListingDraft={onPublishListingDraft}
+          isBulkPublishing={isBulkPublishing}
           onPayoutDetailsChange={onPayoutDetailsChange}
           onPayoutDetailsSubmit={onPayoutDetailsSubmit}
           onGetStripeConnectAccountLink={onGetStripeConnectAccountLink}
@@ -246,6 +251,8 @@ export const EditListingPageComponent = props => {
             createStripeAccountError || updateStripeAccountError || fetchStripeAccountError
           }
           stripeAccountLinkError={getAccountLinkError}
+          onBulkPublishListing={onBulkPublishListing}
+          publishListingError={publishListingError}
         />
       </Page>
     );
@@ -304,6 +311,7 @@ EditListingPageComponent.propTypes = {
   onPayoutDetailsSubmit: func.isRequired,
   onRemoveListingImage: func.isRequired,
   onUpdateListing: func.isRequired,
+  onBulkPublishListing: func.isRequired,
   page: object.isRequired,
   params: shape({
     id: string.isRequired,
@@ -379,6 +387,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(savePayoutDetails(values, isUpdateCall)),
   onGetStripeConnectAccountLink: params => dispatch(getStripeConnectAccountLink(params)),
   onRemoveListingImage: imageId => dispatch(removeListingImage(imageId)),
+  onBulkPublishListing: (listingArray, additionalData, listingId) =>
+    dispatch(bulkPublishListing(listingArray, additionalData, listingId)),
 });
 
 // Note: it is important that the withRouter HOC is **outside** the
